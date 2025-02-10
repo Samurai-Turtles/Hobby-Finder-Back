@@ -1,0 +1,52 @@
+package com.hobbyFinder.hubby.controller;
+
+
+import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
+import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
+import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
+import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.hobbyFinder.hubby.infra.security.TokenService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("auth")
+public class AuthController {
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody AuthDTO request) {
+        var usernamePassword = new UsernamePasswordAuthenticationToken(request.login(), request.password());
+        var auth = this.authManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+        return ResponseEntity.ok(new LoginResponseDTO(token));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody RegisterDTO request) {
+        if (this.userRepository.findByLogin(request.login()) != null) return ResponseEntity.badRequest().build();
+        String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
+        User newUser = new User(request.login(), encryptedPassword, request.role());
+        this.userRepository.save(newUser);
+        return ResponseEntity.ok().build();
+    }
+
+    //TODO: EXCLUA ESSE MÉTODO APÓS TESTES!!
+    @GetMapping("/find")
+    public ResponseEntity findAll() {
+        return ResponseEntity.ok(this.userRepository.findAll());
+    }
+}
