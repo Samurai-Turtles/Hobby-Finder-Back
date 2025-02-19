@@ -1,8 +1,7 @@
-package com.hobbyFinder.hubby.exception.AuthException;
+package com.hobbyFinder.hubby.exception;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hobbyFinder.hubby.exception.HubbyException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthErrorType {
+public class CustomErrorType {
 
     @JsonProperty("timestamp")
     private LocalDateTime timestamp;
@@ -25,7 +24,7 @@ public class AuthErrorType {
     @JsonProperty("erros")
     private List<String> errors;
 
-    public AuthErrorType(HubbyException e) {
+    public CustomErrorType(HubbyException e) {
         this.timestamp = LocalDateTime.now();
         this.message = e.getMessage();
         this.errors = new ArrayList<>();
