@@ -6,6 +6,6 @@ import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 
 public interface AuthInterface {
 
-    void RegistroUsuario(RegisterDTO registerDTO);
-    LoginResponseDTO LoginUsuario(AuthDTO authDTO);
+    void registroUsuario(RegisterDTO registerDTO);
+    LoginResponseDTO loginUsuario(AuthDTO authDTO);
 }

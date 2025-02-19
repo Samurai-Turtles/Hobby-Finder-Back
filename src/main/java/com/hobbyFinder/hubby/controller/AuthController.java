@@ -33,15 +33,12 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthDTO request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(authInterface.LoginUsuario(request));
+                .body(authInterface.loginUsuario(request));
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterDTO request) {
-        if (this.userRepository.findByLogin(request.login()) != null) return ResponseEntity.badRequest().build();
-        String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
-        User newUser = new User(request.login(), encryptedPassword, request.role());
-        this.userRepository.save(newUser);
+    public ResponseEntity<Void> register(@RequestBody RegisterDTO request) {
+        authInterface.registroUsuario(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .build();

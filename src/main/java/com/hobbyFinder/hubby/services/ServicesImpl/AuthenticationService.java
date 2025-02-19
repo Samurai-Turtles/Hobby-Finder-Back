@@ -1,5 +1,7 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
+import com.hobbyFinder.hubby.exception.AuthException.Registro.SenhaTamanhoInvalidoException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.UsuarioJaExisteException;
 import com.hobbyFinder.hubby.infra.security.TokenService;
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
@@ -29,30 +31,51 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     @Autowired
     private AuthenticationManager authManager;
 
+    private static final String caracteresEspeciais = ".*[^a-zA-Z0-9_.].*";
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByLogin(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override
-    public void RegistroUsuario(RegisterDTO request) {
+    public void registroUsuario(RegisterDTO request) {
         validaRegistro(request);
         String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
-        User newUser = new User(request.login(), encryptedPassword, request.role());
+        User newUser = new User(request.email(), request.username(), encryptedPassword, request.role());
         this.userRepository.save(newUser);
     }
 
     @Override
-    public LoginResponseDTO LoginUsuario(AuthDTO request) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(request.login(), request.password());
+    public LoginResponseDTO loginUsuario(AuthDTO request) {
+        UserDetails user = loadUserByUsername(getUsernameFromLogin(request.login()));
+
+        var usernamePassword = new UsernamePasswordAuthenticationToken(user.getUsername(), request.password());
         var auth = this.authManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
+
         return new LoginResponseDTO(token);
     }
 
+    private String getUsernameFromLogin(String login) {
+        return (login.contains("@")) ?
+                userRepository.findByEmail(login).getUsername() :
+                login;
+    }
+
     private void validaRegistro(RegisterDTO request) throws UsuarioJaExisteException {
-        if(this.userRepository.findByLogin(request.login()) != null) {
+        if(this.userRepository.findByUsername(request.username()) != null)
             throw new UsuarioJaExisteException();
-        }
+
+        if (this.userRepository.findByEmail(request.email()) != null)
+            // Retornar aqui exception para email ja registrado
+            throw new UsuarioJaExisteException();
+
+        if (request.password().length() < 8)
+            throw new SenhaTamanhoInvalidoException();
+
+        if (request.username().matches(caracteresEspeciais))
+            // exception para caracteres especiais em username
+            throw new CredenciaisRegistroException("Não é permitido caracteres especiais em username");
     }
 }

@@ -24,13 +24,15 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private String login;
+    private String email;
+    private String username;
     private String password;
     private UserRole role;
 
 
-    public User(String login, String password, UserRole role) {
-        this.login = login;
+    public User(String email, String username, String password, UserRole role) {
+        this.email = email;
+        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -43,8 +45,11 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return this.username;
     }
+
+    @Override
+    public String getEmail() {return this.email;}
 
     @Override
     public boolean isAccountNonExpired() {
