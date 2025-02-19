@@ -44,7 +44,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("Usuário cadastrado com sucesso")
     void testUsuarioCadastradoComSucesso() throws Exception {
-        RegisterDTO request = new RegisterDTO("victor@gmail.com", "senha1234", UserRole.ADMIN);
+        RegisterDTO request = new RegisterDTO("victor@gmail.com", "victor","senha1234", UserRole.ADMIN);
 
         driver.perform(post("/auth/register")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +72,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("Registro com nome nulo")
     void testRegistroComNomeInvalido() throws Exception {
-        RegisterDTO request = new RegisterDTO("", "senha1234", UserRole.ADMIN);
+        RegisterDTO request = new RegisterDTO("victor@gmail.com", "victor","senha1234", UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post("/auth/register")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("Registro com caracteres insuficientes")
     void testRegistroComNomeTamanho() throws Exception {
-        RegisterDTO request = new RegisterDTO("", "senha1234", UserRole.ADMIN);
+        RegisterDTO request = new RegisterDTO("victor@gmail.com", "victor","senha1234", UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +103,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("Registro com nome possuindo caracteres especiais")
     void testRegistroComCaracteresEspeciais() throws Exception {
-        RegisterDTO request = new RegisterDTO("", "senha1234", UserRole.ADMIN);
+        RegisterDTO request = new RegisterDTO("victor@gmail.com", "victor","senha1234", UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
