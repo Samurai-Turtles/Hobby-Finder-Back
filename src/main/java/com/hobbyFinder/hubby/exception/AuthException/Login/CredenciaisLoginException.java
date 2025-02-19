@@ -1,5 +1,6 @@
-package com.hobbyFinder.hubby.exception.AuthException;
+package com.hobbyFinder.hubby.exception.AuthException.Login;
 
+import com.hobbyFinder.hubby.exception.AuthException.AuthExceptionsMessages;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

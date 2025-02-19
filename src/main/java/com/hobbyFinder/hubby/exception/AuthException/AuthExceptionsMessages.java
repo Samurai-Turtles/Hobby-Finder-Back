@@ -12,6 +12,6 @@ public class AuthExceptionsMessages {
 
     public final static String USER_ALREADY_REGISTERED = "Nome de usuário já registrado";
 
-
+    public final static String INVALID_FIELD = "Nenhum campo de registro pode estar vazio";
 
 }

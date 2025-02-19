@@ -6,7 +6,9 @@ import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.UserRepository;
+import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authManager;
+    private AuthInterface authInterface;
 
     @Autowired
     private UserRepository userRepository;
@@ -28,11 +30,10 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody AuthDTO request) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(request.login(), request.password());
-        var auth = this.authManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((User) auth.getPrincipal());
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthDTO request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authInterface.LoginUsuario(request));
     }
 
     @PostMapping("/register")
@@ -41,7 +42,9 @@ public class AuthController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
         User newUser = new User(request.login(), encryptedPassword, request.role());
         this.userRepository.save(newUser);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     //TODO: EXCLUA ESSE MÉTODO APÓS TESTES!!
