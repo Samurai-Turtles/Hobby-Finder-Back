@@ -9,6 +9,7 @@ import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.hobbyFinder.hubby.infra.security.TokenService;
@@ -27,6 +28,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     @Autowired
     private TokenService tokenService;
 
+    @Lazy
     @Autowired
     private AuthenticationManager authManager;
 
@@ -70,7 +72,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if(request.password().length() < 8) {
             throw new SenhaTamanhoInvalidoException();
         }
-        if(!request.username().matches(".*[^a-zA-Z0-9_.].*") || request.username() == null) {
+        if(request.username().matches(".*[^a-zA-Z0-9_.].*") || request.username() == null) {
             throw new LoginInvalidoException();
         }
         if(request.username().length()<4) {
