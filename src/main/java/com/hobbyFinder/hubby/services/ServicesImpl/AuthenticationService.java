@@ -73,10 +73,10 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
             throw new SenhaTamanhoInvalidoException();
         }
         if(request.username().matches(".*[^a-zA-Z0-9_.].*") || request.username() == null) {
-            throw new LoginInvalidoException();
+            throw new UsernameInvalidoException();
         }
         if(request.username().length()<4) {
-            throw new LoginTamanhoInvalidoException();
+            throw new UsernameTamanhoInvalidoException();
         }
     }
 

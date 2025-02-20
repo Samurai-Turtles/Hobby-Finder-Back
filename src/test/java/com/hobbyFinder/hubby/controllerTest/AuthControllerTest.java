@@ -82,7 +82,7 @@ public class AuthControllerTest {
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
 
-        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_CREDENTIALS);
+        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_USERNAME);
 
     }
 
