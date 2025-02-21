@@ -66,13 +66,13 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
             throw new UsuarioJaExisteException();
         }
         //has to change when adding email and full name
-        if(request.password() == null) {
+        if(request.password() == null || request.username() == null) {
             throw new RegistroCampoNuloException();
         }
         if(request.password().length() < 8) {
             throw new SenhaTamanhoInvalidoException();
         }
-        if(request.username().matches(".*[^a-zA-Z0-9_.].*") || request.username() == null) {
+        if(request.username().matches(".*[^a-zA-Z0-9_.].*")) {
             throw new UsernameInvalidoException();
         }
         if(request.username().length()<4) {

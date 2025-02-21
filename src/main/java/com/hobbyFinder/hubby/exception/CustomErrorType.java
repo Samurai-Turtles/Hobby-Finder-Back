@@ -21,7 +21,7 @@ public class CustomErrorType {
     private LocalDateTime timestamp;
     @JsonProperty("message")
     private String message;
-    @JsonProperty("erros")
+    @JsonProperty("errors")
     private List<String> errors;
 
     public CustomErrorType(HubbyException e) {
