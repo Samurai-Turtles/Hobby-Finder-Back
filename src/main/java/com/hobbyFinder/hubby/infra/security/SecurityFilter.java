@@ -1,5 +1,7 @@
 package com.hobbyFinder.hubby.infra.security;
 
+import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
+import com.hobbyFinder.hubby.models.entities.CustomUserDetails;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,9 +29,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if(token != null){
             var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByUsername(login);
+            CustomUserDetails user = (CustomUserDetails) userRepository.findByUsername(login);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            //Costomização feita para pegar todos os possíveis atributos desejavéis.
+            CustomPrincipal customPrincipal = new CustomPrincipal(user.getUsername(), user.getEmail());
+
+            var authentication = new UsernamePasswordAuthenticationToken(customPrincipal, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
