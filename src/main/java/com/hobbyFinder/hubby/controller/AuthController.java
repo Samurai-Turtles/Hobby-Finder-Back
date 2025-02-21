@@ -5,12 +5,17 @@ import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistr
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
+import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.hobbyFinder.hubby.infra.security.TokenService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,9 +46,11 @@ public class AuthController {
                 .build();
     }
 
-    //TODO: EXCLUA ESSE MÉTODO APÓS TESTES!!
-    @GetMapping("/find")
-    public ResponseEntity findAll() {
-        return ResponseEntity.ok(this.userRepository.findAll());
+    @GetMapping("/tutorial")
+    //TODO: EXCLUA ESSE MÉTODO APÓS TUTORIAL
+    public ResponseEntity<String> testeTutorial() {
+        Authentication authUser = SecurityContextHolder.getContext().getAuthentication();
+        CustomPrincipal customPrincipal = (CustomPrincipal) authUser.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK).body(customPrincipal.email());
     }
 }
