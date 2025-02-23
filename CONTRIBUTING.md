@@ -11,8 +11,29 @@
     - **models:** Entidades e DTOs (ex.: `User`, `UserResponseDTO`);
     - **config:** Configurações gerais (ex.: segurança, datasources);
     - **exception:** Tratamento de erros e exceções.
-  - As entidades relacionadas a um `Controller` devem estar organizadas em subdiretórios. Por exemplo, no diretório `services` devem haver diretórios que agrupam entidades relacionadas a um Controller.
-  - É recomendado realizar o agrupamento por entidades, isso no diretório `models`.
+  - As entidades devem estar agrupadas por domínio, o que significa que as estruturas dos subdiretórios devem estar organizadas de forma similar ao seguinte exemplo:
+  ```
+    ./hobbyFinder
+      ├── controller/
+      │   ├── user/
+      │   │   ├── UserAccessController.java
+      │   ├── event/
+      │   ... ... ...
+      ├── services/
+      │   ├── servicesInterface/
+      │   │   ├── user/
+      │   │   │   └── UserAccessInterface.java
+      │   ├── servicesImplements/
+      │   │   ├── user/
+      │   │   │   └── UserAccessService.java
+      │   ... ... ...
+      ├── models/
+      │   ├── dto/
+      │   │   └── user/
+      │   └── entities/
+      ├── repositories/
+      └── ... ... ...
+    ```
   - Entidades `service` devem ter pouca responsabilidade, programe-as para uma interface e lembre dos princípios GRASP.
 
 - **Recursos:**  
@@ -28,6 +49,7 @@
 ### Nomeação
 - **Classes:** Utilizar _PascalCase_  
   - Ex.: `UserCRUDController`, `UserCRUDService`
+  - Para classes do tipo DTO, incluir o método http na nomeclatura (`<Entidade><Método>DTO.java`)
 - **Métodos e Variáveis:** Utilizar _camelCase_  
   - Ex.: `createUser()`, `findOrderById()`
 
