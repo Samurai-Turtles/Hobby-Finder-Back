@@ -108,13 +108,16 @@ public class AuthControllerTest {
     @DisplayName("Registro com caracteres insuficientes")
     void testRegistroComNomeTamanho() throws Exception {
 
+        RegisterDTO registerDTOTamanho = new RegisterDTO("victor@gmail.com", "lou","senha1234", UserRole.ADMIN);
+
         String responseJsonString = driver.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
+                        .content(objectMapper.writeValueAsString(registerDTOTamanho)))
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn().getResponse().getContentAsString();
 
-
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_USERNAME_SIZE);
     }
 
     @Transactional
@@ -122,13 +125,16 @@ public class AuthControllerTest {
     @DisplayName("Registro com nome possuindo caracteres especiais")
     void testRegistroComCaracteresEspeciais() throws Exception {
 
+        RegisterDTO registerDTOCarac = new RegisterDTO("victor@gmail.com", "!#&$","senha1234", UserRole.ADMIN);
+
         String responseJsonString = driver.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(registerDTOCarac)))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
-
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_USERNAME);
     }
 
     @Transactional
@@ -136,14 +142,16 @@ public class AuthControllerTest {
     @DisplayName("Login com usuario inexistente")
     void testLoginUserInexistente() throws Exception {
 
+        AuthDTO authDTOInexistente = new AuthDTO("esseUserNaoExiste@gmail.com", "senha1234");
+
         String responseJsonString = driver.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDTO)))
-                .andExpect(status().isBadRequest())
+                        .content(objectMapper.writeValueAsString(authDTOInexistente)))
+                .andExpect(status().isUnauthorized())
                 .andReturn().getResponse().getContentAsString();
 
-        //CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        //assertEquals("Seu nome de usuário ou senha podem estar incorretos", resultado.getMessage());
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS);
     }
 
 }

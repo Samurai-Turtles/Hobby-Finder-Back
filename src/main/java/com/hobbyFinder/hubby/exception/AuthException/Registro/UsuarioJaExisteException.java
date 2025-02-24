@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT, reason = AuthExceptionsMessages.USER_ALREADY_REGISTERED)
 public class UsuarioJaExisteException extends CredenciaisRegistroException {
     public UsuarioJaExisteException() {
-        super(AuthExceptionsMessages.USER_ALREADY_REGISTERED);
+        super(AuthExceptionsMessages.USER_ALREADY_REGISTERED, HttpStatus.CONFLICT);
     }
 }

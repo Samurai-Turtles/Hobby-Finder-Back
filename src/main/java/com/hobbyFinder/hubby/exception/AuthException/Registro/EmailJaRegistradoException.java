@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT, reason = AuthExceptionsMessages.INVALID_REGISTER_EMAIL)
 public class EmailJaRegistradoException extends CredenciaisRegistroException {
     public EmailJaRegistradoException() {
-        super(AuthExceptionsMessages.EMAIL_ALREADY_REGISTERED);
+        super(AuthExceptionsMessages.EMAIL_ALREADY_REGISTERED, HttpStatus.CONFLICT);
     }
 }

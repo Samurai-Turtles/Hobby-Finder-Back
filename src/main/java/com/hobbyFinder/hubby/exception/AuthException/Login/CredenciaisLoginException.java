@@ -6,7 +6,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class CredenciaisLoginException extends HubbyException {
-    public CredenciaisLoginException(String message) {
+
+    private final HttpStatus status;
+
+    public CredenciaisLoginException(String message, HttpStatus status) {
         super(message);
+        this.status = status;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 }

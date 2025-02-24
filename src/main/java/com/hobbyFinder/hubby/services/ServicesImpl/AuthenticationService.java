@@ -56,9 +56,13 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     }
 
     private String getUsernameFromLogin(String login) {
-        return (login.contains("@")) ?
-                userRepository.findByEmail(login).getUsername() :
-                login;
+        String result = null;
+        try {
+            result = login.contains("@") ? userRepository.findByEmail(login).getUsername() : login;
+        } catch (Exception ignored) {
+
+        }
+        return result;
     }
 
     private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
@@ -80,6 +84,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         }
     }
 
+    //This really need some refactoring, bc getUsernameFromLogin already have a try/catch
     private void validaLogin(AuthDTO request) throws CredenciaisLoginException {
         if(this.userRepository.findByUsername(getUsernameFromLogin(request.login())) == null) {
             throw new TentativaLoginIncorretaException();
