@@ -9,6 +9,8 @@ import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import com.hobbyFinder.hubby.models.entities.UserRole;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -99,7 +101,7 @@ public class AuthControllerTest {
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
 
-        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_FIELD);
+        assertEquals(AuthExceptionsMessages.INVALID_FIELD, result.getMessage());
 
     }
 
@@ -117,7 +119,7 @@ public class AuthControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_USERNAME_SIZE);
+        assertEquals(AuthExceptionsMessages.INVALID_REGISTER_USERNAME_SIZE, result.getMessage());
     }
 
     @Transactional
@@ -134,7 +136,7 @@ public class AuthControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_REGISTER_USERNAME);
+        assertEquals(AuthExceptionsMessages.INVALID_REGISTER_USERNAME, result.getMessage());
     }
 
     @Transactional
@@ -151,7 +153,68 @@ public class AuthControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(result.getMessage(), AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS);
+        assertEquals(AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS, result.getMessage());
     }
 
+    @Transactional
+    @Test
+    @DisplayName("Teste registro com username já existente")
+    void testRegistroUsernameExistente() throws Exception {
+        RegisterDTO registerUsernameExistenteDTO = new RegisterDTO(
+                "novoEmail@gmail.com", "victor", "senha1234", UserRole.USER);
+
+        String responseJsonString = driver.perform(post("/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(AuthExceptionsMessages.USER_ALREADY_REGISTERED, result.getMessage());
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Teste registro com email já existente")
+    void testRegistroEmailExistente() throws Exception {
+        RegisterDTO registerEmailExistenteDTO = new RegisterDTO(
+                "victor@gmail.com", "gabriel", "senha1234", UserRole.USER);
+
+        String responseJsonString = driver.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerEmailExistenteDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(AuthExceptionsMessages.EMAIL_ALREADY_REGISTERED, result.getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "@gmail.com",                          // Sem nome de usuário
+            "gabriel@",                           // Sem domínio
+            "gabriel@gmail",                     // Sem TLD
+            "gabriel@@gmail.com",               // Dois @
+            "gabriel.gmail.com",               // Sem @
+            "gabriel@.com",                   // Domínio inválido
+            "gabriel@com",                   // Apenas TLD inválido
+            "gabriel@gmail..com",           // Dois pontos seguidos
+            "gabriel@-gmail.com",          // Domínio começando com "-"
+            "gabriel@gmail.commmmmmmm"    // TLD muito grande
+    })
+    @DisplayName("Teste de registro com vários e-mails inválidos")
+    void testRegistroEmailsInvalidos(String emailInvalido) throws Exception {
+        RegisterDTO registerDTO = new RegisterDTO(
+                emailInvalido, "gabriel", "senha1234", UserRole.USER);
+
+        String responseJsonString = driver.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(AuthExceptionsMessages.INVALID_REGISTER_EMAIL, result.getMessage());
+    }
 }

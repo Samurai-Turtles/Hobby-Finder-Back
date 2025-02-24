@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 public class AuthenticationService implements UserDetailsService, AuthInterface {
 
@@ -76,6 +78,16 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if(request.password().length() < 8) {
             throw new SenhaTamanhoInvalidoException();
         }
+
+        // validar email nulo
+        if(request.email() == null || request.email().trim().isEmpty()) {
+            throw new EmailInvalidoException();
+        }
+        // validar padrao de email
+        if(!Pattern.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", request.email())) {
+            throw new EmailInvalidoException();
+        }
+
         if(request.username().matches(".*[^a-zA-Z0-9_.].*")) {
             throw new UsernameInvalidoException();
         }
