@@ -71,6 +71,11 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if(this.userRepository.findByUsername(request.username()) != null) {
             throw new UsuarioJaExisteException();
         }
+
+        if(this.userRepository.findByEmail(request.email()) != null) {
+            throw new EmailJaRegistradoException();
+        }
+
         //has to change when adding email and full name
         if(request.password() == null || request.username() == null) {
             throw new RegistroCampoNuloException();
