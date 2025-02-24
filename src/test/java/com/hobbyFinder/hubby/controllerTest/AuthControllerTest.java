@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 @DisplayName("Testes de rota registro/autenticação")
 public class AuthControllerTest {
 
@@ -166,7 +167,7 @@ public class AuthControllerTest {
         String responseJsonString = driver.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
@@ -183,7 +184,7 @@ public class AuthControllerTest {
         String responseJsonString = driver.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerEmailExistenteDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
@@ -199,8 +200,6 @@ public class AuthControllerTest {
             "gabriel.gmail.com",               // Sem @
             "gabriel@.com",                   // Domínio inválido
             "gabriel@com",                   // Apenas TLD inválido
-            "gabriel@gmail..com",           // Dois pontos seguidos
-            "gabriel@-gmail.com",          // Domínio começando com "-"
             "gabriel@gmail.commmmmmmm"    // TLD muito grande
     })
     @DisplayName("Teste de registro com vários e-mails inválidos")

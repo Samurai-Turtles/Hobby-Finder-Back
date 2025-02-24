@@ -68,14 +68,6 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     }
 
     private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
-        if(this.userRepository.findByUsername(request.username()) != null) {
-            throw new UsuarioJaExisteException();
-        }
-
-        if(this.userRepository.findByEmail(request.email()) != null) {
-            throw new EmailJaRegistradoException();
-        }
-
         //has to change when adding email and full name
         if(request.password() == null || request.username() == null) {
             throw new RegistroCampoNuloException();
@@ -83,21 +75,24 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if(request.password().length() < 8) {
             throw new SenhaTamanhoInvalidoException();
         }
-
+        if(request.username().length()<4) {
+            throw new UsernameTamanhoInvalidoException();
+        }
         // validar email nulo
         if(request.email() == null || request.email().trim().isEmpty()) {
             throw new EmailInvalidoException();
         }
-        // validar padrao de email
         if(!Pattern.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", request.email())) {
             throw new EmailInvalidoException();
         }
-
         if(request.username().matches(".*[^a-zA-Z0-9_.].*")) {
             throw new UsernameInvalidoException();
         }
-        if(request.username().length()<4) {
-            throw new UsernameTamanhoInvalidoException();
+        if(this.userRepository.findByUsername(request.username()) != null) {
+            throw new UsuarioJaExisteException();
+        }
+        if(this.userRepository.findByEmail(request.email()) != null) {
+            throw new EmailJaRegistradoException();
         }
     }
 
