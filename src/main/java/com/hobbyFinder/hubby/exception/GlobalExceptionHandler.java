@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.exception;
 
 import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
+import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,9 +37,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HubbyException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public CustomErrorType handleHubbyException(HubbyException ex) {
+        return defaultCustomErrorType(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public CustomErrorType handleNotFoundException(NotFoundException ex) {
         return defaultCustomErrorType(ex.getMessage());
     }
 }
