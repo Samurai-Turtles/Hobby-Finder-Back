@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -33,6 +34,9 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     @Lazy
     @Autowired
     private AuthenticationManager authManager;
+
+    private static final String USERNAME_PATTERN = ".*[^a-zA-Z0-9_.].*";
+    private static final String EMAIl_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -57,49 +61,55 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         return new LoginResponseDTO(token);
     }
 
-    private String getUsernameFromLogin(String login) {
-        String result = null;
-        try {
-            result = login.contains("@") ? userRepository.findByEmail(login).getUsername() : login;
-        } catch (Exception ignored) {
-
-        }
-        return result;
-    }
-
     private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
-        //has to change when adding email and full name
-        if(request.password() == null || request.username() == null) {
-            throw new RegistroCampoNuloException();
-        }
-        if(request.password().length() < 8) {
-            throw new SenhaTamanhoInvalidoException();
-        }
-        if(request.username().length()<4) {
-            throw new UsernameTamanhoInvalidoException();
-        }
-        // validar email nulo
-        if(request.email() == null || request.email().trim().isEmpty()) {
-            throw new EmailInvalidoException();
-        }
-        if(!Pattern.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", request.email())) {
-            throw new EmailInvalidoException();
-        }
-        if(request.username().matches(".*[^a-zA-Z0-9_.].*")) {
-            throw new UsernameInvalidoException();
-        }
-        if(this.userRepository.findByUsername(request.username()) != null) {
-            throw new UsuarioJaExisteException();
-        }
-        if(this.userRepository.findByEmail(request.email()) != null) {
-            throw new EmailJaRegistradoException();
-        }
+        validaRegistroPassword(request);
+        validaRegistroUsername(request);
+        validaRegistroEmail(request);
     }
 
-    //This really need some refactoring, bc getUsernameFromLogin already have a try/catch
+    private void validaRegistroUsername(RegisterDTO request) throws CredenciaisRegistroException {
+        if (request.username() == null)
+            throw new RegistroCampoNuloException();
+
+        if (request.username().length() < 4)
+            throw new UsernameTamanhoInvalidoException();
+
+        if (request.username().matches(USERNAME_PATTERN))
+            throw new UsernameInvalidoException();
+
+        if (this.userRepository.findByUsername(request.username()) != null)
+            throw new UsuarioJaExisteException();
+    }
+
+    private void validaRegistroEmail(RegisterDTO request) throws CredenciaisRegistroException {
+        if(request.email() == null || request.email().trim().isEmpty())
+            throw new EmailInvalidoException();
+
+        if(!Pattern.matches(EMAIl_PATTERN, request.email()))
+            throw new EmailInvalidoException();
+
+        if(this.userRepository.findByEmail(request.email()) != null)
+            throw new EmailJaRegistradoException();
+    }
+
+    private void validaRegistroPassword(RegisterDTO request) throws CredenciaisRegistroException {
+        if(request.password() == null)
+            throw new RegistroCampoNuloException();
+
+        if(request.password().length() < 8)
+            throw new SenhaTamanhoInvalidoException();
+    }
+
+    private String getUsernameFromLogin(String login) {
+        return (!login.contains("@")) ? login : Optional.ofNullable(this.userRepository.findByEmail(login))
+                .map(User::getUsername)
+                .orElse(null);
+    }
+
     private void validaLogin(AuthDTO request) throws CredenciaisLoginException {
-        if(this.userRepository.findByUsername(getUsernameFromLogin(request.login())) == null) {
+        String username = getUsernameFromLogin(request.login());
+
+        if (username == null || !this.userRepository.existsByUsername(username))
             throw new TentativaLoginIncorretaException();
-        }
     }
 }
