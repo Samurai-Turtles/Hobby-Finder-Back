@@ -6,16 +6,12 @@ import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
-import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.hobbyFinder.hubby.infra.security.TokenService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,12 +20,6 @@ public class AuthController {
 
     @Autowired
     private AuthInterface authInterface;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthDTO request) throws CredenciaisLoginException {

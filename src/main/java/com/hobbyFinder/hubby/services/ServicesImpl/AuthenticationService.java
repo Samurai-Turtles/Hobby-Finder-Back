@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -88,7 +86,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if(!Pattern.matches(EMAIl_PATTERN, request.email()))
             throw new EmailInvalidoException();
 
-        if(this.userRepository.findByEmail(request.email()) != null)
+        if(this.userRepository.findByEmail(request.email()).isPresent())
             throw new EmailJaRegistradoException();
     }
 
@@ -101,7 +99,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     }
 
     private String getUsernameFromLogin(String login) {
-        return (!login.contains("@")) ? login : Optional.ofNullable(this.userRepository.findByEmail(login))
+        return (!login.contains("@")) ? login : this.userRepository.findByEmail(login)
                 .map(User::getUsername)
                 .orElse(null);
     }
