@@ -1,17 +1,16 @@
 package com.hobbyFinder.hubby.models.dto.events;
 
-import com.hobbyFinder.hubby.models.dto.LocalDto;
-import com.hobbyFinder.hubby.models.entities.Local;
-import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.hobbyFinder.hubby.models.dto.LocalDto;
+import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventDto(
         UUID id,
         String Name,
-        Date begin,
-        Date end,
+        LocalDateTime begin,
+        LocalDateTime end,
         LocalDto local,
         PrivacyEnum privacy,
         String description,
