@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.repositories;
+    package com.hobbyFinder.hubby.repositories;
 
 import com.hobbyFinder.hubby.models.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
