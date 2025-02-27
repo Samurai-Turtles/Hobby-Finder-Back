@@ -20,27 +20,4 @@ public class AuthController {
 
     @Autowired
     private AuthInterface authInterface;
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthDTO request) throws CredenciaisLoginException {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(authInterface.loginUsuario(request));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterDTO request) throws CredenciaisRegistroException {
-        authInterface.registroUsuario(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
-    }
-
-    @GetMapping("/tutorial")
-    //TODO: EXCLUA ESSE MÉTODO APÓS TUTORIAL
-    public ResponseEntity<String> testeTutorial() {
-        Authentication authUser = SecurityContextHolder.getContext().getAuthentication();
-        CustomPrincipal customPrincipal = (CustomPrincipal) authUser.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).body(customPrincipal.email());
-    }
 }
