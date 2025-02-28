@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 import jdk.jshell.spi.ExecutionControl;
 
 @RestController
-@RequestMapping(EventRoutes.BASE)
+@RequestMapping(EventRoutes.EVENT_BASE)
 public class EventController {
 
     EventService eventService;

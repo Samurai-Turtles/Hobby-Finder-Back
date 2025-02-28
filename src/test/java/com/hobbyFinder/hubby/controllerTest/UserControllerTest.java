@@ -1,6 +1,8 @@
 package com.hobbyFinder.hubby.controllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hobbyFinder.hubby.controller.routes.BaseRoutes;
+import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.AuthExceptionsMessages;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
@@ -25,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @DisplayName("Testes de rota registro/autenticação")
-public class AuthControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc driver;
@@ -47,7 +49,7 @@ public class AuthControllerTest {
     @Transactional
     protected void cadastrarUsuario(RegisterDTO request) throws Exception {
 
-        driver.perform(post("/auth/register")
+        driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
@@ -64,7 +66,7 @@ public class AuthControllerTest {
 
         RegisterDTO registerTest = new RegisterDTO("gabriel@gmail.com", "gabriel","senha1234", UserRole.ADMIN);
 
-        driver.perform(post("/auth/register")
+        driver.perform(post(UserRoutes.POST_USER)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(registerTest)))
                 .andExpect(status().isCreated());
@@ -76,7 +78,7 @@ public class AuthControllerTest {
     @DisplayName("Usuário logado com sucesso")
     void testUsuarioLogadoComSucesso() throws Exception {
 
-        String responseJsonString = driver.perform(post("/auth/login")
+        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(authDTO)))
                 .andExpect(status().isOk())
@@ -94,7 +96,7 @@ public class AuthControllerTest {
 
         RegisterDTO registerDtoNulo = new RegisterDTO("victorNulo@gmail.com", null,"senha1234", UserRole.ADMIN);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(registerDtoNulo)))
                 .andExpect(status().isBadRequest())
@@ -113,7 +115,7 @@ public class AuthControllerTest {
 
         RegisterDTO registerDTOTamanho = new RegisterDTO("victor@gmail.com", "lou","senha1234", UserRole.ADMIN);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDTOTamanho)))
                 .andExpect(status().isUnprocessableEntity())
@@ -130,7 +132,7 @@ public class AuthControllerTest {
 
         RegisterDTO registerDTOCarac = new RegisterDTO("victor@gmail.com", "!#&$","senha1234", UserRole.ADMIN);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDTOCarac)))
                 .andExpect(status().isBadRequest())
@@ -147,7 +149,7 @@ public class AuthControllerTest {
 
         AuthDTO authDTOInexistente = new AuthDTO("esseUserNaoExiste@gmail.com", "senha1234");
 
-        String responseJsonString = driver.perform(post("/auth/login")
+        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authDTOInexistente)))
                 .andExpect(status().isUnauthorized())
@@ -164,7 +166,7 @@ public class AuthControllerTest {
         RegisterDTO registerUsernameExistenteDTO = new RegisterDTO(
                 "novoEmail@gmail.com", "victor", "senha1234", UserRole.USER);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
                 .andExpect(status().isConflict())
@@ -181,7 +183,7 @@ public class AuthControllerTest {
         RegisterDTO registerEmailExistenteDTO = new RegisterDTO(
                 "victor@gmail.com", "gabriel", "senha1234", UserRole.USER);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerEmailExistenteDTO)))
                 .andExpect(status().isConflict())
@@ -207,7 +209,7 @@ public class AuthControllerTest {
         RegisterDTO registerDTO = new RegisterDTO(
                 emailInvalido, "gabriel", "senha1234", UserRole.USER);
 
-        String responseJsonString = driver.perform(post("/auth/register")
+        String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDTO)))
                 .andExpect(status().isBadRequest())
