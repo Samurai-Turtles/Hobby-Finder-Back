@@ -8,6 +8,7 @@ import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
+import com.hobbyFinder.hubby.services.Validation.UserValidatorCreate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.regex.Pattern;
 
 @Service
 public class AuthenticationService implements UserDetailsService, AuthInterface {
@@ -33,8 +33,8 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     @Autowired
     private AuthenticationManager authManager;
 
-    private static final String USERNAME_PATTERN = ".*[^a-zA-Z0-9_.].*";
-    private static final String EMAIl_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+    @Autowired
+    private UserValidatorCreate userValidatorCreate;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,7 +43,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
 
     @Override
     public void registroUsuario(RegisterDTO request) throws CredenciaisRegistroException {
-        validaRegistro(request);
+        userValidatorCreate.validaRegistro(request);
         String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
         User newUser = new User(request.email(), request.username(), encryptedPassword, request.role());
         this.userRepository.save(newUser);
@@ -57,45 +57,6 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         var auth = this.authManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return new LoginResponseDTO(token);
-    }
-
-    private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
-        validaRegistroPassword(request);
-        validaRegistroUsername(request);
-        validaRegistroEmail(request);
-    }
-
-    private void validaRegistroUsername(RegisterDTO request) throws CredenciaisRegistroException {
-        if (request.username() == null)
-            throw new RegistroCampoNuloException();
-
-        if (request.username().length() < 4)
-            throw new UsernameTamanhoInvalidoException();
-
-        if (request.username().matches(USERNAME_PATTERN))
-            throw new UsernameInvalidoException();
-
-        if (this.userRepository.findByUsername(request.username()) != null)
-            throw new UsuarioJaExisteException();
-    }
-
-    private void validaRegistroEmail(RegisterDTO request) throws CredenciaisRegistroException {
-        if(request.email() == null || request.email().trim().isEmpty())
-            throw new EmailInvalidoException();
-
-        if(!Pattern.matches(EMAIl_PATTERN, request.email()))
-            throw new EmailInvalidoException();
-
-        if(this.userRepository.findByEmail(request.email()).isPresent())
-            throw new EmailJaRegistradoException();
-    }
-
-    private void validaRegistroPassword(RegisterDTO request) throws CredenciaisRegistroException {
-        if(request.password() == null)
-            throw new RegistroCampoNuloException();
-
-        if(request.password().length() < 8)
-            throw new SenhaTamanhoInvalidoException();
     }
 
     private String getUsernameFromLogin(String login) {
