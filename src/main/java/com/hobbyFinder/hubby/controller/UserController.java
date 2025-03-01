@@ -60,20 +60,14 @@ public class UserController {
     }
 
     @DeleteMapping(UserRoutes.DELETE)
-    public ResponseEntity<Void> delete() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+    public ResponseEntity<Void> delete()  {
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @DeleteMapping(UserRoutes.RECOVER_PASSOWRD)
     public ResponseEntity<Void> recoverPassword() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
-    }
-
-    @GetMapping("/tutorial")
-    //TODO: EXCLUA ESSE MÉTODO APÓS TUTORIAL
-    public ResponseEntity<String> testeTutorial() {
-        Authentication authUser = SecurityContextHolder.getContext().getAuthentication();
-        CustomPrincipal customPrincipal = (CustomPrincipal) authUser.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).body(customPrincipal.email());
     }
 }

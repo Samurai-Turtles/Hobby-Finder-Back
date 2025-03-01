@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface UserInterface {
 
     UserDTO getUser(UUID uuid);
+    void deleteUser();
 }
