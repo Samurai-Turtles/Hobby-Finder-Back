@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(EventRoutes.BASE)
 public class EventController {
 
     // Aqui você coloca o Service de Evento

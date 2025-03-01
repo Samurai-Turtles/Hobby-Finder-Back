@@ -1,5 +1,6 @@
 package com.hobbyFinder.hubby.infra.security;
 
+import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +29,11 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/auth/tutorial").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user/get").permitAll()
+                        .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, UserRoutes.USER_BASE +"/auth/tutorial").permitAll()
+                        .requestMatchers(HttpMethod.POST, UserRoutes.POST_USER).permitAll()
+                        .requestMatchers(HttpMethod.POST, UserRoutes.LOGIN).permitAll()
+                        .requestMatchers(HttpMethod.GET, UserRoutes.GET_USER_BY_ID).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

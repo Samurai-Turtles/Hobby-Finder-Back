@@ -1,11 +1,8 @@
 package com.hobbyFinder.hubby.controller;
 
-import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
-import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
-import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(UserRoutes.BASE)
 public class UserController {
 
     @Autowired
