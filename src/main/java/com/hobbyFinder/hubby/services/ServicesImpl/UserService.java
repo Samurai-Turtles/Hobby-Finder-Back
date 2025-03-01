@@ -31,10 +31,9 @@ public class UserService implements UserInterface {
         userRepository.flush();
     }
 
-    // essa função serve para pegar um usuário já logado via token jwt
+    // utilize essa função para quando quiser pegar um usuário ja logado
     private User getUserLogged() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(name);
-        return user;
+        return userRepository.findByUsername(name);
     }
 }
