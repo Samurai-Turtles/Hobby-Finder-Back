@@ -1,10 +1,12 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
+import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.models.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,8 @@ public class UserService implements UserInterface {
 
     // utilize essa função para quando quiser pegar um usuário ja logado
     private User getUserLogged() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(name);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomPrincipal customPrincipal = (CustomPrincipal) auth.getPrincipal();
+        return userRepository.findByUsername(customPrincipal.username());
     }
 }

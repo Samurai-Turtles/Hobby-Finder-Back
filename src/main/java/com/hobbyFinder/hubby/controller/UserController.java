@@ -58,6 +58,7 @@ public class UserController {
 
     @DeleteMapping(UserRoutes.DELETE)
     public ResponseEntity<Void> delete()  {
+        userInterface.deleteUser();
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
