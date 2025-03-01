@@ -6,7 +6,7 @@ import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserValidatorCreate extends UserValidatorBase{
+public class UserValidatorCreate extends UserValidator {
 
     public void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
         if (request.username() == null)
