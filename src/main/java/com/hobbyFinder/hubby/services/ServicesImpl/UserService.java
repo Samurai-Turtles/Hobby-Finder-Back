@@ -4,6 +4,7 @@ import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import com.hobbyFinder.hubby.util.GetUserLogged;
 import com.hobbyFinder.hubby.models.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,9 @@ public class UserService implements UserInterface {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GetUserLogged userLogged;
+
     @Override
     public UserDTO getUser(UUID uuid) {
         return userRepository.findById(uuid)
@@ -28,15 +32,9 @@ public class UserService implements UserInterface {
 
     @Override
     public void deleteUser() {
-        User user = getUserLogged();
+        User user = userLogged.getUserLogged();
         userRepository.delete(user);
         userRepository.flush();
     }
 
-    // utilize essa função para quando quiser pegar um usuário ja logado
-    private User getUserLogged() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomPrincipal customPrincipal = (CustomPrincipal) auth.getPrincipal();
-        return userRepository.findByUsername(customPrincipal.username());
-    }
 }
