@@ -7,6 +7,7 @@ import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,15 +27,16 @@ public class Event {
     private UUID id;
 
     @Column(nullable = false)
-    private String Name;
+    private String name;
 
     @Column(nullable = false)
-    private LocalDateTime begin;
+    private LocalDateTime EventBegin;
 
     @Column(nullable = false)
-    private LocalDateTime end;
+    private LocalDateTime EventEnd;
 
     @Column(nullable = false)
+    @Embedded
     private Local local;
 
     @Column(nullable = false)
@@ -43,5 +45,5 @@ public class Event {
     @Column(nullable = false)
     private String description;
 
-    private int MaxUserAmmoun;
+    private int maxUserAmout;
 }
