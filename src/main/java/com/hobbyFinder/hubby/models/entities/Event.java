@@ -5,13 +5,43 @@ import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
-public record Event(
-                UUID id,
-                String Name,
-                LocalDateTime begin,
-                LocalDateTime end,
-                Local local,
-                PrivacyEnum privacy,
-                String description,
-                int MaxUserAmmount) {
+import io.micrometer.common.lang.Nullable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Entity
+@Builder
+@Data
+@AllArgsConstructor
+public class Event {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @Column(nullable = false)
+    private String Name;
+
+    @Column(nullable = false)
+    private LocalDateTime begin;
+
+    @Column(nullable = false)
+    private LocalDateTime end;
+
+    @Column(nullable = false)
+    private Local local;
+
+    @Column(nullable = false)
+    private PrivacyEnum privacy;
+
+    @Column(nullable = false)
+    private String description;
+
+    private int MaxUserAmmoun;
 }
