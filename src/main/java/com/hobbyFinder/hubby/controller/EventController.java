@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controller;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,19 +19,27 @@ import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.models.dto.events.EventPageDto;
 import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
+import com.hobbyFinder.hubby.services.ServicesImpl.EventService;
 
+import jakarta.validation.Valid;
 import jdk.jshell.spi.ExecutionControl;
 
 @RestController
 @RequestMapping(EventRoutes.BASE)
 public class EventController {
 
-    // Aqui você coloca o Service de Evento
+    EventService eventService;
+
+    public EventController(EventService eventService){
+        this.eventService = eventService;
+    }
 
     @PostMapping(EventRoutes.POST_EVENT)
     public ResponseEntity<EventDto> post(
-            @RequestBody EventCreateDto eventCreateDto) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+            @RequestBody @Valid EventCreateDto eventCreateDto) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(eventService.registerEvent(eventCreateDto));
     }
 
     @GetMapping(EventRoutes.GET_EVENT_BY_AUTH_USER)
