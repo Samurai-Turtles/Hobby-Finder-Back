@@ -100,7 +100,7 @@ Para melhor entendimento desta lista de critérios para aceitação de uma nova 
     </tr>
     <tr>
       <th>2</th>
-      <th>Seja essencial ...</th>
+      <th>Seja desejável ...</th>
     </tr>
       <tr>
       <th>1</th>
