@@ -2,12 +2,15 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.exception.AuthException.Login.*;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.*;
+import com.hobbyFinder.hubby.repositories.TokenBlacklistRepository;
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
+import com.hobbyFinder.hubby.models.entities.RevokedToken;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +31,9 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
 
     @Lazy
     @Autowired
@@ -57,6 +63,15 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         var auth = this.authManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return new LoginResponseDTO(token);
+    }
+
+    @Override
+    public void logoutUsuario(HttpServletRequest request) {
+        var token = recoverToken(request);
+
+        if (token != null && !tokenBlacklistRepository.existsByToken(token)) {
+            tokenBlacklistRepository.save(new RevokedToken(token));
+        }
     }
 
     private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
@@ -109,5 +124,12 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
 
         if (username == null || !this.userRepository.existsByUsername(username))
             throw new TentativaLoginIncorretaException();
+    }
+
+    // Método já existe em securityFilter, passivo de refatoração
+    private String recoverToken(HttpServletRequest request){
+        var authHeader = request.getHeader("Authorization");
+        if(authHeader == null) return null;
+        return authHeader.replace("Bearer ", "");
     }
 }
