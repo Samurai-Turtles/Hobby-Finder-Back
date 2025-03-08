@@ -6,6 +6,7 @@ import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistr
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import jakarta.servlet.http.HttpServletRequest;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,9 +52,12 @@ public class UserController {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
     }
 
-    @PutMapping(UserRoutes.LOGOUT)
-    public ResponseEntity<Void> logout() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+    @PostMapping(UserRoutes.LOGOUT)
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        authInterface.logoutUsuario(request);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @DeleteMapping(UserRoutes.DELETE)
