@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.controller;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
+import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
@@ -48,8 +49,10 @@ public class UserController {
     }
 
     @PutMapping(UserRoutes.PUT_AUTH_USER)
-    public ResponseEntity<Void> put(@RequestBody UserPutDTO userPutDto) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+    public ResponseEntity<UserDTO> put(@RequestBody UserPutDTO userPutDto) throws HubbyException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userInterface.updateUser(userPutDto));
     }
 
     @PostMapping(UserRoutes.LOGOUT)
