@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping(UserRoutes.LOGOUT)
-    public ResponseEntity<Void> logout(HttpServletRequest request) throws ExecutionControl.NotImplementedException {
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
         authInterface.logoutUsuario(request);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

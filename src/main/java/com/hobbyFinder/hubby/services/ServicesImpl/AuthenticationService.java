@@ -13,6 +13,7 @@ import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.hobbyFinder.hubby.infra.security.TokenService;
@@ -69,7 +70,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     public void logoutUsuario(HttpServletRequest request) {
         var token = recoverToken(request);
 
-        if (token != null && !tokenBlacklistRepository.existsByToken(token)) {
+        if (token != null) {
             tokenBlacklistRepository.save(new RevokedToken(token));
         }
     }
