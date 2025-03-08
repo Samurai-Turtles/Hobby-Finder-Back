@@ -1,15 +1,15 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.HubbyException;
+import com.hobbyFinder.hubby.exception.TagInvalidaException;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
-import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
-import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.services.Validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -49,7 +49,6 @@ public class UserService implements UserInterface {
         userRepository.delete(user);
         userRepository.flush();
     }
-
 
 
     public UserDTO updateUser(UserPutDTO request) throws HubbyException {

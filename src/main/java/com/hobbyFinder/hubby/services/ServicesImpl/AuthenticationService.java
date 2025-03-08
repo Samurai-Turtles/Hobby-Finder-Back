@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.hobbyFinder.hubby.services.Validation.UserValidatorCreate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.hobbyFinder.hubby.infra.security.TokenService;
@@ -73,45 +72,6 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
         if (token != null) {
             tokenBlacklistRepository.save(new RevokedToken(token));
         }
-    }
-
-    private void validaRegistro(RegisterDTO request) throws CredenciaisRegistroException {
-        validaRegistroPassword(request);
-        validaRegistroUsername(request);
-        validaRegistroEmail(request);
-    }
-
-    private void validaRegistroUsername(RegisterDTO request) throws CredenciaisRegistroException {
-        if (request.username() == null)
-            throw new RegistroCampoNuloException();
-
-        if (request.username().length() < 4)
-            throw new UsernameTamanhoInvalidoException();
-
-        if (request.username().matches(USERNAME_PATTERN))
-            throw new UsernameInvalidoException();
-
-        if (this.userRepository.findByUsername(request.username()) != null)
-            throw new UsuarioJaExisteException();
-    }
-
-    private void validaRegistroEmail(RegisterDTO request) throws CredenciaisRegistroException {
-        if(request.email() == null || request.email().trim().isEmpty())
-            throw new EmailInvalidoException();
-
-        if(!Pattern.matches(EMAIl_PATTERN, request.email()))
-            throw new EmailInvalidoException();
-
-        if(this.userRepository.findByEmail(request.email()).isPresent())
-            throw new EmailJaRegistradoException();
-    }
-
-    private void validaRegistroPassword(RegisterDTO request) throws CredenciaisRegistroException {
-        if(request.password() == null)
-            throw new RegistroCampoNuloException();
-
-        if(request.password().length() < 8)
-            throw new SenhaTamanhoInvalidoException();
     }
 
     private String getUsernameFromLogin(String login) {
