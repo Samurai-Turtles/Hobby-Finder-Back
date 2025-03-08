@@ -1,16 +1,16 @@
-package com.hobbyFinder.hubby.controllerTest;
+package com.hobbyFinder.hubby.controllerTest.userTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyFinder.hubby.controller.routes.BaseRoutes;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.AuthExceptionsMessages;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
-import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
-import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import com.hobbyFinder.hubby.models.entities.UserRole;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,43 +19,29 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@DisplayName("Testes de rota registro/autenticação")
-public class UserControllerTest {
+@DisplayName("Testes de rota registro de usuário")
+public class RegisterTest {
 
     @Autowired
     private MockMvc driver;
-
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private UserSeeder userSeeder;
 
-    private RegisterDTO request;
-    private AuthDTO authDTO;
-
-    @Transactional
     @BeforeEach
     void setUp() throws Exception {
-        this.request = new RegisterDTO("victor@gmail.com", "victor","senha1234", UserRole.ADMIN);
-        this.authDTO = new AuthDTO("victor@gmail.com", "senha1234");
-        cadastrarUsuario(request);
+        userSeeder = new UserSeeder(driver, objectMapper);
+        userSeeder.seedUsers();
     }
 
-    @Transactional
-    protected void cadastrarUsuario(RegisterDTO request) throws Exception {
-
-        driver.perform(post(UserRoutes.POST_USER)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
-
-    //NÃO coloque userRepository.deleteAll() aqui!!
     @AfterEach
     void tearDown() throws Exception {}
 
@@ -64,29 +50,17 @@ public class UserControllerTest {
     @DisplayName("Usuário cadastrado com sucesso")
     void testUsuarioCadastradoComSucesso() throws Exception {
 
-        RegisterDTO registerTest = new RegisterDTO("gabriel@gmail.com", "gabriel","senha1234", UserRole.ADMIN);
+        RegisterDTO registerTest = new RegisterDTO(
+                UserConstants.EMAIL_NAO_UTILIZADO,
+                UserConstants.USERNAME_NAO_UTILIZADO,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.ADMIN);
 
         driver.perform(post(UserRoutes.POST_USER)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(registerTest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerTest)))
                 .andExpect(status().isCreated());
 
-    }
-
-    @Transactional
-    @Test
-    @DisplayName("Usuário logado com sucesso")
-    void testUsuarioLogadoComSucesso() throws Exception {
-
-        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(authDTO)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        LoginResponseDTO loginResponseDTO = objectMapper.readValue(responseJsonString, LoginResponseDTO.class);
-
-        assertNotNull(loginResponseDTO);
     }
 
     @Transactional
@@ -94,11 +68,15 @@ public class UserControllerTest {
     @DisplayName("Registro com nome nulo")
     void testRegistroComNomeInvalido() throws Exception {
 
-        RegisterDTO registerDtoNulo = new RegisterDTO("victorNulo@gmail.com", null,"senha1234", UserRole.ADMIN);
+        RegisterDTO registerDtoNulo = new RegisterDTO(
+                UserConstants.EMAIL_NAO_UTILIZADO,
+                null,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(registerDtoNulo)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerDtoNulo)))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -113,7 +91,11 @@ public class UserControllerTest {
     @DisplayName("Registro com caracteres insuficientes")
     void testRegistroComNomeTamanho() throws Exception {
 
-        RegisterDTO registerDTOTamanho = new RegisterDTO("victor@gmail.com", "lou","senha1234", UserRole.ADMIN);
+        RegisterDTO registerDTOTamanho = new RegisterDTO(
+                UserConstants.EMAIL_NAO_UTILIZADO,
+                UserConstants.USERNAME_TAMANHO_INVALIDO,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +112,11 @@ public class UserControllerTest {
     @DisplayName("Registro com nome possuindo caracteres especiais")
     void testRegistroComCaracteresEspeciais() throws Exception {
 
-        RegisterDTO registerDTOCarac = new RegisterDTO("victor@gmail.com", "!#&$","senha1234", UserRole.ADMIN);
+        RegisterDTO registerDTOCarac = new RegisterDTO(
+                UserConstants.EMAIL_NAO_UTILIZADO,
+                UserConstants.USERNAME_INVALIDO,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.ADMIN);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -144,31 +130,17 @@ public class UserControllerTest {
 
     @Transactional
     @Test
-    @DisplayName("Login com usuario inexistente")
-    void testLoginUserInexistente() throws Exception {
-
-        AuthDTO authDTOInexistente = new AuthDTO("esseUserNaoExiste@gmail.com", "senha1234");
-
-        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDTOInexistente)))
-                .andExpect(status().isUnauthorized())
-                .andReturn().getResponse().getContentAsString();
-
-        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS, result.getMessage());
-    }
-
-    @Transactional
-    @Test
     @DisplayName("Teste registro com username já existente")
     void testRegistroUsernameExistente() throws Exception {
         RegisterDTO registerUsernameExistenteDTO = new RegisterDTO(
-                "novoEmail@gmail.com", "victor", "senha1234", UserRole.USER);
+                UserConstants.EMAIL_NAO_UTILIZADO,
+                UserConstants.USER1_USERNAME,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.USER);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
                 .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
@@ -181,7 +153,10 @@ public class UserControllerTest {
     @DisplayName("Teste registro com email já existente")
     void testRegistroEmailExistente() throws Exception {
         RegisterDTO registerEmailExistenteDTO = new RegisterDTO(
-                "victor@gmail.com", "gabriel", "senha1234", UserRole.USER);
+                UserConstants.USER1_EMAIL,
+                UserConstants.USERNAME_NAO_UTILIZADO,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.USER);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -207,7 +182,10 @@ public class UserControllerTest {
     @DisplayName("Teste de registro com vários e-mails inválidos")
     void testRegistroEmailsInvalidos(String emailInvalido) throws Exception {
         RegisterDTO registerDTO = new RegisterDTO(
-                emailInvalido, "gabriel", "senha1234", UserRole.USER);
+                emailInvalido,
+                UserConstants.USERNAME_NAO_UTILIZADO,
+                UserConstants.PASSWORD_NAO_UTILIZADA,
+                UserRole.USER);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)

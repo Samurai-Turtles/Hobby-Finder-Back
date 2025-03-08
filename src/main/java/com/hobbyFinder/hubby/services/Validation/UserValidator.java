@@ -25,7 +25,7 @@ public class UserValidator {
         if (username.matches(USERNAME_PATTERN))
             throw new UsernameInvalidoException();
 
-        if (this.userRepository.findByUsername(username) != null)
+        if (this.userRepository.existsByUsername(username))
             throw new UsuarioJaExisteException();
     }
 
@@ -33,7 +33,7 @@ public class UserValidator {
         if(!Pattern.matches(EMAIl_PATTERN, email))
             throw new EmailInvalidoException();
 
-        if(this.userRepository.findByEmail(email).isPresent())
+        if(this.userRepository.existsByEmail(email))
             throw new EmailJaRegistradoException();
     }
 
