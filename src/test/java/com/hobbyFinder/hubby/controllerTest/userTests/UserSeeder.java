@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controllerTest.userTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
+import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
 import jakarta.transaction.Transactional;
 import org.mockito.Mock;
@@ -36,4 +37,27 @@ public class UserSeeder {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
     }
+
+
+    public String loginPrimeiroUser() throws Exception {
+        String responseJsonStringLogin = driver.perform(post(UserRoutes.LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(UserConstants.primeiroAuthDto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(responseJsonStringLogin, LoginResponseDTO.class).token();
+    }
+
+
+    public String loginSegundoUser() throws Exception {
+        String responseJsonStringLogin = driver.perform(post(UserRoutes.LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(UserConstants.segundoAuthDto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(responseJsonStringLogin, LoginResponseDTO.class).token();
+    }
+    
 }
