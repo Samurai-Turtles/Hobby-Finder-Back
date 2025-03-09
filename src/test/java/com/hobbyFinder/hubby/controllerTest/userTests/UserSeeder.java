@@ -1,12 +1,9 @@
-package com.hobbyFinder.hubby.controllerTest.userTests;
+package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
-import jakarta.transaction.Transactional;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Component
 public class UserSeeder {
-
+    
     private final MockMvc driver;
     private final ObjectMapper objectMapper;
 
@@ -26,6 +23,7 @@ public class UserSeeder {
     }
 
     public void seedUsers() throws Exception {
+
         cadastrarUsuario(UserConstants.primeiroRegistroDto);
         cadastrarUsuario(UserConstants.segundoRegistroDto);
     }

@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.userTests;
+package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;

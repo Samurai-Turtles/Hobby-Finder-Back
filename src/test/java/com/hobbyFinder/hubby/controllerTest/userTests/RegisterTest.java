@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.userTests;
+package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@DisplayName("Testes de rota registro de usuário")
+@ActiveProfiles("test")
+@DisplayName("Testes de rota: registro de usuário")
 public class RegisterTest {
 
     @Autowired
