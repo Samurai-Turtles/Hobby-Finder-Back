@@ -1,8 +1,12 @@
 package com.hobbyFinder.hubby.services.IServices;
 
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
+import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
+import org.springframework.http.ResponseEntity;
+
+import java.util.UUID;
 
 public interface EventInterface {
     
@@ -15,4 +19,10 @@ public interface EventInterface {
      */
     public EventDto registerEvent(EventCreateDto eventCreateDto);
 
+    /**
+     * Deleta um evento pelo UUID
+     * @param uuid
+     * @throws
+     */
+    public void deleteEvent(UUID uuid) throws EventNotFoundException;
 }
