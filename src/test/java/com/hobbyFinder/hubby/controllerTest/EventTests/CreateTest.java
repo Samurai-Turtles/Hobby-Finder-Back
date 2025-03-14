@@ -13,4 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DisplayName("Testes de rota: criação de evento")
 public class CreateTest {
+    private EventSeeder eventSeeder;
 }
+
