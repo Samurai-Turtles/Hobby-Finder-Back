@@ -51,7 +51,7 @@ public class AuthenticationService implements UserDetailsService, AuthInterface 
     public void registroUsuario(RegisterDTO request) throws CredenciaisRegistroException {
         userValidatorCreate.validaRegistro(request);
         String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
-        User newUser = new User(request.email(), request.username(), encryptedPassword, request.role());
+        User newUser = new User(request.email(), request.username(), encryptedPassword, request.nomeCompleto());
         this.userRepository.save(newUser);
     }
 

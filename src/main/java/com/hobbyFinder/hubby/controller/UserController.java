@@ -4,6 +4,7 @@ import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.HubbyException;
+import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
@@ -27,7 +28,7 @@ public class UserController {
 
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
-    public ResponseEntity<UserDTO> getUser(@RequestParam UUID id) {
+    public ResponseEntity<UserResponseDTO> getUser(@RequestParam UUID id) throws UserNotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userInterface.getUser(id));

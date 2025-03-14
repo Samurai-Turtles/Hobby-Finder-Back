@@ -56,7 +56,7 @@ public class RegisterTest {
                 UserConstants.EMAIL_NAO_UTILIZADO,
                 UserConstants.USERNAME_NAO_UTILIZADO,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.ADMIN);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +74,7 @@ public class RegisterTest {
                 UserConstants.EMAIL_NAO_UTILIZADO,
                 null,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.ADMIN);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ public class RegisterTest {
                 UserConstants.EMAIL_NAO_UTILIZADO,
                 UserConstants.USERNAME_TAMANHO_INVALIDO,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.ADMIN);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +118,7 @@ public class RegisterTest {
                 UserConstants.EMAIL_NAO_UTILIZADO,
                 UserConstants.USERNAME_INVALIDO,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.ADMIN);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +138,7 @@ public class RegisterTest {
                 UserConstants.EMAIL_NAO_UTILIZADO,
                 UserConstants.USER1_USERNAME,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.USER);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +158,7 @@ public class RegisterTest {
                 UserConstants.USER1_EMAIL,
                 UserConstants.USERNAME_NAO_UTILIZADO,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.USER);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -187,7 +187,7 @@ public class RegisterTest {
                 emailInvalido,
                 UserConstants.USERNAME_NAO_UTILIZADO,
                 UserConstants.PASSWORD_NAO_UTILIZADA,
-                UserRole.USER);
+                UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
                         .contentType(MediaType.APPLICATION_JSON)
