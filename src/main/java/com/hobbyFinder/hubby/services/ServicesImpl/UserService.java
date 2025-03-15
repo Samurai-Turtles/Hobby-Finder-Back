@@ -3,7 +3,8 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
-import com.hobbyFinder.hubby.models.dto.user.UserDTO;
+import com.hobbyFinder.hubby.infra.security.TokenService;
+import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
@@ -34,6 +35,9 @@ public class UserService implements UserInterface {
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    private TokenService tokenService;
+
     private final Set<InterestEnum> validInterests = Set.of(InterestEnum.values());
 
 
@@ -51,7 +55,7 @@ public class UserService implements UserInterface {
     }
 
 
-    public UserDTO updateUser(UserPutDTO request) throws HubbyException {
+    public LoginResponseDTO updateUser(UserPutDTO request) throws HubbyException {
         User user = getUserLogged();
 
         if (request.username() != null){
@@ -71,7 +75,7 @@ public class UserService implements UserInterface {
 
         if (request.interests() != null) {
             if (!validInterests.containsAll(request.interests()))
-                throw new TagInvalidaException("Tag invalida");
+                throw new TagInvalidaException();
             user.setInterests(request.interests());
         }
 
@@ -84,7 +88,8 @@ public class UserService implements UserInterface {
         }
 
         userRepository.save(user);
-        return new UserDTO(user.getEmail(), user.getUsername(), user.getRole());
+        String token = tokenService.generateToken(user);
+        return new LoginResponseDTO(token);
     }
 
     private User getUserLogged() {

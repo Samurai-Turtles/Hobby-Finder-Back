@@ -2,7 +2,7 @@ package com.hobbyFinder.hubby.services.IServices;
 
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
-import com.hobbyFinder.hubby.models.dto.user.UserDTO;
+import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 
@@ -12,5 +12,5 @@ public interface UserInterface {
 
     UserResponseDTO getUser(UUID uuid) throws UserNotFoundException;
     void deleteUser();
-    UserDTO updateUser(UserPutDTO userDTO) throws HubbyException;
+    LoginResponseDTO updateUser(UserPutDTO userDTO) throws HubbyException;
 }

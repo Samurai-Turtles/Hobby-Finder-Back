@@ -17,4 +17,6 @@ public class AuthExceptionsMessages {
     public final static String INVALID_FIELD = "Nenhum campo de registro pode estar vazio";
 
     public final static String INVALID_REGISTER_EMAIL = "Email de usuário inválido!";
+
+    public static final String INVALID_INTEREST = "tag invalida para interesse";
 }

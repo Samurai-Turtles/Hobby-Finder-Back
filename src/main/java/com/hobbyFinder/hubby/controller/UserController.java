@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping(UserRoutes.PUT_AUTH_USER)
-    public ResponseEntity<UserDTO> put(@RequestBody UserPutDTO userPutDto) throws HubbyException {
+    public ResponseEntity<LoginResponseDTO> put(@RequestBody UserPutDTO userPutDto) throws HubbyException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userInterface.updateUser(userPutDto));
