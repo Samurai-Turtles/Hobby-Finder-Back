@@ -18,6 +18,16 @@ public class EventConstants {
             "SP"
     );
 
+    private static final LocalDto ALTERNATE_LOCAL = new LocalDto(
+            40.712776, // Latitude
+            -74.005974, // Longitude
+            "456 Avenue",
+            "Downtown",
+            "99",
+            "New York",
+            "NY"
+    );
+
     public static final EventDto EVENT_DTO_CREATE = new EventDto(
             UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
             "Event Created",
@@ -64,5 +74,29 @@ public class EventConstants {
             "", // Descrição vazia
             -1, // Número máximo de usuários inválido
             -5 // Contagem de usuários inválida
+    );
+
+    public static final EventDto EVENT_DTO_INVALID_DATE = new EventDto(
+            UUID.fromString("123e4567-e89b-12d3-a456-426614174004"),
+            "Invalid Date Event",
+            LocalDateTime.of(2025, 5, 1, 12, 0),
+            LocalDateTime.of(2025, 4, 1, 14, 0), // Data de término antes da de início
+            DEFAULT_LOCAL,
+            PrivacyEnum.PRIVATE,
+            "Event with incorrect date range",
+            150,
+            50
+    );
+
+    public static final EventDto EVENT_DTO_SPECIAL = new EventDto(
+            UUID.fromString("123e4567-e89b-12d3-a456-426614174003"),
+            "Special Event",
+            LocalDateTime.of(2025, 4, 1, 18, 0),
+            LocalDateTime.of(2025, 4, 1, 22, 0),
+            ALTERNATE_LOCAL,
+            PrivacyEnum.PUBLIC,
+            "Description of a special event with VIP access",
+            500,
+            150
     );
 }
