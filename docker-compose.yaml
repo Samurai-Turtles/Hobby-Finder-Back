@@ -1,0 +1,26 @@
+services:
+  spring:
+    build: .
+    environment:
+      DB_PORT: ${DB_PORT}
+      DB_CURRENT: ${DB_CURRENT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      APPLICATION_NAME: ${APPLICATION_NAME}
+    depends_on:
+      - postgres
+    ports:
+      - "8080:${SPRING_PORT}"
+
+  postgres:
+    image: postgres:16.1-bullseye
+    restart: unless-stopped
+    container_name: ${APPLICATION_NAME}-db
+    environment:
+      POSTGRES_DB: ${DB_CURRENT}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    ports:
+      - '5432:${DB_PORT}'
