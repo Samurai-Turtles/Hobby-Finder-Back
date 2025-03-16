@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.models.dto.requests.events;
+package com.hobbyFinder.hubby.models.dto.events;
 
 import java.time.LocalDateTime;
 
