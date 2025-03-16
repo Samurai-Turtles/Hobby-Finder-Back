@@ -1,6 +1,6 @@
 package com.hobbyFinder.hubby.exception;
 
-public class HubbyException extends Exception {
+public class HubbyException extends RuntimeException {
 
     public HubbyException() {
         super("Erro inesperado no Hubby");

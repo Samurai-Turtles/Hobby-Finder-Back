@@ -16,6 +16,7 @@ import com.hobbyFinder.hubby.services.Validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +37,15 @@ public class UserService implements UserInterface {
 
     private final Set<InterestEnum> validInterests = Set.of(InterestEnum.values());
 
+    @Override
+    public UserResponseDTO getUserResponse(UUID uuid) {
+        User user = getUser(uuid);
+        return new UserResponseDTO(user.getId(), user.getUsername(), user.getFullName(), user.getBio(), user.getInterests());
+    }
 
     @Override
-    public UserResponseDTO getUser(UUID uuid) throws UserNotFoundException {
-        User user = userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
-        return new UserResponseDTO(user.getId(), user.getUsername(), user.getFullName(), user.getBio(), user.getInterests());
+    public User getUser(UUID uuid) {
+        return userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
     }
 
     @Override
@@ -51,7 +56,7 @@ public class UserService implements UserInterface {
     }
 
 
-    public UserDTO updateUser(UserPutDTO request) throws HubbyException {
+    public UserDTO updateUser(UserPutDTO request) {
         User user = getUserLogged();
 
         if (request.username() != null){

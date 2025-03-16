@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.models.dto.events;
+package com.hobbyFinder.hubby.models.dto.requests.events;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

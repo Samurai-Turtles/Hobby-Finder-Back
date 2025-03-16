@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.models.dto.events;
+package com.hobbyFinder.hubby.models.dto.requests.events;
 
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
