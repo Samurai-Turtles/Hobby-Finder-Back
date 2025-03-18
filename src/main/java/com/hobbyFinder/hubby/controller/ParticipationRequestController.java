@@ -15,14 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hobbyFinder.hubby.controller.routes.ParticipationRequestRoutes;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestGetDTO;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestResponseDTO;
+import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
 
+import lombok.AllArgsConstructor;
 
 @RestController
+@AllArgsConstructor
 public class ParticipationRequestController {
+
+    private ParticipationRequestInterface participationRequest;
 
     @PostMapping(ParticipationRequestRoutes.POST_REQUEST)
     public ResponseEntity<Void> createNewParticipationRequest(@PathVariable UUID targetEventId) {
-        return null;
+        participationRequest.newParticipationRequest(targetEventId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_EVENT)
