@@ -1,25 +1,24 @@
 package com.hobbyFinder.hubby.models.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 import io.micrometer.common.lang.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Event {
 
     @Id
@@ -46,4 +45,7 @@ public class Event {
     private String description;
 
     private int maxUserAmout;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Participation> participations;
 }

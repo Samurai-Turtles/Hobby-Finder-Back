@@ -5,8 +5,10 @@ import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginExcep
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.models.dto.events.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
+import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import jakarta.servlet.http.HttpServletRequest;
 import jdk.jshell.spi.ExecutionControl;
@@ -26,12 +28,15 @@ public class UserController {
     @Autowired
     private UserInterface userInterface;
 
+    @Autowired
+    private ParticipationInterface participationInterface;
+
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
     public ResponseEntity<UserResponseDTO> getUser(@RequestParam UUID id) throws UserNotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userInterface.getUser(id));
+                .body(userInterface.getUserResponse(id));
     }
 
     @PostMapping(UserRoutes.LOGIN)
@@ -75,5 +80,14 @@ public class UserController {
     @DeleteMapping(UserRoutes.RECOVER_PASSOWRD)
     public ResponseEntity<Void> recoverPassword() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
+    }
+
+    @DeleteMapping(UserRoutes.USER_DELETE_PARTICIPATION)
+    public ResponseEntity<Void> userDeleteParticipation( @PathVariable UUID eventId, @PathVariable UUID participationId) {
+        ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
+        participationInterface.deleteUserFromEvent(participationDto);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

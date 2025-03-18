@@ -1,12 +1,14 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.exception.HubbyException;
+import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
+import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.repositories.UserRepository;
@@ -14,6 +16,7 @@ import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import com.hobbyFinder.hubby.services.Validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +33,7 @@ public class UserService implements UserInterface {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private GetUserLogged userLogged;
 
     @Autowired
@@ -57,7 +61,7 @@ public class UserService implements UserInterface {
 
 
     public UserDTO updateUser(UserPutDTO request) {
-        User user = getUserLogged();
+        User user = userLogged.getUserLogged();
 
         if (request.username() != null){
             userValidator.validaUsername(request.username());
@@ -87,14 +91,7 @@ public class UserService implements UserInterface {
         if (request.name() != null){
             user.setFullName(request.name());
         }
-
         userRepository.save(user);
         return new UserDTO(user.getEmail(), user.getUsername(), user.getRole());
-    }
-
-    private User getUserLogged() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomPrincipal customPrincipal = (CustomPrincipal) auth.getPrincipal();
-        return userRepository.findByUsername(customPrincipal.username());
     }
 }

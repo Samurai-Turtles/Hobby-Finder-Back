@@ -5,6 +5,7 @@ import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 
 import java.util.UUID;

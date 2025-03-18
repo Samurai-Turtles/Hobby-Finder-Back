@@ -1,10 +1,6 @@
 package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-import com.hobbyFinder.hubby.controller.routes.BaseRoutes;
-========
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.AuthExceptionsMessages;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
@@ -31,14 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-@DisplayName("Testes de rota registro/autenticação")
-public class UserControllerTest {
-========
 @ActiveProfiles("test")
 @DisplayName("Testes de rota: registro de usuário")
 public class RegisterTest {
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
 
     @Autowired
     private MockMvc driver;
@@ -53,19 +44,6 @@ public class RegisterTest {
         userSeeder.seedUsers();
     }
 
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-    @Transactional
-    protected void cadastrarUsuario(RegisterDTO request) throws Exception {
-
-        driver.perform(post(UserRoutes.POST_USER)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
-
-    //NÃO coloque userRepository.deleteAll() aqui!!
-========
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
     @AfterEach
     void tearDown() throws Exception {}
 
@@ -81,38 +59,14 @@ public class RegisterTest {
                 UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         driver.perform(post(UserRoutes.POST_USER)
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(registerTest)))
-========
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerTest)))
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
                 .andExpect(status().isCreated());
 
     }
 
     @Transactional
     @Test
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-    @DisplayName("Usuário logado com sucesso")
-    void testUsuarioLogadoComSucesso() throws Exception {
-
-        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(authDTO)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        LoginResponseDTO loginResponseDTO = objectMapper.readValue(responseJsonString, LoginResponseDTO.class);
-
-        assertNotNull(loginResponseDTO);
-    }
-
-    @Transactional
-    @Test
-========
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
     @DisplayName("Registro com nome nulo")
     void testRegistroComNomeInvalido() throws Exception {
 
@@ -123,13 +77,8 @@ public class RegisterTest {
                 UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(registerDtoNulo)))
-========
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDtoNulo)))
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -183,26 +132,6 @@ public class RegisterTest {
 
     @Transactional
     @Test
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-    @DisplayName("Login com usuario inexistente")
-    void testLoginUserInexistente() throws Exception {
-
-        AuthDTO authDTOInexistente = new AuthDTO("esseUserNaoExiste@gmail.com", "senha1234");
-
-        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDTOInexistente)))
-                .andExpect(status().isUnauthorized())
-                .andReturn().getResponse().getContentAsString();
-
-        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS, result.getMessage());
-    }
-
-    @Transactional
-    @Test
-========
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
     @DisplayName("Teste registro com username já existente")
     void testRegistroUsernameExistente() throws Exception {
         RegisterDTO registerUsernameExistenteDTO = new RegisterDTO(
@@ -212,13 +141,8 @@ public class RegisterTest {
                 UserConstants.FULL_NAME_NAO_UTILIZADO);
 
         String responseJsonString = driver.perform(post(UserRoutes.POST_USER)
-<<<<<<<< HEAD:src/test/java/com/hobbyFinder/hubby/controllerTest/UserControllerTest.java
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
-========
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerUsernameExistenteDTO)))
->>>>>>>> origin/Feat/User:src/test/java/com/hobbyFinder/hubby/controllerTest/UserTests/RegisterTest.java
                 .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
