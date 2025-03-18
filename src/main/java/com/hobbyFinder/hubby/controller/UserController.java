@@ -6,7 +6,9 @@ import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistr
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.events.ParticipationDto;
+import com.hobbyFinder.hubby.models.dto.events.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
+import com.hobbyFinder.hubby.models.entities.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
@@ -86,6 +88,16 @@ public class UserController {
     public ResponseEntity<Void> userDeleteParticipation( @PathVariable UUID eventId, @PathVariable UUID participationId) {
         ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
         participationInterface.deleteUserFromEvent(participationDto);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
+    public ResponseEntity<Void> userUpdateParticipation(
+            @PathVariable UUID eventId, @PathVariable UUID participationId, @RequestParam UserParticipation participationUpdate) {
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(eventId, participationId, participationUpdate);
+        participationInterface.updateParticipation(updateParticipationDto);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

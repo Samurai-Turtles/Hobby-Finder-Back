@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Table(name = "participations")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,5 +25,14 @@ public class Participation {
 
     @JoinColumn(name = "user_id", nullable = false)
     private UUID idUser;
+
+    private UserParticipation userParticipation;
+
+    public Participation(UUID idParticipation, UUID idEvent, UUID idUser) {
+        this.idParticipation = idParticipation;
+        this.idEvent = idEvent;
+        this.idUser = idUser;
+        this.userParticipation = UserParticipation.UNCONFIRMED_PRESENCE;
+    }
 
 }
