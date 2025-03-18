@@ -3,11 +3,15 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
+import com.hobbyFinder.hubby.models.dto.events.GetParticipationEvent;
+import com.hobbyFinder.hubby.models.dto.events.GetParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.models.entities.CustomPrincipal;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
+import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
@@ -23,8 +27,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
@@ -40,6 +46,8 @@ public class UserService implements UserInterface {
     private UserValidator userValidator;
 
     private final Set<InterestEnum> validInterests = Set.of(InterestEnum.values());
+    @Autowired
+    private GetUserLogged getUserLogged;
 
     @Override
     public UserResponseDTO getUserResponse(UUID uuid) {
@@ -93,5 +101,13 @@ public class UserService implements UserInterface {
         }
         userRepository.save(user);
         return new UserDTO(user.getEmail(), user.getUsername(), user.getRole());
+    }
+
+    @Override
+    public List<GetParticipationsUser> getParticipationsUser() {
+        User user = getUserLogged.getUserLogged();
+        return user.getParticipations().stream()
+                .map(participation -> new GetParticipationsUser(participation.getIdEvent(), participation.getUserParticipation()))
+                .collect(Collectors.toList());
     }
 }

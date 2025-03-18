@@ -14,4 +14,5 @@ public class UserRoutes {
     public static final String PROFILE_PHOTO = USER_BASE + "/profile-photo";
     public static final String USER_DELETE_PARTICIPATION = USER_BASE + "/delete-event" + "/{eventId}" + "/participation" + "/{participationId}";
     public static final String USER_UPDATE_PARTICIPATION = USER_BASE + "/update-event" + "/{eventId}" + "/participation" + "/{participationId}";
+    public static final String GET_ALL_USER_PARTICIPATIONS = USER_BASE + "/participations";
 }

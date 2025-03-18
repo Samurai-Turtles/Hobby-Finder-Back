@@ -5,6 +5,7 @@ import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginExcep
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.models.dto.events.GetParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.events.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.events.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -101,5 +103,12 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    @GetMapping(UserRoutes.GET_ALL_USER_PARTICIPATIONS)
+    public ResponseEntity<List<GetParticipationsUser>> getAllParticipationsUser() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userInterface.getParticipationsUser());
     }
 }
