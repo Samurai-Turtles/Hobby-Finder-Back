@@ -1,7 +1,9 @@
 package com.hobbyFinder.hubby.controller;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.dto.events.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
-import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
-import com.hobbyFinder.hubby.models.dto.events.EventDto;
-import com.hobbyFinder.hubby.models.dto.events.EventPageDto;
-import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
 import com.hobbyFinder.hubby.services.ServicesImpl.EventService;
 
 import jakarta.validation.Valid;
@@ -76,5 +74,12 @@ public class EventController {
     public ResponseEntity<Void> delete(
             @PathVariable UUID id) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
+    }
+
+    @GetMapping(EventRoutes.GET_ALL_EVENT_PARTICIPATIONS)
+    public ResponseEntity<List<GetParticipationEvent>> getAllParticipations(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(eventService.getParticipationsEvent(id));
     }
 }

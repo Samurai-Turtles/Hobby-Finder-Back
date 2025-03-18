@@ -3,6 +3,12 @@ package com.hobbyFinder.hubby.services.IServices;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
+import com.hobbyFinder.hubby.models.dto.events.GetParticipationEvent;
+import com.hobbyFinder.hubby.models.entities.Event;
+import com.hobbyFinder.hubby.models.entities.Participation;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface EventInterface {
     
@@ -14,5 +20,7 @@ public interface EventInterface {
      * @throws CredenciaisRegistroException se as informações de criação não estiverem corretas
      */
     public EventDto registerEvent(EventCreateDto eventCreateDto);
+    public List<GetParticipationEvent> getParticipationsEvent(UUID idEvent);
+    public Event findEvent(UUID idEvent);
 
 }
