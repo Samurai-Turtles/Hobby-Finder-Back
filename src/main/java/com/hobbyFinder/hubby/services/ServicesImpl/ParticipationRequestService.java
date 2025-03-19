@@ -44,7 +44,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     }
 
     @Override
-    public Page<ParticipationRequest> getAllEventRequests(UUID targetEventUuid, Pageable pageable)  {
+    public Page<ParticipationRequest> getAllEventRequests(UUID targetEventUuid, Pageable pageable) {
         Event targetEvent = eventRepository.getReferenceById(targetEventUuid);
 
         if (targetEvent.getPrivacy().name().equals("PUBLIC")) {
@@ -58,6 +58,10 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     public Page<ParticipationRequest> getAllUserRequests(Pageable pageable) {
         User userLogged = getUserLogged.getUserLogged();
         return requestRepository.findByUser(userLogged, pageable);
+    }
+
+    @Override
+    public void deleteParticipationRequestByUser(UUID targetRequestId) {
     }
 
 }

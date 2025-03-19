@@ -49,7 +49,7 @@ public class ParticipationRequestController {
     public ResponseEntity<Page<ParticipationRequest>> getParticipationRequestsByUser(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page) {
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Page<ParticipationRequest> requestPage = participationRequest.getAllUserRequests(pageable);
 
@@ -70,7 +70,9 @@ public class ParticipationRequestController {
 
     @DeleteMapping(ParticipationRequestRoutes.DELETE_REQUEST_BY_USER)
     public ResponseEntity<Void> deleteParticipationRequest(@PathVariable UUID targetRequestId) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    
+        participationRequest.deleteParticipationRequestByUser(targetRequestId);
+        return ResponseEntity.noContent().build();
     }
 
 }

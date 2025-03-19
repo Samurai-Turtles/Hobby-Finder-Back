@@ -34,4 +34,11 @@ public interface ParticipationRequestInterface {
      */
     Page<ParticipationRequest> getAllUserRequests(Pageable pageable);
 
+    /**
+     * Deleta uma solicitação criada, previamente, pelo usuário conectado.
+     * 
+     * @param targetRequestId - id da solicitação a ser deletada
+     */
+    void deleteParticipationRequestByUser(UUID targetRequestId);
+
 }
