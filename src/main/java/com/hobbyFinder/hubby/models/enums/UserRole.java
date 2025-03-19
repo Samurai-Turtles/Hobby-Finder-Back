@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.models.entities;
+package com.hobbyFinder.hubby.models.enums;
 
 import lombok.Getter;
 

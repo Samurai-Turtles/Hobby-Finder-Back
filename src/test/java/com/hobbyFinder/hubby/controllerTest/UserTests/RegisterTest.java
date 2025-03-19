@@ -5,7 +5,6 @@ import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.AuthException.AuthExceptionsMessages;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
-import com.hobbyFinder.hubby.models.entities.UserRole;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

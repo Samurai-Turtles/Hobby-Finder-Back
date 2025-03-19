@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.events.*;
+import com.hobbyFinder.hubby.services.ServicesImpl.ParticipationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,10 +25,12 @@ import jdk.jshell.spi.ExecutionControl;
 @RestController
 public class EventController {
 
+    private final ParticipationServiceImpl participationServiceImpl;
     EventService eventService;
 
-    public EventController(EventService eventService){
+    public EventController(EventService eventService, ParticipationServiceImpl participationServiceImpl){
         this.eventService = eventService;
+        this.participationServiceImpl = participationServiceImpl;
     }
 
     @PostMapping(EventRoutes.POST_EVENT)
@@ -81,5 +83,13 @@ public class EventController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(eventService.getParticipationsEvent(id));
+    }
+
+    @DeleteMapping(EventRoutes.EXPEL_USER_FROM_EVENT)
+    public ResponseEntity<Void> deleteUserParticipationFromEvent(@PathVariable UUID idEvent, @PathVariable UUID idParticipation) {
+        participationServiceImpl.deleteUserFromEvent(idEvent, idParticipation);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

@@ -9,7 +9,7 @@ import com.hobbyFinder.hubby.models.dto.events.GetParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.events.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.events.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
-import com.hobbyFinder.hubby.models.entities.UserParticipation;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;

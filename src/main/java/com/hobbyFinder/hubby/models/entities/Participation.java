@@ -1,5 +1,7 @@
 package com.hobbyFinder.hubby.models.entities;
 
+import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,12 +29,14 @@ public class Participation {
     private UUID idUser;
 
     private UserParticipation userParticipation;
+    private ParticipationPosition position;
 
     public Participation(UUID idParticipation, UUID idEvent, UUID idUser) {
         this.idParticipation = idParticipation;
         this.idEvent = idEvent;
         this.idUser = idUser;
         this.userParticipation = UserParticipation.UNCONFIRMED_PRESENCE;
+        this.position = ParticipationPosition.PARTICIPANT;
     }
 
 }

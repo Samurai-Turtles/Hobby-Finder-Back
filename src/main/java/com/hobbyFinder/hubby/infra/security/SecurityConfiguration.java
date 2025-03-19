@@ -1,7 +1,6 @@
 package com.hobbyFinder.hubby.infra.security;
 
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
-import com.hobbyFinder.hubby.models.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

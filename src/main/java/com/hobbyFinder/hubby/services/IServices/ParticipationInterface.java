@@ -12,4 +12,5 @@ public interface ParticipationInterface {
     Participation findParticipation(UUID participationId);
     void removeParticipation(UUID participationId);
     void updateParticipation(UpdateParticipationDto updateParticipationDTO);
+    void deleteUserFromEvent(UUID idEvent, UUID idParticipation);
 }

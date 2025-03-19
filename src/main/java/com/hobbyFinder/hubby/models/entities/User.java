@@ -1,6 +1,7 @@
 package com.hobbyFinder.hubby.models.entities;
 
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
+import com.hobbyFinder.hubby.models.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
