@@ -54,4 +54,9 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         return requestRepository.findByEvent(targetEvent, pageable);
     }
 
+    @Override
+    public Page<ParticipationRequest> getAllUserRequests(Pageable pageable) {
+        return null;
+    }
+
 }

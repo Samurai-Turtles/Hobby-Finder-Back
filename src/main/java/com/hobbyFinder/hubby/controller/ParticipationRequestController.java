@@ -45,13 +45,18 @@ public class ParticipationRequestController {
         Pageable pageable = PageRequest.of(page, size);
         Page<ParticipationRequest> requestPages = participationRequest.getAllEventRequests(targetEventId, pageable);
 
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(requestPages);
+        return ResponseEntity.status(HttpStatus.OK).body(requestPages);
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_USER)
-    public ResponseEntity<ParticipationRequestResponseDTO> getParticipationRequestsByUser(
-            @RequestBody ParticipationRequestGetDTO participationRequestGetDTO) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    public ResponseEntity<Page<ParticipationRequest>> getParticipationRequestsByUser(
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page) {
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ParticipationRequest> requestPage = participationRequest.getAllUserRequests(pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(requestPage);
     }
 
     @PutMapping(ParticipationRequestRoutes.ACCEPT_REQUEST)

@@ -10,7 +10,8 @@ import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 public interface ParticipationRequestInterface {
 
     /**
-     * Cria uma nova solicitação para participação de um usuário em um evento privado.
+     * Cria uma nova solicitação para participação de um usuário em um evento
+     * privado.
      * 
      * @param targetEventId - id válido do evento de interesse
      */
@@ -20,8 +21,17 @@ public interface ParticipationRequestInterface {
      * Busca todas as solicitações de participação relacionadas a um evento privado.
      * 
      * @param targetEventId - id válido do evento de interesse
-     * @param pageable - um objeto que permite definir os padrões de paginação da listagem
+     * @param pageable      - um objeto que permite definir os padrões de paginação
+     *                      da listagem
      */
     Page<ParticipationRequest> getAllEventRequests(UUID targetEventId, Pageable pageable);
-    
+
+    /**
+     * Busca todas as solicitações de participação registradas por um usuário.
+     * 
+     * @param pageable - um objeto que permite definir os padrões de paginação
+     *                 da listagem
+     */
+    Page<ParticipationRequest> getAllUserRequests(Pageable pageable);
+
 }
