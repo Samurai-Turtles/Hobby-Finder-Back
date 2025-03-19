@@ -56,7 +56,8 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
     @Override
     public Page<ParticipationRequest> getAllUserRequests(Pageable pageable) {
-        return null;
+        User userLogged = getUserLogged.getUserLogged();
+        return requestRepository.findByUser(userLogged, pageable);
     }
 
 }

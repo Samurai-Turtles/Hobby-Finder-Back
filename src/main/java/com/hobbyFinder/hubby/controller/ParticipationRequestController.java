@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hobbyFinder.hubby.controller.routes.ParticipationRequestRoutes;
-import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestGetDTO;
-import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestResponseDTO;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
 
