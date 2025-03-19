@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.entities.User;
@@ -43,8 +44,14 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     }
 
     @Override
-    public Page<ParticipationRequest> getAllEventRequests(UUID targetEventUuid, Pageable pageable) {
-        return null;
+    public Page<ParticipationRequest> getAllEventRequests(UUID targetEventUuid, Pageable pageable)  {
+        Event targetEvent = eventRepository.getReferenceById(targetEventUuid);
+
+        if (targetEvent.getPrivacy().name().equals("PUBLIC")) {
+            throw new EventIsPublicException("Eventos públicos não possuem lista de solicitações");
+        }
+
+        return requestRepository.findByEvent(targetEvent, pageable);
     }
 
 }
