@@ -2,6 +2,9 @@ package com.hobbyFinder.hubby.controller;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,11 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hobbyFinder.hubby.controller.routes.ParticipationRequestRoutes;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestGetDTO;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestResponseDTO;
+import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
 
 import lombok.AllArgsConstructor;
@@ -32,9 +37,15 @@ public class ParticipationRequestController {
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_EVENT)
-    public ResponseEntity<ParticipationRequestResponseDTO> getParticipationRequestsByEvent(
-            @PathVariable UUID targetEventId, @RequestBody ParticipationRequestGetDTO participationRequestDto) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+    public ResponseEntity<Page<ParticipationRequest>> getParticipationRequestsByEvent(
+            @PathVariable UUID targetEventId,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ParticipationRequest> requestPages = participationRequest.getAllEventRequests(targetEventId, pageable);
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(requestPages);
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_USER)

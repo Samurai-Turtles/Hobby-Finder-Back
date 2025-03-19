@@ -2,6 +2,8 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.models.entities.Event;
@@ -38,6 +40,11 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         } else {
             // Generate a new Participation Object
         }
+    }
+
+    @Override
+    public Page<ParticipationRequest> getAllEventRequests(UUID targetEventUuid, Pageable pageable) {
+        return null;
     }
 
 }
