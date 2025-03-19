@@ -29,6 +29,7 @@ public class ParticipationRequestController {
 
     @PostMapping(ParticipationRequestRoutes.POST_REQUEST)
     public ResponseEntity<Void> createNewParticipationRequest(@PathVariable UUID targetEventId) {
+        
         participationRequest.newParticipationRequest(targetEventId);
         return ResponseEntity.noContent().build();
     }

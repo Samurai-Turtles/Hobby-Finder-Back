@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
+import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.entities.User;
@@ -38,6 +39,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
             userLogged.getRequests().add(newRequest);
             requestRepository.save(newRequest);
+            requestRepository.flush();
         } else {
             // Generate a new Participation Object
         }
@@ -62,6 +64,14 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
     @Override
     public void deleteParticipationRequestByUser(UUID targetRequestId) {
+        User userLogged = getUserLogged.getUserLogged();
+        ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
+
+        if(!targetRequest.getUser().equals(userLogged)) {
+            throw new NonOwnerUserException("Usuário não possui a requisição informada");
+        }
+
+        requestRepository.delete(targetRequest);
     }
 
 }
