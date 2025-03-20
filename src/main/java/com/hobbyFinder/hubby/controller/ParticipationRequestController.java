@@ -29,7 +29,7 @@ public class ParticipationRequestController {
 
     @PostMapping(ParticipationRequestRoutes.POST_REQUEST)
     public ResponseEntity<Void> createNewParticipationRequest(@PathVariable UUID targetEventId) {
-        
+
         participationRequest.newParticipationRequest(targetEventId);
         return ResponseEntity.noContent().build();
     }
@@ -58,9 +58,12 @@ public class ParticipationRequestController {
     }
 
     @PutMapping(ParticipationRequestRoutes.ACCEPT_REQUEST)
-    public ResponseEntity<Void> acceptParticipationRequest(@PathVariable UUID targetEventId,
+    public ResponseEntity<Void> acceptParticipationRequest(
+            @PathVariable UUID targetEventId,
             @PathVariable UUID targetRequestId) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+            
+        participationRequest.acceptRequest(targetEventId, targetRequestId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(ParticipationRequestRoutes.DELETE_REQUEST)
@@ -71,7 +74,7 @@ public class ParticipationRequestController {
 
     @DeleteMapping(ParticipationRequestRoutes.DELETE_REQUEST_BY_USER)
     public ResponseEntity<Void> deleteParticipationRequest(@PathVariable UUID targetRequestId) {
-    
+
         participationRequest.deleteParticipationRequestByUser(targetRequestId);
         return ResponseEntity.noContent().build();
     }

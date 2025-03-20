@@ -87,4 +87,8 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         requestRepository.delete(targetRequest);
     }
 
+    @Override
+    public void acceptRequest(UUID targetEvent, UUID targetRequestId) {
+    }
+    
 }
