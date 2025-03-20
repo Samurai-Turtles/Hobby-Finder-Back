@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
 import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
+import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.entities.User;
@@ -53,13 +54,25 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
             throw new EventIsPublicException("Eventos públicos não possuem lista de solicitações");
         }
 
-        return requestRepository.findByEvent(targetEvent, pageable);
+        Page<ParticipationRequest> out = requestRepository.findByEvent(targetEvent, pageable);
+
+        if (out.getContent().isEmpty()) {
+            throw new PageIsEmptyException("A página indicada está vazia");
+        }
+
+        return out;
     }
 
     @Override
     public Page<ParticipationRequest> getAllUserRequests(Pageable pageable) {
         User userLogged = getUserLogged.getUserLogged();
-        return requestRepository.findByUser(userLogged, pageable);
+        Page<ParticipationRequest> out = requestRepository.findByUser(userLogged, pageable);
+
+        if (out.getContent().isEmpty()) {
+            throw new PageIsEmptyException("A página indicada está vazia");
+        }
+
+        return out;
     }
 
     @Override
@@ -67,7 +80,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         User userLogged = getUserLogged.getUserLogged();
         ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
 
-        if(!targetRequest.getUser().equals(userLogged)) {
+        if (!targetRequest.getUser().equals(userLogged)) {
             throw new NonOwnerUserException("Usuário não possui a requisição informada");
         }
 
