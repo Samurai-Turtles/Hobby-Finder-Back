@@ -46,9 +46,19 @@ public interface ParticipationRequestInterface {
      * Uma solicitação só pode ser aceita por um usuário que faça parte da organização do evento
      * seja o administrador ou um organizador.
      * 
-     * @param targetEvent - id do evento que recebeu a solicitação
+     * @param targetEventId - id do evento que recebeu a solicitação
      * @param targetRequestId - id da solicitação a ser aceita
      */
-    void acceptRequest(UUID targetEvent, UUID targetRequestId);
+    void acceptRequest(UUID targetEventId, UUID targetRequestId);
+
+    /**
+     * Rejeita uma solicitação de participação que está vinculada a um evento.
+     * Uma solicitação só pode ser rejeitada por um usuário que faça parte da organização do evento
+     * seja o administrador ou um organizador.
+     * 
+     * @param targetEventId - id do evento que recebeu a solicitação
+     * @param targetRequstId - id da solicitação a ser aceita
+     */
+    void declineRequest(UUID targetEventId, UUID targetRequstId);
 
 }

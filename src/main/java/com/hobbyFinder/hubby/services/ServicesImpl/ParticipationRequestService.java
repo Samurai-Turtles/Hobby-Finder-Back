@@ -90,5 +90,9 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     @Override
     public void acceptRequest(UUID targetEvent, UUID targetRequestId) {
     }
-    
+
+    @Override
+    public void declineRequest(UUID targetEventId, UUID targetRequstId) {   
+    }
+
 }
