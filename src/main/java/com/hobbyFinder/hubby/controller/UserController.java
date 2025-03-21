@@ -88,10 +88,11 @@ public class UserController {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
     }
 
+    //deleta sua própria participacao
     @DeleteMapping(UserRoutes.USER_DELETE_PARTICIPATION)
     public ResponseEntity<Void> userDeleteParticipation( @PathVariable UUID eventId, @PathVariable UUID participationId) {
         ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
-        participationInterface.deleteUserFromEvent(participationDto);
+        participationInterface.selfDeleteUserFromEvent(participationDto);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

@@ -4,6 +4,7 @@ import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserIdConflictException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
@@ -39,9 +40,12 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     private ParticipationRepository participationRepository;
 
     @Override
-    public void deleteUserFromEvent(ParticipationDto participationDto) {
+    public void selfDeleteUserFromEvent(ParticipationDto participationDto) {
         Participation participation = findParticipation(participationDto.idParticipation());
         checkEventParticipation(participation.getIdEvent(), participationDto.idEvent());
+        if(getUserLogged.getUserLogged().getId().equals(participation.getIdUser())) {
+            throw new UserIdConflictException();
+        }
         removeParticipation(participationDto.idParticipation());
     }
 

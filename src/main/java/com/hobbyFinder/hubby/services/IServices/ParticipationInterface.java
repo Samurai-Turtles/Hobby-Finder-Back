@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface ParticipationInterface {
 
-    void deleteUserFromEvent(ParticipationDto participationDTO);
+    void selfDeleteUserFromEvent(ParticipationDto participationDTO);
     Participation findParticipation(UUID participationId);
     void removeParticipation(UUID participationId);
     void updateParticipation(UpdateParticipationDto updateParticipationDTO);
