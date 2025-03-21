@@ -2,11 +2,15 @@ package com.hobbyFinder.hubby.services.IServices;
 
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
+import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
+import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.entities.Event;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,4 +33,8 @@ public interface EventInterface {
      * @throws
      */
     public void deleteEvent(UUID uuid) throws EventNotFoundException;
+
+    ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime);
+
+    Collection<ResponseAvaliationDto> getAvaliationsEvent(UUID idEvent);
 }

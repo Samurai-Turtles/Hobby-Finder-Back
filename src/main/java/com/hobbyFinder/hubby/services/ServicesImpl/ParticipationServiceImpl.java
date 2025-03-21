@@ -6,6 +6,7 @@ import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdP
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
+import com.hobbyFinder.hubby.models.entities.Avaliation;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
@@ -14,16 +15,11 @@ import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ParticipationServiceImpl implements ParticipationInterface {
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EventService eventService;
 
     @Autowired
     private GetUserLogged getUserLogged;
@@ -85,6 +81,26 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         if(participation.getPosition().getRank() <= participationToDelete.getPosition().getRank()) {
             throw new InadequateUserPosition();
         }
+    }
+
+    @Override
+    public List<Avaliation> getAvaliationsFromEvent(UUID idEvent) {
+        return this.participationRepository.getAvaliationByEventOrdered(idEvent);
+    }
+
+    @Override
+    public void saveParticipation(Participation participation) {
+        this.participationRepository.save(participation);
+    }
+
+    @Override
+    public double getAvgStarsByEvent(UUID idEvent) {
+        return this.participationRepository.avgStarsByEvent(idEvent);
+    }
+
+    @Override
+    public double getAvgStarsByUser(UUID idUser) {
+        return this.participationRepository.findAverageStarsByUser(idUser);
     }
 }
 

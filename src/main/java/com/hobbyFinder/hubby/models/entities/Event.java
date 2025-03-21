@@ -45,6 +45,9 @@ public class Event {
 
     private int maxUserAmout;
 
+    @Transient
+    private double avaliationStars;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Participation> participations;
 }

@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.repositories;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.hobbyFinder.hubby.models.entities.Event;
@@ -21,4 +22,7 @@ public interface EventRepository extends JpaRepository<Event, UUID>{
     List<Event> findByMaxUserAmout(int maxUserAmout);
     List<Event> findByDescription(String description);
 
+
+    @Query("SELECT AVG(a.stars) FROM Participation p JOIN p.avaliation a where p.idEvent = :eventId")
+    double avgStarsByEvent(UUID eventId);
 }
