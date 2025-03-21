@@ -3,7 +3,11 @@ package com.hobbyFinder.hubby.models.entities;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.models.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +21,7 @@ import java.util.UUID;
 @Entity(name = "users")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -25,6 +30,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<ParticipationRequest> requests = new ArrayList<>();
+
     private String email;
     private String username;
     private String password;

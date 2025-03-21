@@ -80,4 +80,82 @@
   - `style`: alteração do estilo de código, sem alteração funcional.
 - Mensagens devem explicar o "porquê" da alteração.
 
+## 6. Critério de aceitação
 
+Para melhor entendimento desta lista de critérios para aceitação de uma nova feature, será dividido em camadas.
+
+<center>
+  <table>
+    <tr>
+      <th>Nível de prioridade</th>
+      <th>Como será o início de cada frase</th>
+    </tr>
+    <tr>
+      <th>4</th>
+      <th>Seja obrigatório ...</th>
+    </tr>
+    <tr>
+      <th>3</th>
+      <th>Seja essencial ...</th>
+    </tr>
+    <tr>
+      <th>2</th>
+      <th>Seja desejável ...</th>
+    </tr>
+      <tr>
+      <th>1</th>
+      <th>Seja indiferente ...</th>
+    </tr>
+  </table>
+</center>
+
+### 1. Geral
+
+* Seja essencial a preferência por injeção via construtor;
+* Seja obrigatório o uso de constantes, não será tolerado strings jogadas ao vento.
+
+### 2. Data Transfer Objects
+
+* Seja obrigatório o uso de notação do que geração de código utilitário para verificação de propriedades;
+* Seja essencial a correspondência com o guia técnico;
+
+### 3. Controller
+
+* Seja essencial a correspondência com o guia técnico;
+* Seja obrigatório a não geração de responsabilidade adicional ao controller;
+  * Seja desejável o acoplamento em Services;
+  * Possibilidade na geração de um Helper caso seja lógica de aplicação.
+* Seja obrigatório a não proliferação de métodos;
+  * Apenas existem os métodos definidos no guia técnico.
+* Seja obrigatório manter o padrão dos outros controllers, tanto no uso de construção como de anotação.
+
+### 4. Services
+
+* Seja obrigatório a não geração de responsabilidade adicional ao service;
+  * Seja obrigatório que os modelos conheçam seus próprios comportamentos; 
+* Seja obrigatório do revisor sobre a qualidade desta camada:
+  * Anotações a respeito devem ser associadas neste [documento](https://docs.google.com/document/d/13rtzf8i5HtF2g-9bMx7oQiAMRv1y2eDXjNTD29TFDZA/edit?tab=t.0);
+* Seja essencial a não proliferação de dependências:
+  * É possível que dependências além das que envolvem a entidade sejam chamadas, mas não é o preferível.
+
+### 5. Repositórios
+
+* Seja obrigatório seguir a JPA;
+
+### 6. Modelos
+
+* Seja obrigatório a utilização de notações para regras no banco;
+* Seja essencial a não utilização de notações para identificação de atributos no banco;
+* Seja obrigatório o uso do modelo para regras de negócio correspondentes a esta entidade;
+* Seja obrigatório o uso de testes unitários para comportamentos de modelos;
+
+### 7. Testes
+
+* Seja obrigatório que os testes de integração sigam o comportamento esperado dito no guia técnico;
+* Seja obrigatório que os testes de integração compreendam o comportamento esperado dito no guia técnico;
+* Seja obrigatória a seguinte estrutura de pacote para testagem integrativa de cada feature:
+  * Criação de classe estática para constantes;
+  * Criação de classe auxiliar para gerar um estado inicial válido para testes;
+  * Criação de classe de teste de integração por método do controller.
+* Seja obrigatória a criação de classes de testes unitários para cada comportamento de um modelo, tais testes precisam estar juntos em um mesmo pacote.
+  * Seja obrigatória a junção dos testes de integração com os unitários em um pacote maior que contenha a entidade. 
