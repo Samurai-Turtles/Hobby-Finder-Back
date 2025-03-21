@@ -92,4 +92,12 @@ public class UserService implements UserInterface {
         CustomPrincipal customPrincipal = (CustomPrincipal) auth.getPrincipal();
         return userRepository.findByUsername(customPrincipal.username());
     }
+
+    @Override
+    public void deleteUser() {
+        User user = userLogged.getUserLogged();
+        userRepository.delete(user);
+        userRepository.flush();
+    }
+
 }

@@ -1,15 +1,14 @@
 package com.hobbyFinder.hubby.models.dto.events;
 
-import com.hobbyFinder.hubby.models.dto.LocalDto;
-import com.hobbyFinder.hubby.models.entities.Local;
-import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
+import java.time.LocalDateTime;
 
-import java.util.Date;
+import com.hobbyFinder.hubby.models.dto.LocalDto;
+import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventPutDto(
         String Name,
-        Date begin,
-        Date end,
+        LocalDateTime begin,
+        LocalDateTime end,
         LocalDto local,
         PrivacyEnum privacy,
         String description,

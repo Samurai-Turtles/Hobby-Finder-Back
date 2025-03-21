@@ -1,11 +1,29 @@
 package com.hobbyFinder.hubby.models.entities;
 
-public record Local(
-        double latitude,
-        double longitude,
-        String street,
-        String district,
-        String number,
-        String city,
-        String state) {
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.Data;
+
+@Data
+@Embeddable
+public class Local {
+
+    @Column(nullable = false)
+    private String street;
+    
+    @Column(nullable = false)
+    private String district;
+    
+    @Column(nullable = false)
+    private String number;
+    
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
+    private String state;
+
+    private double latitude;
+    private double longitude;
+
 }
