@@ -12,5 +12,5 @@ public interface UserInterface {
     User getUser(UUID uuid);
     void deleteUser();
     UserDTO updateUser(UserPutDTO userDTO);
-    void updateUserAvaliation(UUID idUser);
+    void updateUserAvaliation(UUID idUser, double stars);
 }

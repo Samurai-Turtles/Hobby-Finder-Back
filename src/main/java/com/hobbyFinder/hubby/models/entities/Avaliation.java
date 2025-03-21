@@ -30,7 +30,7 @@ public class Avaliation {
     @Getter
     private String comment;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 

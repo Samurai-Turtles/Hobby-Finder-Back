@@ -34,7 +34,7 @@ import jdk.jshell.spi.ExecutionControl;
 public class EventController {
 
     @Autowired
-    private ParticipationInterface participationService;
+    private ParticipationInterface participationInterface;
 
     @Autowired
     private EventInterface eventService;
@@ -92,13 +92,13 @@ public class EventController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(participationService.getParticipationEvents(id, pageable));
+                .body(participationInterface.getParticipationEvents(id, pageable));
 
     }
 
     @DeleteMapping(EventRoutes.EXPEL_USER_FROM_EVENT)
     public ResponseEntity<Void> deleteUserParticipationFromEvent(@PathVariable UUID idEvent, @PathVariable UUID idParticipation) {
-        participationService.deleteUserFromEvent(idEvent, idParticipation);
+        participationInterface.deleteUserFromEvent(idEvent, idParticipation);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
@@ -109,8 +109,8 @@ public class EventController {
             @PathVariable UUID idEvent,
             @RequestBody PostAvaliationDto postAvaliationDto) {
         return ResponseEntity
-                .ok()
-                .body(eventService.evaluateEvent(idEvent, postAvaliationDto, LocalDateTime.now()));
+                .status(HttpStatus.CREATED)
+                .body(this.participationInterface.evaluateEvent(idEvent, postAvaliationDto, LocalDateTime.now()));
     }
 
     @GetMapping(EventRoutes.GET_AVALIATION_EVENT)
@@ -118,6 +118,6 @@ public class EventController {
             @PathVariable UUID idEvent) {
         return ResponseEntity
                 .ok()
-                .body(eventService.getAvaliationsEvent(idEvent));
+                .body(this.participationInterface.getEventAvaliations(idEvent));
     }
 }

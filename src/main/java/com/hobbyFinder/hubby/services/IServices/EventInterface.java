@@ -30,8 +30,8 @@ public interface EventInterface {
      */
     public void deleteEvent(UUID uuid) throws EventNotFoundException;
 
-    ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime);
 
-    Collection<ResponseAvaliationDto> getAvaliationsEvent(UUID idEvent);
+    void updateEventAvaliation(UUID idEvent, double stars);
     void checkUserParticipating(Event event);
+    UUID getEventOwnerId(Event event);
 }
