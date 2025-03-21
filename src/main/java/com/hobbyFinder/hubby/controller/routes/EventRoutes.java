@@ -10,4 +10,6 @@ public class EventRoutes {
     public static final String GET_EVENT_BY_ID = EVENT_BASE + "/{id}";
     public static final String PUT_EVENT = EVENT_BASE + "/{id}";
     public static final String DELETE_EVENT = EVENT_BASE + "/{id}";
+    public static final String GET_ALL_EVENT_PARTICIPATIONS = EVENT_BASE + "/{id}" + "/participations";
+    public static final String EXPEL_USER_FROM_EVENT = EVENT_BASE + "/{idEvent}" + "/participation" + "{idParticipation}";
 }

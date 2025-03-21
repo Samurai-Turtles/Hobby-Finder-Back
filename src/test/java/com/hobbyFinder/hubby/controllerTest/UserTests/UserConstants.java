@@ -2,7 +2,6 @@ package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
-import com.hobbyFinder.hubby.models.entities.UserRole;
 
 public class UserConstants {
 

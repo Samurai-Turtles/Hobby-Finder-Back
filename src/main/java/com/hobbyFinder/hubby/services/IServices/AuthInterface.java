@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthInterface {
 
-    void registroUsuario(RegisterDTO registerDTO) throws CredenciaisRegistroException;
-    LoginResponseDTO loginUsuario(AuthDTO authDTO) throws CredenciaisLoginException;
+    void registroUsuario(RegisterDTO registerDTO);
+    LoginResponseDTO loginUsuario(AuthDTO authDTO);
     void logoutUsuario(HttpServletRequest request);
 }

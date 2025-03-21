@@ -6,7 +6,9 @@ import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistr
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.user.*;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
+import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import jakarta.servlet.http.HttpServletRequest;
 import jdk.jshell.spi.ExecutionControl;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,12 +29,15 @@ public class UserController {
     @Autowired
     private UserInterface userInterface;
 
+    @Autowired
+    private ParticipationInterface participationInterface;
+
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
     public ResponseEntity<UserResponseDTO> getUser(@RequestParam UUID id) throws UserNotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userInterface.getUser(id));
+                .body(userInterface.getUserResponse(id));
     }
 
     @PostMapping(UserRoutes.LOGIN)
@@ -75,5 +81,31 @@ public class UserController {
     @DeleteMapping(UserRoutes.RECOVER_PASSOWRD)
     public ResponseEntity<Void> recoverPassword() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
+    }
+
+    @DeleteMapping(UserRoutes.USER_DELETE_PARTICIPATION)
+    public ResponseEntity<Void> userDeleteParticipation( @PathVariable UUID eventId, @PathVariable UUID participationId) {
+        ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
+        participationInterface.deleteUserFromEvent(participationDto);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
+    public ResponseEntity<Void> userUpdateParticipation(
+            @PathVariable UUID eventId, @PathVariable UUID participationId, @RequestParam UserParticipation participationUpdate) {
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(eventId, participationId, participationUpdate);
+        participationInterface.updateParticipation(updateParticipationDto);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @GetMapping(UserRoutes.GET_ALL_USER_PARTICIPATIONS)
+    public ResponseEntity<List<GetParticipationsUser>> getAllParticipationsUser() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userInterface.getParticipationsUser());
     }
 }

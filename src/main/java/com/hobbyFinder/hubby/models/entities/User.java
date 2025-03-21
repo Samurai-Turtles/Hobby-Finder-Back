@@ -1,12 +1,14 @@
 package com.hobbyFinder.hubby.models.entities;
 
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
+import com.hobbyFinder.hubby.models.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +33,8 @@ public class User implements UserDetails {
     private String bio;
     @ElementCollection
     private List<InterestEnum> interests;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Participation> participations;
 
 
     public User(String email, String username, String password, String fullName) {
@@ -39,6 +43,8 @@ public class User implements UserDetails {
         this.password = password;
         this.fullName = fullName;
         this.role = UserRole.USER;
+        this.interests = new ArrayList<>();
+        this.participations = new ArrayList<>();
     }
 
     @Override
