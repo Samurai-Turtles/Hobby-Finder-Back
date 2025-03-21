@@ -8,6 +8,7 @@ import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.repositories.UserRepository;
+import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import com.hobbyFinder.hubby.services.Validation.UserValidator;
@@ -31,6 +32,10 @@ public class UserService implements UserInterface {
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    @Lazy
+    private ParticipationInterface participationInterface;
+
     private final Set<InterestEnum> validInterests = Set.of(InterestEnum.values());
     @Autowired
     private GetUserLogged getUserLogged;
@@ -38,7 +43,7 @@ public class UserService implements UserInterface {
     @Override
     public UserResponseDTO getUserResponse(UUID uuid) {
         User user = getUser(uuid);
-        return new UserResponseDTO(user.getId(), user.getUsername(), user.getFullName(), user.getBio(), user.getInterests());
+        return new UserResponseDTO(user.getId(), user.getUsername(), user.getFullName(), user.getBio(), user.getInterests(), user.getStars());
     }
 
     @Override

@@ -1,7 +1,12 @@
 package com.hobbyFinder.hubby.controller;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
+import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
@@ -100,5 +105,22 @@ public class EventController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    @PostMapping(EventRoutes.POST_AVALIATION_EVENT)
+    public ResponseEntity<ResponseAvaliationDto> postAvaliationEvent(
+            @PathVariable UUID idEvent,
+            @RequestBody PostAvaliationDto postAvaliationDto) {
+        return ResponseEntity
+                .ok()
+                .body(eventService.evaluateEvent(idEvent, postAvaliationDto, LocalDateTime.now()));
+    }
+
+    @GetMapping(EventRoutes.GET_AVALIATION_EVENT)
+    public ResponseEntity<Collection<ResponseAvaliationDto>> getAvaliationsFromEvent(
+            @PathVariable UUID idEvent) {
+        return ResponseEntity
+                .ok()
+                .body(eventService.getAvaliationsEvent(idEvent));
     }
 }

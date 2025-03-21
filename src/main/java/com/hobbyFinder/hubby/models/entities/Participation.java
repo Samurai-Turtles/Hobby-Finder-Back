@@ -31,6 +31,10 @@ public class Participation {
     private UserParticipation userParticipation;
     private ParticipationPosition position;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "avaliation_id")
+    private Avaliation avaliation;
+
     public Participation(UUID idParticipation, UUID idEvent, UUID idUser) {
         this.idParticipation = idParticipation;
         this.idEvent = idEvent;

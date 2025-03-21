@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Participation> participations;
 
+    @Transient
+    private double stars;
+
 
     public User(String email, String username, String password, String fullName) {
         this.email = email;
