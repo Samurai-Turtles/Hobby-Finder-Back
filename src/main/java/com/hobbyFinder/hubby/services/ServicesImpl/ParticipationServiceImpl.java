@@ -1,11 +1,14 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.EventException.EventNotEndedException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserIdConflictException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
+import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
@@ -18,20 +21,26 @@ import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
+import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ParticipationServiceImpl implements ParticipationInterface {
 
     @Autowired
     private EventInterface eventInterface;
+
+    @Autowired
+    private UserInterface userInterface;
 
     @Autowired
     private GetUserLogged getUserLogged;
@@ -123,24 +132,56 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdUser(), participation.getUserParticipation()));
     }
 
-    @Override
-    public List<Avaliation> getAvaliationsFromEvent(UUID idEvent) {
-        return this.participationRepository.getAvaliationByEventOrdered(idEvent);
-    }
 
     @Override
-    public void saveParticipation(Participation participation) {
+    public ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime) {
+        Event event = this.eventInterface.findEvent(idEvent);
+        this.eventInterface.checkUserParticipating(event);
+
+        if (event.getEventEnd().isBefore(requestTime)) {
+            throw new EventNotEndedException();
+        }
+
+        Participation participation = getParticipationFromEvent(event);
+        Avaliation avaliation = new Avaliation(postAvaliationDTO, participation);
+        participation.setAvaliation(avaliation);
         this.participationRepository.save(participation);
+
+        this.eventInterface.updateEventAvaliation(event.getId(), getAvgStarsByEvent(event.getId()));
+
+        UUID idEventOwner = this.eventInterface.getEventOwnerId(event);
+        this.userInterface.updateUserAvaliation(idEventOwner, getAvgStarsByUser(idEventOwner));
+        return new ResponseAvaliationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment());
     }
 
     @Override
-    public double getAvgStarsByEvent(UUID idEvent) {
+    public Collection<ResponseAvaliationDto> getEventAvaliations(UUID idEvent) {
+        Event event = this.eventInterface.findEvent(idEvent);
+        this.eventInterface.checkUserParticipating(event);
+
+        if (!(getParticipationFromEvent(event).getPosition().getRank() == 3)) {
+            throw new InadequateUserPosition();
+        }
+
+        return this.participationRepository.getAvaliationByEventOrdered(event.getId())
+                .stream()
+                .map(avl -> new ResponseAvaliationDto(avl.getId(), avl.getStars(), avl.getComment()))
+                .collect(Collectors.toList());
+    }
+
+    private Participation getParticipationFromEvent(Event event) {
+        return event.getParticipations()
+                .stream()
+                .filter(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))
+                .findFirst()
+                .orElseThrow(UserNotInEventException::new);
+    }
+
+    private double getAvgStarsByEvent(UUID idEvent) {
         return this.participationRepository.avgStarsByEvent(idEvent);
     }
 
-    @Override
-    public double getAvgStarsByUser(UUID idUser) {
+    private double getAvgStarsByUser(UUID idUser) {
         return this.participationRepository.findAverageStarsByUser(idUser);
     }
 }
-

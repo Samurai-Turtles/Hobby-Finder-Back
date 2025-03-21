@@ -95,9 +95,7 @@ public class UserService implements UserInterface {
     }
 
     @Override
-    public void updateUserAvaliation(UUID idUser) {
-        double stars = this.participationInterface.getAvgStarsByUser(idUser);
-
+    public void updateUserAvaliation(UUID idUser, double stars) {
         User user = getUser(idUser);
         user.setStars(stars);
         this.userRepository.save(user);
