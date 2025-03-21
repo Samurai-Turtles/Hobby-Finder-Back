@@ -8,6 +8,7 @@ import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import com.hobbyFinder.hubby.models.entities.Event;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
@@ -53,5 +54,10 @@ public class EventService implements EventInterface{
     public Event findEvent(UUID idEvent) {
         return eventRepository.findById(idEvent)
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
+    public void deleteEvent(UUID uuid) throws EventNotFoundException {
+        Event evento = eventRepository.findById(uuid)
+                .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
+        eventRepository.delete(evento);
+        eventRepository.flush();
     }
 }
