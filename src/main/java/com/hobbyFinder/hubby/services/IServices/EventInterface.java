@@ -33,4 +33,5 @@ public interface EventInterface {
     ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime);
 
     Collection<ResponseAvaliationDto> getAvaliationsEvent(UUID idEvent);
+    void checkUserParticipating(Event event);
 }

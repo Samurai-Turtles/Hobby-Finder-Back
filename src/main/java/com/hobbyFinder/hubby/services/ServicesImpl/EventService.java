@@ -122,7 +122,8 @@ public class EventService implements EventInterface{
                 .orElseThrow(UserNotInEventException::new);
     }
 
-    private void checkUserParticipating(Event event) {
+    @Override
+    public void checkUserParticipating(Event event) {
         if(event.getParticipations()
                 .stream()
                 .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {

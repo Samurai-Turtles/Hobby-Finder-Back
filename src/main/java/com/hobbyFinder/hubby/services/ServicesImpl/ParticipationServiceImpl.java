@@ -10,8 +10,10 @@ import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipations
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.entities.Avaliation;
+import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
@@ -105,7 +107,10 @@ public class ParticipationServiceImpl implements ParticipationInterface {
 
     @Override
     public Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable) {
-        eventInterface.findEvent(idEvent);
+        Event event = eventInterface.findEvent(idEvent);
+        if (event.getPrivacy().equals(PrivacyEnum.PRIVATE)) {
+            eventInterface.checkUserParticipating(event);
+        }
         Page<Participation> participationsPage = participationRepository.findByIdEvent(idEvent, pageable);
 
         if (participationsPage.hasContent()) {
