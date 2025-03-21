@@ -1,12 +1,14 @@
 package com.hobbyFinder.hubby.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.ServicesImpl.ParticipationServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -81,10 +83,15 @@ public class EventController {
     }
 
     @GetMapping(EventRoutes.GET_ALL_EVENT_PARTICIPATIONS)
-    public ResponseEntity<List<GetResponseParticipationEvent>> getAllParticipations(@PathVariable UUID id) {
+    public ResponseEntity<Page<GetResponseParticipationEvent>> getAllParticipations
+            (@PathVariable UUID id, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(eventService.getParticipationsEvent(id));
+                .status(HttpStatus.OK)
+                .body(participationService.getParticipationEvents(id, pageable));
+
     }
 
     @DeleteMapping(EventRoutes.EXPEL_USER_FROM_EVENT)

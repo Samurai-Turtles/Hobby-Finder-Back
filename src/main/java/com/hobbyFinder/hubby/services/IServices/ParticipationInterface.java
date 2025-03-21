@@ -1,5 +1,6 @@
 package com.hobbyFinder.hubby.services.IServices;
 
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
@@ -17,4 +18,5 @@ public interface ParticipationInterface {
     void updateParticipation(UpdateParticipationDto updateParticipationDTO);
     void deleteUserFromEvent(UUID idEvent, UUID idParticipation);
     Page<GetResponseParticipationsUser> getParticipationsUser(Pageable pageable);
+    Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable);
 }

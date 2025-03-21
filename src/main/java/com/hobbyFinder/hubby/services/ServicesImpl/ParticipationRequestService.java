@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
 import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
-import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
+import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.entities.User;

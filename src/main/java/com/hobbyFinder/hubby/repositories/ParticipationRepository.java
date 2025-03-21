@@ -16,4 +16,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
 
     @Query("SELECT p from Participation p WHERE p.idUser = :userId")
     Page<Participation> findByUserId(@Param("userId") UUID userId, Pageable pageable);
+
+    @Query("SELECT p from Participation p WHERE p.idEvent = :idEvent")
+    Page<Participation> findByIdEvent(@Param("idEvent") UUID idEvent, Pageable pageable);
 }

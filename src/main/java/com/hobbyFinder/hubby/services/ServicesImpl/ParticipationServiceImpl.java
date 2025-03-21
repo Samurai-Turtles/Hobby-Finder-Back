@@ -1,10 +1,11 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
-import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
+import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
@@ -100,6 +101,17 @@ public class ParticipationServiceImpl implements ParticipationInterface {
             throw new PageIsEmptyException("A página indicada está vazia");
         }
         return participationPage.map(participation -> new GetResponseParticipationsUser(participation.getIdEvent(), participation.getUserParticipation()));
+    }
+
+    @Override
+    public Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable) {
+        eventService.findEvent(idEvent);
+        Page<Participation> participationsPage = participationRepository.findByIdEvent(idEvent, pageable);
+
+        if (participationsPage.hasContent()) {
+            throw new PageIsEmptyException("A página indicada esta vazia");
+        }
+        return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdUser(), participation.getUserParticipation()));
     }
 }
 

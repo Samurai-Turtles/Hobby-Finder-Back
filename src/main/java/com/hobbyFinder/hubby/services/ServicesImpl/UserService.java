@@ -1,6 +1,5 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
-import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
