@@ -1,8 +1,8 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
@@ -16,11 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
@@ -93,11 +90,4 @@ public class UserService implements UserInterface {
         return new UserDTO(user.getEmail(), user.getUsername(), user.getRole());
     }
 
-    @Override
-    public List<GetResponseParticipationsUser> getParticipationsUser() {
-        User user = getUserLogged.getUserLogged();
-        return user.getParticipations().stream()
-                .map(participation -> new GetResponseParticipationsUser(participation.getIdEvent(), participation.getUserParticipation()))
-                .collect(Collectors.toList());
-    }
 }

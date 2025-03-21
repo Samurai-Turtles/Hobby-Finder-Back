@@ -22,10 +22,10 @@ public class Participation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idParticipation;
 
-    @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private UUID idEvent;
 
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UUID idUser;
 
     private UserParticipation userParticipation;

@@ -16,11 +16,13 @@ import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import jakarta.servlet.http.HttpServletRequest;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -106,9 +108,14 @@ public class UserController {
     }
 
     @GetMapping(UserRoutes.GET_ALL_USER_PARTICIPATIONS)
-    public ResponseEntity<List<GetResponseParticipationsUser>> getAllParticipationsUser() {
+    public ResponseEntity<Page<GetResponseParticipationsUser>> getAllParticipationsUser(
+        @RequestParam(defaultValue = "20") int size,
+        @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userInterface.getParticipationsUser());
+                .body(participationInterface.getParticipationsUser(pageable));
     }
 }

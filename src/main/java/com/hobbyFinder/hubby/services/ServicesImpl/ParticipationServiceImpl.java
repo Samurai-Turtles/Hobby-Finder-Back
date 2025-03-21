@@ -1,9 +1,11 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.EntityStateException.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
@@ -12,6 +14,8 @@ import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -85,6 +89,17 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         if(participation.getPosition().getRank() <= participationToDelete.getPosition().getRank()) {
             throw new InadequateUserPosition();
         }
+    }
+
+    @Override
+    public Page<GetResponseParticipationsUser> getParticipationsUser(Pageable pageable) {
+        User user = getUserLogged.getUserLogged();
+        Page<Participation> participationPage = participationRepository.findByUserId(user.getId(), pageable);
+
+        if (participationPage.hasContent()) {
+            throw new PageIsEmptyException("A página indicada está vazia");
+        }
+        return participationPage.map(participation -> new GetResponseParticipationsUser(participation.getIdEvent(), participation.getUserParticipation()));
     }
 }
 

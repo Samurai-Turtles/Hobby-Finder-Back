@@ -40,7 +40,7 @@ public class EventService implements EventInterface{
     @Override
     public List<GetResponseParticipationEvent> getParticipationsEvent(UUID idEvent) {
         Event event = findEvent(idEvent);
-        if(event.getParticipations().stream().anyMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {
+        if(event.getParticipations().stream().noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {
             throw new UserNotInEventException();
         }
         return event.getParticipations().stream()
@@ -54,9 +54,7 @@ public class EventService implements EventInterface{
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
     }
     public void deleteEvent(UUID uuid) throws EventNotFoundException {
-        Event evento = eventRepository.findById(uuid)
-                .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
-        eventRepository.delete(evento);
+        eventRepository.delete(findEvent(uuid));
         eventRepository.flush();
     }
 }

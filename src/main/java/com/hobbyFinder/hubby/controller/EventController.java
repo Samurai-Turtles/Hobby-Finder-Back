@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
+import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.ServicesImpl.ParticipationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +27,12 @@ import jdk.jshell.spi.ExecutionControl;
 @RestController
 public class EventController {
 
-    private final ParticipationServiceImpl participationServiceImpl;
+    private final ParticipationInterface participationService;
     EventService eventService;
 
-    public EventController(EventService eventService, ParticipationServiceImpl participationServiceImpl){
+    public EventController(EventService eventService, ParticipationServiceImpl participationService){
         this.eventService = eventService;
-        this.participationServiceImpl = participationServiceImpl;
+        this.participationService = participationService;
     }
 
     @PostMapping(EventRoutes.POST_EVENT)
@@ -88,7 +89,7 @@ public class EventController {
 
     @DeleteMapping(EventRoutes.EXPEL_USER_FROM_EVENT)
     public ResponseEntity<Void> deleteUserParticipationFromEvent(@PathVariable UUID idEvent, @PathVariable UUID idParticipation) {
-        participationServiceImpl.deleteUserFromEvent(idEvent, idParticipation);
+        participationService.deleteUserFromEvent(idEvent, idParticipation);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

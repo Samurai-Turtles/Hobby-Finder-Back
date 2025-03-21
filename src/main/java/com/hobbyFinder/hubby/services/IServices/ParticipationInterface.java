@@ -1,8 +1,11 @@
 package com.hobbyFinder.hubby.services.IServices;
 
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
@@ -13,4 +16,5 @@ public interface ParticipationInterface {
     void removeParticipation(UUID participationId);
     void updateParticipation(UpdateParticipationDto updateParticipationDTO);
     void deleteUserFromEvent(UUID idEvent, UUID idParticipation);
+    Page<GetResponseParticipationsUser> getParticipationsUser(Pageable pageable);
 }
