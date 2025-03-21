@@ -5,6 +5,7 @@ import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginExcep
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.models.dto.events.GetParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.user.*;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
