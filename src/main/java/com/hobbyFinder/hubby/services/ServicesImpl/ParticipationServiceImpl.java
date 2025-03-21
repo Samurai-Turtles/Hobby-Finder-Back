@@ -4,8 +4,8 @@ import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.events.ParticipationDto;
-import com.hobbyFinder.hubby.models.dto.events.UpdateParticipationDto;
+import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
+import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
@@ -13,7 +13,6 @@ import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hobbyFinder.hubby.models.entities.Event;
 
 import java.util.UUID;
 

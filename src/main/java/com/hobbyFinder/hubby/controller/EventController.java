@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.events.*;
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.services.ServicesImpl.ParticipationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,7 @@ public class EventController {
     }
 
     @GetMapping(EventRoutes.GET_ALL_EVENT_PARTICIPATIONS)
-    public ResponseEntity<List<GetParticipationEvent>> getAllParticipations(@PathVariable UUID id) {
+    public ResponseEntity<List<GetResponseParticipationEvent>> getAllParticipations(@PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(eventService.getParticipationsEvent(id));

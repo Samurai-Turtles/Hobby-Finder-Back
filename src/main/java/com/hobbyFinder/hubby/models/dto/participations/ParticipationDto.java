@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.models.dto.events;
+package com.hobbyFinder.hubby.models.dto.participations;
 
 import jakarta.validation.constraints.NotNull;
 

@@ -2,13 +2,11 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.events.GetParticipationEvent;
+import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import com.hobbyFinder.hubby.models.entities.Event;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
@@ -40,13 +38,13 @@ public class EventService implements EventInterface{
     }
 
     @Override
-    public List<GetParticipationEvent> getParticipationsEvent(UUID idEvent) {
+    public List<GetResponseParticipationEvent> getParticipationsEvent(UUID idEvent) {
         Event event = findEvent(idEvent);
         if(event.getParticipations().stream().anyMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {
             throw new UserNotInEventException();
         }
         return event.getParticipations().stream()
-                .map(participacao -> new GetParticipationEvent(participacao.getIdUser(), participacao.getUserParticipation()))
+                .map(participacao -> new GetResponseParticipationEvent(participacao.getIdUser(), participacao.getUserParticipation()))
                 .collect(Collectors.toList());
     }
 
