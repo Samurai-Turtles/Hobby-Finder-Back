@@ -12,7 +12,5 @@ public interface UserInterface {
     User getUser(UUID uuid);
     void deleteUser();
     UserDTO updateUser(UserPutDTO userDTO);
-    List<GetResponseParticipationsUser> getParticipationsUser();
-
     void updateUserAvaliation(UUID idUser);
 }

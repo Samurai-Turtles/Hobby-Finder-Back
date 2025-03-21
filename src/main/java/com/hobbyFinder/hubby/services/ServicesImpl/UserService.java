@@ -22,8 +22,8 @@ import java.util.UUID;
 @Service
 public class UserService implements UserInterface {
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     @Lazy
@@ -92,6 +92,15 @@ public class UserService implements UserInterface {
         }
         userRepository.save(user);
         return new UserDTO(user.getEmail(), user.getUsername(), user.getRole());
+    }
+
+    @Override
+    public void updateUserAvaliation(UUID idUser) {
+        double stars = this.participationInterface.getAvgStarsByUser(idUser);
+
+        User user = getUser(idUser);
+        user.setStars(stars);
+        this.userRepository.save(user);
     }
 
 }

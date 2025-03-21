@@ -6,12 +6,9 @@ import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
 import com.hobbyFinder.hubby.models.entities.Event;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public interface EventInterface {
@@ -24,7 +21,6 @@ public interface EventInterface {
      * @throws CredenciaisRegistroException se as informações de criação não estiverem corretas
      */
     public EventDto registerEvent(EventCreateDto eventCreateDto);
-    public List<GetResponseParticipationEvent> getParticipationsEvent(UUID idEvent);
     public Event findEvent(UUID idEvent);
 
     /**

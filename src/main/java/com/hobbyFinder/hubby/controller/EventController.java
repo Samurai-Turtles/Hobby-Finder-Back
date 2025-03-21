@@ -2,15 +2,15 @@ package com.hobbyFinder.hubby.controller;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
+import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
-import com.hobbyFinder.hubby.services.ServicesImpl.ParticipationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
-import com.hobbyFinder.hubby.services.ServicesImpl.EventService;
 
 import jakarta.validation.Valid;
 import jdk.jshell.spi.ExecutionControl;
@@ -34,13 +33,11 @@ import jdk.jshell.spi.ExecutionControl;
 @RestController
 public class EventController {
 
-    private final ParticipationInterface participationService;
-    EventService eventService;
+    @Autowired
+    private ParticipationInterface participationService;
 
-    public EventController(EventService eventService, ParticipationServiceImpl participationService){
-        this.eventService = eventService;
-        this.participationService = participationService;
-    }
+    @Autowired
+    private EventInterface eventService;
 
     @PostMapping(EventRoutes.POST_EVENT)
     public ResponseEntity<EventDto> post(

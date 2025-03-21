@@ -13,6 +13,7 @@ import com.hobbyFinder.hubby.models.entities.Avaliation;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
+import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ import java.util.UUID;
 
 @Service
 public class ParticipationServiceImpl implements ParticipationInterface {
+
+    @Autowired
+    private EventInterface eventInterface;
 
     @Autowired
     private GetUserLogged getUserLogged;
@@ -101,7 +105,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
 
     @Override
     public Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable) {
-        eventService.findEvent(idEvent);
+        eventInterface.findEvent(idEvent);
         Page<Participation> participationsPage = participationRepository.findByIdEvent(idEvent, pageable);
 
         if (participationsPage.hasContent()) {

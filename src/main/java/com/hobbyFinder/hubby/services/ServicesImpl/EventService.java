@@ -55,19 +55,11 @@ public class EventService implements EventInterface{
     }
 
     @Override
-    public List<GetResponseParticipationEvent> getParticipationsEvent(UUID idEvent) {
-        Event event = findEvent(idEvent);
-        checkUserParticipating(event);
-        return event.getParticipations().stream()
-                .map(participacao -> new GetResponseParticipationEvent(participacao.getIdUser(), participacao.getUserParticipation()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Event findEvent(UUID idEvent) {
         return eventRepository.findById(idEvent)
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
     }
+
     public void deleteEvent(UUID uuid) throws EventNotFoundException {
         eventRepository.delete(findEvent(uuid));
         eventRepository.flush();
