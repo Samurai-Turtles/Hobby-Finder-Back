@@ -26,13 +26,6 @@ public class EventService implements EventInterface{
     @Lazy
     private GetUserLogged getUserLogged;
 
-    @Autowired
-    @Lazy
-    private ParticipationServiceImpl participationService;
-
-    @Autowired
-    private UserInterface userInterface;
-
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
