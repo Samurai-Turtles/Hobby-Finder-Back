@@ -8,8 +8,9 @@ import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
-import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationRequestDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
+import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
@@ -100,9 +101,9 @@ public class UserController {
 
     @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
     public ResponseEntity<Void> userUpdateParticipation(
-            @PathVariable UUID eventId, @PathVariable UUID participationId, @RequestBody UpdateParticipationRequestDto updateParticipationRequestDto) {
-        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(eventId, participationId, updateParticipationRequestDto.userParticipation());
-        participationInterface.updateParticipation(updateParticipationDto);
+            @PathVariable UUID eventId, @PathVariable UUID participationId,
+            @RequestBody UpdateParticipationDto updateParticipationDto) {
+        participationInterface.updateParticipation(eventId, participationId, updateParticipationDto);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

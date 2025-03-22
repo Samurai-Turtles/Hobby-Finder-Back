@@ -8,6 +8,7 @@ import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
+import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,19 @@ public class EventController {
     public ResponseEntity<Collection<ResponseAvaliationDto>> getAvaliationsFromEvent(
             @PathVariable UUID idEvent) {
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(this.participationInterface.getEventAvaliations(idEvent));
+    }
+
+    @PutMapping(EventRoutes.PARTICIPATION_MANAGEMENT)
+    public ResponseEntity<UpdateParticipationDto> updateParticipationManagement(
+            @PathVariable UUID idEvent,
+            @PathVariable UUID idParticipation,
+            @RequestBody UpdateParticipationDto updateParticipationDto) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.participationInterface.participationManagement(idEvent, idParticipation, updateParticipationDto));
+
     }
 }

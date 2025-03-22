@@ -14,4 +14,5 @@ public class EventRoutes {
     public static final String EXPEL_USER_FROM_EVENT = EVENT_BASE + "/{idEvent}" + "/participation" + "{idParticipation}";
     public static final String POST_AVALIATION_EVENT = EVENT_BASE + "/{idEvent}" + "/evaluation";
     public static final String GET_AVALIATION_EVENT = EVENT_BASE + "/{idEvent}" + "/evaluation";
+    public static final String PARTICIPATION_MANAGEMENT = EVENT_BASE + "/{idEvent}" + "/participation" + "{idParticipation}";
 }

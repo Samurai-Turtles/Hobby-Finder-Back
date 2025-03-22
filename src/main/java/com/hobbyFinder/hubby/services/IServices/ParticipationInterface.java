@@ -19,10 +19,11 @@ public interface ParticipationInterface {
     void selfDeleteUserFromEvent(ParticipationDto participationDTO);
     Participation findParticipation(UUID participationId);
     void removeParticipation(UUID participationId);
-    void updateParticipation(UpdateParticipationDto updateParticipationDTO);
+    void updateParticipation(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO);
     void deleteUserFromEvent(UUID idEvent, UUID idParticipation);
     Page<GetResponseParticipationsUser> getParticipationsUser(Pageable pageable);
     Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable);
+    UpdateParticipationDto participationManagement(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO);
 
     ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime);
     Collection<ResponseAvaliationDto> getEventAvaliations(UUID idEvent);

@@ -17,6 +17,7 @@ import com.hobbyFinder.hubby.models.entities.Avaliation;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
@@ -72,9 +73,9 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     }
 
     @Override
-    public void updateParticipation(UpdateParticipationDto updateParticipationDTO) {
-        Participation participation = findParticipation(updateParticipationDTO.idParticipation());
-        checkEventParticipation(participation.getIdEvent(), updateParticipationDTO.idEvent());
+    public void updateParticipation(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
+        Participation participation = findParticipation(idParticipation);
+        checkEventParticipation(participation.getIdEvent(), idEvent);
         participation.setUserParticipation(updateParticipationDTO.participation());
         participationRepository.save(participation);
     }
@@ -130,6 +131,15 @@ public class ParticipationServiceImpl implements ParticipationInterface {
             throw new PageIsEmptyException("A página indicada esta vazia");
         }
         return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdUser(), participation.getUserParticipation()));
+    }
+
+    @Override
+    public UpdateParticipationDto participationManagement(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
+        Participation participation = findParticipation(idParticipation);
+        participation.setPosition(updateParticipationDTO.position());
+        participation.setUserParticipation(updateParticipationDTO.participation());
+        participationRepository.save(participation);
+        return new UpdateParticipationDto(participation.getUserParticipation(), participation.getPosition());
     }
 
 
