@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
 import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
+import com.hobbyFinder.hubby.exception.EventException.EventCrowdedException;
 import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
@@ -21,7 +22,9 @@ import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.repositories.EventRepository;
+import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.ParticipationRequestRepository;
+import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 
@@ -33,24 +36,41 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
     private GetUserLogged getUserLogged;
     private EventRepository eventRepository;
+    private UserRepository userRepository;
     private ParticipationRequestRepository requestRepository;
+    private ParticipationRepository participationRepository;
 
     @Override
     public void newParticipationRequest(UUID targetEventId) {
         User userLogged = getUserLogged.getUserLogged();
         Event targetEvent = eventRepository.getReferenceById(targetEventId);
+        boolean userAlreadyParticipate = userAlreadyParticipate(userLogged, targetEvent);
 
-        if (targetEvent.getPrivacy().name().equals("PRIVATE")) {
+        if (!userAlreadyParticipate && targetEvent.getPrivacy().name().equals("PRIVATE")) {
             ParticipationRequest newRequest = ParticipationRequest.builder()
                     .event(targetEvent)
                     .user(userLogged)
                     .build();
 
             userLogged.getRequests().add(newRequest);
+            userRepository.save(userLogged);
+            
             requestRepository.save(newRequest);
             requestRepository.flush();
-        } else {
-            // Generate a new Participation Object
+
+        } else if (!userAlreadyParticipate) {
+            checkEventCapacity(targetEventId);
+
+            Participation newParticipation = createParticipationObject(targetEventId, userLogged.getId());
+
+            participationRepository.save(newParticipation);
+            participationRepository.flush();
+
+            userLogged.getParticipations().add(newParticipation);
+            targetEvent.getParticipations().add(newParticipation);
+            
+            userRepository.save(userLogged);
+            eventRepository.save(targetEvent);
         }
     }
 
@@ -98,12 +118,26 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     }
 
     @Override
-    public void acceptRequest(UUID targetEvent, UUID targetRequestId) {
-        checkUserPositionInEvent(targetEvent);
+    public void acceptRequest(UUID targetEventId, UUID targetRequestId) {
+        checkUserPositionInEvent(targetEventId);
+        checkEventCapacity(targetEventId);
 
-        // Generate a new Participation
         ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
+        Participation newParticipation = createParticipationObject(targetEventId, targetRequest.getUser().getId());
+
+        Event targetEvent = eventRepository.getReferenceById(targetEventId);
+        targetRequest.getUser().getParticipations().add(newParticipation);
+        targetEvent.getParticipations().add(newParticipation);
+
+        eventRepository.save(targetEvent);
+        userRepository.save(targetRequest.getUser());
+
+        participationRepository.save(newParticipation);
+        participationRepository.flush();
+        
         requestRepository.delete(targetRequest);
+        requestRepository.flush();
+
     }
 
     @Override
@@ -115,6 +149,57 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     }
 
     /**
+     * Checa se o evento está com capacidade máxima.
+     * 
+     * @param targetEventId - id do evento a checar
+     */
+    private void checkEventCapacity(UUID targetEventId) {
+        Event targetEvent = eventRepository.getReferenceById(targetEventId);
+
+        if (targetEvent.getParticipations().size() >= targetEvent.getMaxUserAmount()) {
+            throw new EventCrowdedException();
+        }
+    }
+
+    /**
+     * Checa se o usuário logado já possui uma solicitação de participação ou se ele
+     * já participa do evento.
+     * 
+     * @param userLogged  - objeto que representa o usuário logado
+     * @param targetEvent - objeto que representa o evento de interesse
+     * @return - true, para um usuário que já participa ou tem uma requisição
+     *         criada; false, para um usuário que não participa nem tem uma
+     *         requisição criada.
+     */
+    private boolean userAlreadyParticipate(User userLogged, Event targetEvent) {
+        ParticipationRequest possibleRequest = requestRepository.findByUser(userLogged).stream()
+                .filter(request -> request.getEvent().equals(targetEvent)).findFirst().orElse(null);
+
+        Participation possibleParticipation = userLogged.getParticipations().stream()
+                .filter(participation -> participation.getIdEvent().equals(targetEvent.getId())).findFirst()
+                .orElse(null);
+
+        return possibleRequest != null || possibleParticipation != null;
+    }
+
+    /**
+     * Cria um objeto que representa a participação de um usuário em um evento.
+     * 
+     * @param targetEvent - o id do evento de interesse
+     * @param targetUser  - o id do usuário a participar do evento
+     * @return - um objeto participação
+     */
+    private Participation createParticipationObject(UUID targetEvent, UUID targetUser) {
+        Participation newParticipation = new Participation();
+
+        newParticipation.setIdEvent(targetEvent);
+        newParticipation.setIdUser(targetUser);
+        newParticipation.setPosition(ParticipationPosition.PARTICIPANT);
+
+        return newParticipation;
+    }
+
+    /**
      * Checa se o usuário tem cargo de gerência
      * 
      * @param targetEventId - representa o id do evento alvo
@@ -123,7 +208,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         User userLogged = getUserLogged.getUserLogged();
 
         Participation targetParticipation = userLogged.getParticipations().stream()
-                .filter(participation -> participation.getIdEvent() == targetEventId).findFirst()
+                .filter(participation -> participation.getIdEvent().equals(targetEventId)).findFirst()
                 .orElseThrow(() -> new NotFoundException("Usuário não participa do evento informado."));
 
         if (targetParticipation.getPosition().equals(ParticipationPosition.PARTICIPANT)) {
