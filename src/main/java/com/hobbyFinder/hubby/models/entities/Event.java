@@ -42,7 +42,7 @@ public class Event {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private ParticipationRequest requests;
+    private List<ParticipationRequest> requests;
 
     private int maxUserAmount;
 
