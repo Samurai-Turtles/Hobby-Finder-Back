@@ -3,12 +3,14 @@ package com.hobbyFinder.hubby.models.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Local {
 
     @Column(nullable = false)

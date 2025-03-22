@@ -3,10 +3,7 @@ package com.hobbyFinder.hubby.models.entities;
 import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,20 +11,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 public class Avaliation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
     private UUID id;
 
-    @Column(nullable = false)
     @Size(min = 0, max = 5)
-    @Getter
     private int stars;
 
-    @Column()
-    @Getter
+    @Column
     private String comment;
 
     @OneToOne

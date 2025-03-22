@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ParticipationPosition {
 
-    CREATOR(3),
-    ADMIN(2),
-    PARTICIPANT(1);
+    PARTICIPANT(0),
+    ADMIN(1),
+    CREATOR(2);
 
     private int rank;
 

@@ -1,10 +1,17 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.EventException.InvalidDateException;
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.events.LocalDto;
+import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Local;
+import com.hobbyFinder.hubby.models.entities.Participation;
+import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
+import com.hobbyFinder.hubby.repositories.ParticipationRepository;
+import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -14,6 +21,8 @@ import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -23,16 +32,60 @@ public class EventService implements EventInterface{
     private EventRepository eventRepository;
 
     @Autowired
+    private ParticipationRepository participationRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     @Lazy
     private GetUserLogged getUserLogged;
 
     @Override
     public void registerEvent(EventCreateDto eventCreateDto) {
-        Local local = new Local(eventCreateDto.local().street(), eventCreateDto.local().district(), eventCreateDto.local().number(),
-                eventCreateDto.local().city(), eventCreateDto.local().state());
-        Event event = new Event(eventCreateDto.Name(), eventCreateDto.begin(), eventCreateDto.end(),
-                local, eventCreateDto.privacy(), eventCreateDto.description(), eventCreateDto.maxUserAmount());
+        checkValidData(eventCreateDto.begin(), eventCreateDto.end());
+
+        Local local = Local.builder().street(eventCreateDto.local().street())
+                .district(eventCreateDto.local().district())
+                .number(eventCreateDto.local().number())
+                .city(eventCreateDto.local().city())
+                .state(eventCreateDto.local().state()).build();
+
+        Event event = Event.builder().name(eventCreateDto.Name())
+                .EventBegin(eventCreateDto.begin())
+                .EventEnd(eventCreateDto.end())
+                .local(local)
+                .privacy(eventCreateDto.privacy())
+                .description(eventCreateDto.description())
+                .maxUserAmount(eventCreateDto.maxUserAmount())
+                .participations(new ArrayList<Participation>())
+                .build();
+
+        Participation participation= newParticipation(new ParticipationCreateDto(event.getId(), getUserLogged.getUserLogged().getId(),
+                UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.CREATOR));
+        event.getParticipations().add(participation);
+
+        User user = getUserLogged.getUserLogged();
+        user.getParticipations().add(participation);
+        this.userRepository.save(user);
         this.eventRepository.save(event);
+    }
+
+    private void checkValidData(LocalDateTime begin, LocalDateTime end) {
+        if (begin.isAfter(end)) {
+            throw new InvalidDateException();
+        }
+    }
+
+    private Participation newParticipation(ParticipationCreateDto participationDTO) {
+        Participation participation = Participation.builder().idEvent(participationDTO.idEvent())
+                .idUser(participationDTO.idUser())
+                .userParticipation(participationDTO.userParticipation())
+                .position(participationDTO.participationPosition())
+                .avaliation(null)
+                .build();
+        participationRepository.save(participation);
+        return participation;
     }
 
     @Override

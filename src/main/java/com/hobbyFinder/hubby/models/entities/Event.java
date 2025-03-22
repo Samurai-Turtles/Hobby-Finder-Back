@@ -41,7 +41,6 @@ public class Event {
     @Column(nullable = false)
     private String description;
 
-    @Column(name = "max_user_amount", nullable = false)
     private int maxUserAmount;
 
     @Transient
@@ -59,5 +58,6 @@ public class Event {
         this.description = description;
         this.maxUserAmount = maxUserAmount;
         this.participations = new ArrayList<>();
+        this.avaliationStars = 0;
     }
 }

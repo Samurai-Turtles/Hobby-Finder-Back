@@ -9,16 +9,14 @@ import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserIdConflictExc
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
-import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
-import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
+import com.hobbyFinder.hubby.models.dto.participations.*;
 import com.hobbyFinder.hubby.models.entities.Avaliation;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
+import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
@@ -89,8 +87,6 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         removeParticipation(idParticipation);
     }
 
-    //essa função auxilia a lançar excecao de apenas um lugar e pode ser refatorada para quando houver uma possível
-    //verificação de id usuário e id do evento.
     private void checkEventParticipation(UUID eventId, UUID participationEventId) {
         if(!eventId.equals(participationEventId)) {
             throw new IncorrectEventIdParticipation();
@@ -141,7 +137,6 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         participationRepository.save(participation);
         return new UpdateParticipationDto(participation.getUserParticipation(), participation.getPosition());
     }
-
 
     @Override
     public ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime) {

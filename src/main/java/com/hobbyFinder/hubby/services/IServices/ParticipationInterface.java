@@ -2,10 +2,7 @@ package com.hobbyFinder.hubby.services.IServices;
 
 import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
-import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
-import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
+import com.hobbyFinder.hubby.models.dto.participations.*;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
