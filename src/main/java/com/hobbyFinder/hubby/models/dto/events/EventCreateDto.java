@@ -2,7 +2,6 @@ package com.hobbyFinder.hubby.models.dto.events;
 
 import java.time.LocalDateTime;
 
-import com.hobbyFinder.hubby.models.dto.LocalDto;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 import jakarta.validation.Valid;
@@ -22,5 +21,5 @@ public record EventCreateDto(
 
                 @NotNull String description,
 
-                int MaxUserAmmount) {
+                int maxUserAmount) {
 }

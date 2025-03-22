@@ -1,8 +1,6 @@
-package com.hobbyFinder.hubby.models.dto;
+package com.hobbyFinder.hubby.models.dto.events;
 
 public record LocalDto(
-        double latitude,
-        double longitude,
         String street,
         String district,
         String number,

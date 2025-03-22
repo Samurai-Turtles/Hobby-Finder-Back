@@ -3,7 +3,6 @@ package com.hobbyFinder.hubby.models.dto.events;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.hobbyFinder.hubby.models.dto.LocalDto;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventDto(

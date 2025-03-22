@@ -19,7 +19,7 @@ public interface EventRepository extends JpaRepository<Event, UUID>{
     Event findByName(String name);
     List<Event> findByLocal(Local local);
     List<Event> findByPrivacy(PrivacyEnum privacy);
-    List<Event> findByMaxUserAmout(int maxUserAmout);
+    List<Event> findByMaxUserAmount(int maxUserAmout);
     List<Event> findByDescription(String description);
 
 

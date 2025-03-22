@@ -41,11 +41,12 @@ public class EventController {
     private EventInterface eventService;
 
     @PostMapping(EventRoutes.POST_EVENT)
-    public ResponseEntity<EventDto> post(
+    public ResponseEntity<Void> post(
             @RequestBody @Valid EventCreateDto eventCreateDto) {
+        eventService.registerEvent(eventCreateDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventService.registerEvent(eventCreateDto));
+                .build();
     }
 
     @GetMapping(EventRoutes.GET_EVENT_BY_AUTH_USER)

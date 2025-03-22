@@ -2,15 +2,15 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import com.hobbyFinder.hubby.models.entities.Local;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
-import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 
@@ -20,19 +20,19 @@ import java.util.UUID;
 public class EventService implements EventInterface{
 
     @Autowired
-    private final EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Autowired
     @Lazy
     private GetUserLogged getUserLogged;
 
-    public EventService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
-
     @Override
-    public EventDto registerEvent(EventCreateDto eventCreateDto) {
-        return null;
+    public void registerEvent(EventCreateDto eventCreateDto) {
+        Local local = new Local(eventCreateDto.local().street(), eventCreateDto.local().district(), eventCreateDto.local().number(),
+                eventCreateDto.local().city(), eventCreateDto.local().state());
+        Event event = new Event(eventCreateDto.Name(), eventCreateDto.begin(), eventCreateDto.end(),
+                local, eventCreateDto.privacy(), eventCreateDto.description(), eventCreateDto.maxUserAmount());
+        this.eventRepository.save(event);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class EventService implements EventInterface{
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
     }
 
-    public void deleteEvent(UUID uuid) throws EventNotFoundException {
+    public void deleteEvent(UUID uuid) {
         eventRepository.delete(findEvent(uuid));
         eventRepository.flush();
     }

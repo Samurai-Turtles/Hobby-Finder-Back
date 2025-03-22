@@ -8,16 +8,14 @@ import java.util.UUID;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
-@Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Event {
 
     @Id
@@ -43,11 +41,23 @@ public class Event {
     @Column(nullable = false)
     private String description;
 
-    private int maxUserAmout;
+    @Column(name = "max_user_amount", nullable = false)
+    private int maxUserAmount;
 
     @Transient
     private double avaliationStars;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations;
+
+    public Event(String name, LocalDateTime eventBegin, LocalDateTime eventEnd, Local local, PrivacyEnum privacy, String description, int maxUserAmount) {
+        this.name = name;
+        this.EventBegin = eventBegin;
+        this.EventEnd = eventEnd;
+        this.local = local;
+        this.privacy = privacy;
+        this.description = description;
+        this.maxUserAmount = maxUserAmount;
+        this.participations = new ArrayList<>();
+    }
 }
