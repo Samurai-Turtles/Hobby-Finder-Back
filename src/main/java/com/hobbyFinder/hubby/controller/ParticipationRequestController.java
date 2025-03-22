@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hobbyFinder.hubby.controller.routes.ParticipationRequestRoutes;
-import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
+import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
+import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
 import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
 
 import lombok.AllArgsConstructor;
@@ -35,24 +36,24 @@ public class ParticipationRequestController {
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_EVENT)
-    public ResponseEntity<Page<ParticipationRequest>> getParticipationRequestsByEvent(
+    public ResponseEntity<Page<ParticipationRequestEventDto>> getParticipationRequestsByEvent(
             @PathVariable UUID targetEventId,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ParticipationRequest> requestPages = participationRequest.getAllEventRequests(targetEventId, pageable);
+        Page<ParticipationRequestEventDto> requestPages = participationRequest.getAllEventRequests(targetEventId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(requestPages);
     }
 
     @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_USER)
-    public ResponseEntity<Page<ParticipationRequest>> getParticipationRequestsByUser(
+    public ResponseEntity<Page<ParticipationRequestUserDto>> getParticipationRequestsByUser(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ParticipationRequest> requestPage = participationRequest.getAllUserRequests(pageable);
+        Page<ParticipationRequestUserDto> requestPage = participationRequest.getAllUserRequests(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(requestPage);
     }

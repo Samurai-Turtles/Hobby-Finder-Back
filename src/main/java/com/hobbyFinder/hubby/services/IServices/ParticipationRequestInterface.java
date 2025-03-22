@@ -5,7 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
+import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
+import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
 
 public interface ParticipationRequestInterface {
 
@@ -24,7 +25,7 @@ public interface ParticipationRequestInterface {
      * @param pageable      - um objeto que permite definir os padrões de paginação
      *                      da listagem
      */
-    Page<ParticipationRequest> getAllEventRequests(UUID targetEventId, Pageable pageable);
+    Page<ParticipationRequestEventDto> getAllEventRequests(UUID targetEventId, Pageable pageable);
 
     /**
      * Busca todas as solicitações de participação registradas por um usuário.
@@ -32,7 +33,7 @@ public interface ParticipationRequestInterface {
      * @param pageable - um objeto que permite definir os padrões de paginação
      *                 da listagem
      */
-    Page<ParticipationRequest> getAllUserRequests(Pageable pageable);
+    Page<ParticipationRequestUserDto> getAllUserRequests(Pageable pageable);
 
     /**
      * Deleta uma solicitação criada previamente pelo usuário conectado.
