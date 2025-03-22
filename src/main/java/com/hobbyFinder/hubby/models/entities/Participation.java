@@ -35,12 +35,12 @@ public class Participation {
     @JoinColumn(name = "avaliation_id")
     private Avaliation avaliation;
 
-    public Participation(UUID idParticipation, UUID idEvent, UUID idUser) {
-        this.idParticipation = idParticipation;
+    public Participation(UUID idEvent, UUID idUser) {
         this.idEvent = idEvent;
         this.idUser = idUser;
         this.userParticipation = UserParticipation.UNCONFIRMED_PRESENCE;
         this.position = ParticipationPosition.PARTICIPANT;
+        this.avaliation = new Avaliation();
     }
 
 }

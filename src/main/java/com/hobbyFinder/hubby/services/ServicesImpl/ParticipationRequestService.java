@@ -140,7 +140,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
      */
     private EventRequestResponse mappingToEventResponse(Event event) {
         return new EventRequestResponse(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(),
-                event.getPrivacy().name(), event.getMaxUserAmout(),
+                event.getPrivacy().name(), event.getMaxUserAmount(),
                 event.getParticipations().size());
     }
 

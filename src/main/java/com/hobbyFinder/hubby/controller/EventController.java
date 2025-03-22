@@ -109,7 +109,7 @@ public class EventController {
     @PostMapping(EventRoutes.POST_AVALIATION_EVENT)
     public ResponseEntity<ResponseAvaliationDto> postAvaliationEvent(
             @PathVariable UUID idEvent,
-            @RequestBody PostAvaliationDto postAvaliationDto) {
+            @RequestBody @Valid PostAvaliationDto postAvaliationDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(this.participationInterface.evaluateEvent(idEvent, postAvaliationDto, LocalDateTime.now()));
@@ -127,7 +127,7 @@ public class EventController {
     public ResponseEntity<UpdateParticipationDto> updateParticipationManagement(
             @PathVariable UUID idEvent,
             @PathVariable UUID idParticipation,
-            @RequestBody UpdateParticipationDto updateParticipationDto) {
+            @RequestBody @Valid UpdateParticipationDto updateParticipationDto) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)

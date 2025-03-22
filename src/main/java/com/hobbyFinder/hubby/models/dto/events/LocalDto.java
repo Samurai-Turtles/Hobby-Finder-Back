@@ -1,9 +1,11 @@
 package com.hobbyFinder.hubby.models.dto.events;
 
+import jakarta.validation.constraints.NotNull;
+
 public record LocalDto(
-        String street,
-        String district,
-        String number,
-        String city,
-        String state) {
+        @NotNull String street,
+        @NotNull String district,
+        @NotNull String number,
+        @NotNull String city,
+        @NotNull String state) {
 }

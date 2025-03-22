@@ -15,6 +15,7 @@ import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,14 +48,14 @@ public class UserController {
     }
 
     @PostMapping(UserRoutes.LOGIN)
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthDTO request) throws CredenciaisLoginException {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthDTO request) throws CredenciaisLoginException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(authInterface.loginUsuario(request));
     }
 
     @PostMapping(UserRoutes.POST_USER)
-    public ResponseEntity<Void> register(@RequestBody RegisterDTO request) throws CredenciaisRegistroException {
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO request) throws CredenciaisRegistroException {
         authInterface.registroUsuario(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -62,7 +63,7 @@ public class UserController {
     }
 
     @PutMapping(UserRoutes.PUT_AUTH_USER)
-    public ResponseEntity<UserDTO> put(@RequestBody UserPutDTO userPutDto) throws HubbyException {
+    public ResponseEntity<UserDTO> put(@RequestBody @Valid UserPutDTO userPutDto) throws HubbyException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userInterface.updateUser(userPutDto));
@@ -91,7 +92,7 @@ public class UserController {
 
     //deleta sua própria participacao
     @DeleteMapping(UserRoutes.USER_DELETE_PARTICIPATION)
-    public ResponseEntity<Void> userDeleteParticipation( @PathVariable UUID eventId, @PathVariable UUID participationId) {
+    public ResponseEntity<Void> userDeleteParticipation(@PathVariable UUID eventId, @PathVariable UUID participationId) {
         ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
         participationInterface.selfDeleteUserFromEvent(participationDto);
         return ResponseEntity
@@ -102,7 +103,7 @@ public class UserController {
     @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
     public ResponseEntity<Void> userUpdateParticipation(
             @PathVariable UUID eventId, @PathVariable UUID participationId,
-            @RequestBody UpdateParticipationDto updateParticipationDto) {
+            @RequestBody @Valid UpdateParticipationDto updateParticipationDto) {
         participationInterface.updateParticipation(eventId, participationId, updateParticipationDto);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
