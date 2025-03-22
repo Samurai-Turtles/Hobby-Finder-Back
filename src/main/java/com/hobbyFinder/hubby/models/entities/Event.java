@@ -41,6 +41,9 @@ public class Event {
     @Column(nullable = false)
     private String description;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private ParticipationRequest requests;
+
     private int maxUserAmount;
 
     @Transient
