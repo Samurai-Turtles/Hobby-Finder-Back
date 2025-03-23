@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
@@ -11,6 +12,8 @@ import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public class RequestConstants {
+
+        public static final String URI_EVENT_CONTEXT = EventRoutes.EVENT_BASE + "/{targetEventId}/request"; 
 
         public static final String STREET_EVENT1 = "Street 1";
         public static final String DISTRICT_EVENT1 = "District 1";

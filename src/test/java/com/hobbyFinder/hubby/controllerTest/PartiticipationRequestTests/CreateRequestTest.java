@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.beans.Transient;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.w3c.dom.events.EventException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.EventException.EventExceptionsMessages;
-import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
-import com.hobbyFinder.hubby.models.entities.Participation;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.ParticipationRequestRepository;
 
@@ -80,8 +75,9 @@ public class CreateRequestTest {
     @Transactional
     @DisplayName("Solicitação registrada com sucesso")
     void testNovaSolicitacao() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(0).getId()));
         Long preExecution = requestRepository.count();
-        String uri = EventRoutes.EVENT_BASE + "/" + eventRepository.findAll().get(0).getId() + "/request";
 
         driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,8 +91,8 @@ public class CreateRequestTest {
     @Transactional
     @DisplayName("Solicitação com id de evento inválido")
     void testIdEventoInvalido() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}", String.valueOf(9999L));
         Long preExecution = requestRepository.count();
-        String uri = EventRoutes.EVENT_BASE + "/" + 9999L + "/request";
 
         driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,31 +107,42 @@ public class CreateRequestTest {
     @Transactional
     @DisplayName("Solicitação para participar de um evento cheio")
     void testIdEventoCheio() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(1).getId()));
         Long preExecution = requestRepository.count();
-        String uri = EventRoutes.EVENT_BASE + "/" + eventRepository.findAll().get(1).getId() + "/request";
 
-        driver.perform(post(uri)
+        String responseJsonString = driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals(preExecution, requestRepository.findAll().size());
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertAll(
+                () -> assertEquals(preExecution, requestRepository.findAll().size()),
+                () -> assertEquals(customErrorType.getMessage(), EventExceptionsMessages.EVENT_CROWDED));
     }
 
     @Test
     @Transactional
     @DisplayName("Solicitação para participar de um evento ao que o usuário já participa")
     void testUserJaParticipando() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(1).getId()));
         Long preExecution = requestRepository.count();
-        String uri = EventRoutes.EVENT_BASE + "/" + eventRepository.findAll().get(1).getId() + "/request";
 
-        driver.perform(post(uri)
+        String responseJsonString = driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + tokenCreator))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andReturn().getResponse().getContentAsString();
 
-        assertEquals(preExecution, requestRepository.findAll().size());
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertAll(
+                () -> assertEquals(preExecution, requestRepository.findAll().size()),
+                () -> assertEquals(customErrorType.getMessage(), ParticipationExceptionsMessages.USER_ALREADY_PARTICIPATE));
     }
 
 }
