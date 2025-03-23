@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
-public class EventService implements EventInterface{
+public class EventService implements EventInterface {
 
     @Autowired
     private EventRepository eventRepository;
@@ -62,8 +62,10 @@ public class EventService implements EventInterface{
                 .build();
 
         this.eventRepository.save(event);
-        Participation participation= newParticipation(new ParticipationCreateDto(event.getId(), getUserLogged.getUserLogged().getId(),
-                UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.CREATOR));
+
+        Participation participation = newParticipation(
+                new ParticipationCreateDto(event.getId(), getUserLogged.getUserLogged().getId(),
+                        UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.CREATOR));
         event.getParticipations().add(participation);
 
         User user = getUserLogged.getUserLogged();
@@ -109,7 +111,7 @@ public class EventService implements EventInterface{
 
     @Override
     public void checkUserParticipating(Event event) {
-        if(event.getParticipations()
+        if (event.getParticipations()
                 .stream()
                 .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {
             throw new UserNotInEventException();

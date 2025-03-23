@@ -54,6 +54,7 @@ public class User implements UserDetails {
         this.role = UserRole.USER;
         this.interests = new ArrayList<>();
         this.participations = new ArrayList<>();
+        this.requests = new ArrayList<>();
     }
 
     @Override
