@@ -9,8 +9,6 @@ import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipations
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.dto.user.*;
-import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
-import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;

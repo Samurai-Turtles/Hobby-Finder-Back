@@ -84,8 +84,46 @@ public class LoginTest {
 
     @Transactional
     @Test
-    @DisplayName("Login com usuario inexistente")
-    void testLoginUserInexistente() throws Exception {
+    @DisplayName("Login com e-mail inexistente")
+    void testLoginEmailInexistente() throws Exception {
+
+        AuthDTO authDTOInexistente = new AuthDTO(
+                UserConstants.LOGIN_INEXISTENTE,
+                UserConstants.USER2_PASSWORD);
+
+        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authDTOInexistente)))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS, result.getMessage());
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Login com username inexistente")
+    void testLoginUserInexistente() throws Exception { // TODO
+
+        AuthDTO authDTOInexistente = new AuthDTO(
+                UserConstants.LOGIN_INEXISTENTE,
+                UserConstants.PASSWORD_NAO_UTILIZADA);
+
+        String responseJsonString = driver.perform(post(UserRoutes.LOGIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authDTOInexistente)))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType result = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(AuthExceptionsMessages.INVALID_LOGIN_CREDENTIALS, result.getMessage());
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Login com senha errada")
+    void testLoginSenhaErrada() throws Exception { // TODO
 
         AuthDTO authDTOInexistente = new AuthDTO(
                 UserConstants.LOGIN_INEXISTENTE,

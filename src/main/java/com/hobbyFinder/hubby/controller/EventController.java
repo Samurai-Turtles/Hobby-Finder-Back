@@ -50,16 +50,6 @@ public class EventController {
                 .build();
     }
 
-    @GetMapping(EventRoutes.GET_EVENT_BY_AUTH_USER)
-    public ResponseEntity<EventPageDto> getByAuthUser(
-            @RequestParam double latitude,
-            @RequestParam double longitude,
-            @RequestParam int eventsByPage,
-            @RequestParam int pageNumber,
-            @RequestParam String Name) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
-    }
-
     @GetMapping(EventRoutes.GET_EVENT_BY_USER_ID)
     public ResponseEntity<EventPageDto> getByUserId(
             @PathVariable UUID id,

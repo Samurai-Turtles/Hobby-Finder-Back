@@ -49,7 +49,14 @@ public class Event {
     @Transient
     private double avaliationStars;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "photo_id")
+    private Photo photo = new Photo();
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations;
-
 }

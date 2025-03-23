@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.UserTests;
+package com.hobbyFinder.hubby.controllerTest.EventTests;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-@DisplayName("Testes de rota: deleção de usuário")
-// TODO
-public class DeleteTest {
+@DisplayName("Testes de rota: obter evento por identificador de Evento")
+public class GetAvaliations {
 }

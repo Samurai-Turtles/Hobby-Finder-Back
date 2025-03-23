@@ -41,7 +41,9 @@ public class User implements UserDetails {
     private List<InterestEnum> interests;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Participation> participations;
-
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "photo_id")
+    private Photo photo = new Photo();
     @Transient
     private double stars;
 
@@ -61,6 +63,10 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public boolean isSameUser(User user) {
+        return this.id.equals(user.getId());
     }
 
     @Override

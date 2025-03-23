@@ -43,6 +43,8 @@ public class EventService implements EventInterface {
 
     @Override
     public void registerEvent(EventCreateDto eventCreateDto) {
+        User userCreated = getUserLogged.getUserLogged();
+
         checkValidData(eventCreateDto.begin(), eventCreateDto.end());
 
         Local local = Local.builder().street(eventCreateDto.local().street())
@@ -59,6 +61,7 @@ public class EventService implements EventInterface {
                 .description(eventCreateDto.description())
                 .maxUserAmount(eventCreateDto.maxUserAmount())
                 .participations(new ArrayList<Participation>())
+                .creator(userCreated)
                 .build();
 
         this.eventRepository.save(event);
@@ -120,11 +123,6 @@ public class EventService implements EventInterface {
 
     @Override
     public UUID getEventOwnerId(Event event) {
-        return event.getParticipations()
-                .stream()
-                .filter(p -> p.getPosition().getRank() == 3)
-                .findFirst()
-                .get()
-                .getIdUser();
+        return event.getCreator().getId();
     }
 }

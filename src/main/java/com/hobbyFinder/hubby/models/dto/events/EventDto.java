@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.models.dto.events;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventDto(
@@ -14,5 +15,6 @@ public record EventDto(
         PrivacyEnum privacy,
         String description,
         int MaxUserAmmount,
-        int userCount) {
+        int userCount,
+        PhotoDto photoDto) {
 }

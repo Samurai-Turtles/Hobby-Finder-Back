@@ -9,6 +9,7 @@ services:
       APPLICATION_NAME: ${APPLICATION_NAME}
     depends_on:
       - postgres
+      - fakeaws
     ports:
       - "8080:${SPRING_PORT}"
 
@@ -24,3 +25,17 @@ services:
       - ./data/postgresql:/var/lib/postgresql/data
     ports:
       - '5432:${DB_PORT}'
+
+  fakeaws:
+    image: minio/minio
+    ports:
+      - '9000:${FAKE_AWS_PORT}'
+      - '9001:${FAKE_AWS_CONSOLE_PORT}'
+    environment:
+      MINIO_ROOT_USER: ${FAKE_AWS_USER}
+      MINIO_ROOT_PASSWORD: ${FAKE_AWS_PSWD}
+    volumes:
+      - ./data/minio:/data
+    restart: unless-stopped
+    container_name: fakeaws
+    command: server /data --console-address ":9001"
