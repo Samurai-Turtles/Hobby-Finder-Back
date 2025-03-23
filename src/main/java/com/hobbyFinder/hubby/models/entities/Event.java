@@ -52,15 +52,4 @@ public class Event {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations;
 
-    public Event(String name, LocalDateTime eventBegin, LocalDateTime eventEnd, Local local, PrivacyEnum privacy, String description, int maxUserAmount) {
-        this.name = name;
-        this.EventBegin = eventBegin;
-        this.EventEnd = eventEnd;
-        this.local = local;
-        this.privacy = privacy;
-        this.description = description;
-        this.maxUserAmount = maxUserAmount;
-        this.participations = new ArrayList<>();
-        this.avaliationStars = 0;
-    }
 }
