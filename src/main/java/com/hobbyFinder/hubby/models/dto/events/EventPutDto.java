@@ -11,5 +11,5 @@ public record EventPutDto(
         LocalDto local,
         PrivacyEnum privacy,
         String description,
-        int MaxUserAmmount) {
+        Integer maxUserAmount) {
 }
