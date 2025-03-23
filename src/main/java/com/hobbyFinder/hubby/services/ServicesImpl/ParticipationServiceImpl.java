@@ -72,10 +72,10 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     }
 
     @Override
-    public void updateParticipation(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
+    public void updateParticipation(UUID idEvent, UUID idParticipation, UserParticipation userParticipation) {
         Participation participation = findParticipation(idParticipation);
         checkEventParticipation(participation.getIdEvent(), idEvent);
-        participation.setUserParticipation(updateParticipationDTO.participation());
+        participation.setUserParticipation(userParticipation);
         participationRepository.save(participation);
     }
 

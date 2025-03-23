@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface EventInterface {
 
-    void registerEvent(EventCreateDto eventCreateDto);
+    EventDto registerEvent(EventCreateDto eventCreateDto);
     Event findEvent(UUID idEvent);
     void checkPermission(UUID idEvent);
     void deleteEvent(UUID uuid);

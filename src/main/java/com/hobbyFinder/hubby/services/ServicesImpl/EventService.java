@@ -47,7 +47,7 @@ public class EventService implements EventInterface {
     private GetUserLogged getUserLogged;
 
     @Override
-    public void registerEvent(EventCreateDto eventCreateDto) {
+    public EventDto registerEvent(EventCreateDto eventCreateDto) {
         checkValidData(eventCreateDto.begin(), eventCreateDto.end());
 
         Local local = Local.builder().street(eventCreateDto.local().street())
@@ -77,6 +77,13 @@ public class EventService implements EventInterface {
         user.getParticipations().add(participation);
         this.userRepository.save(user);
         this.eventRepository.save(event);
+        return postEventDto(event, local);
+    }
+
+    private EventDto postEventDto(Event event, Local local) {
+        LocalDto localDto = new LocalDto(local.getStreet(), local.getDistrict(), local.getNumber(), local.getCity(), local.getState());
+        return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
+                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size());
     }
 
     private void checkValidData(LocalDateTime begin, LocalDateTime end) {
