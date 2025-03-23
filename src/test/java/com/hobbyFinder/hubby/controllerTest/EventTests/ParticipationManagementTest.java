@@ -7,13 +7,13 @@ import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
+import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
-import com.hobbyFinder.hubby.util.GetUserLogged;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,16 +29,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-@DisplayName("Testes de rota: criação de evento")
-public class DeleteUserParticipationTest {
+@DisplayName("Gerenciamento de participação.")
+public class ParticipationManagementTest {
 
     @Autowired
     private MockMvc driver;
@@ -52,9 +52,9 @@ public class DeleteUserParticipationTest {
     private ParticipationRepository participationRepository;
     @Autowired
     private EventRepository eventRepository;
-    private String token;
     @Autowired
     private UserRepository userRepository;
+    private String token;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -76,7 +76,7 @@ public class DeleteUserParticipationTest {
         return eventRepository.findAll().get(0).getId();
     }
 
-    private UUID createSecondUserParticipation() throws Exception {
+    private UUID createParticipation() throws Exception {
 
         UUID idEvent = getEventId();
         Participation newParticipation =
@@ -95,60 +95,69 @@ public class DeleteUserParticipationTest {
 
     @Transactional
     @Test
-    @DisplayName("Usuário expulsa outro usuário com sucesso.")
-    void testExpelSucess() throws Exception {
+    @DisplayName("Gerenciamento de participação bem sucedido")
+    void participationManagementSucess() throws Exception {
 
         UUID idEvent = getEventId();
-        UUID idNewParticipation = createSecondUserParticipation();
+        UUID newParticipation = createParticipation();
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        driver.perform(delete(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idNewParticipation)
-                .header("Authorization", "Bearer " + token))
-                .andExpect(status().isNoContent());
-
+        driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(updateParticipationDto)))
+                .andExpect(status().isOk());
     }
 
     @Transactional
     @Test
-    @DisplayName("Usuário passa um evento não cadastrado")
-    void testExpelIncorrectEvent() throws Exception {
+    @DisplayName("Identificador de evento não encontrado.")
+    void participationManagementFailEvent() throws Exception {
 
         UUID idEvent = UUID.randomUUID();
-        UUID idNewParticipation = createSecondUserParticipation();
+        UUID newParticipation = createParticipation();
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        String responseJsonString = driver.perform(delete(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idNewParticipation)
-                        .header("Authorization", "Bearer " + token))
+        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(updateParticipationDto)))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(customErrorType.getMessage(), "Evento não encontrado.");
-
+        assertEquals(customErrorType.getMessage(),"Evento não encontrado.");
     }
 
     @Transactional
     @Test
-    @DisplayName("Identificador de participação não encontrado")
-    void testExpelIncorrectParticipation() throws Exception {
+    @DisplayName("Identificador de participação não encontrado.")
+    void participationManagementFailParticipation() throws Exception {
 
         UUID idEvent = getEventId();
-        UUID idNewParticipation = UUID.randomUUID();
+        UUID newParticipation = UUID.randomUUID();
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        String responseJsonString = driver.perform(delete(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idNewParticipation)
-                        .header("Authorization", "Bearer " + token))
+        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(updateParticipationDto)))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(customErrorType.getMessage(), "Participação não encontrada!");
+        assertEquals(customErrorType.getMessage(),"Participação não encontrada!");
     }
 
     @Transactional
     @Test
-    @DisplayName("Cargo do usuário não é superior ao cargo de quem está deletando a participação.")
-    void testExpelIncorrectParticipationPosition() throws Exception {
+    @DisplayName("Cargo do participante a ser atualizado é inferior ou igual ao usuário logado")
+    void participationManagementIncorrectPosition() throws Exception {
 
         UUID idEvent = getEventId();
-        UUID idNewParticipation = createSecondUserParticipation();
+        UUID idParticipation = eventRepository.findById(idEvent).get().getParticipations().get(0).getIdParticipation();
+        createParticipation();
+        UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
         driver.perform(post(UserRoutes.LOGOUT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,14 +167,15 @@ public class DeleteUserParticipationTest {
         //Logando o outro usuário.
         String segundoToken = userSeeder.loginSegundoUser();
 
-        String responseJsonString = driver.perform(delete(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idNewParticipation)
-                        .header("Authorization", "Bearer " + segundoToken))
+        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idParticipation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + segundoToken)
+                        .content(objectMapper.writeValueAsString(updateParticipationDto)))
                 .andExpect(status().isUnprocessableEntity())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
         assertEquals(customErrorType.getMessage(), ParticipationExceptionsMessages.USER_POSITION_DENIED);
-
     }
 
 }

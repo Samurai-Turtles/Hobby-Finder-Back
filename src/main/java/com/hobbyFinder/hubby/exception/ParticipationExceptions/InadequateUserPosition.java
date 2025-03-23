@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
 public class InadequateUserPosition extends HubbyException {
     public InadequateUserPosition() {
-        super(ParticipationExceptionsMessages.USER_DELETE_DENIED);
+        super(ParticipationExceptionsMessages.USER_POSITION_DENIED);
     }
 }

@@ -135,6 +135,15 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     @Override
     public UpdateParticipationDto participationManagement(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
         Participation participation = findParticipation(idParticipation);
+        eventInterface.findEvent(idEvent);
+        User user = getUserLogged.getUserLogged();
+        Participation myParticipation = user.getParticipations().stream()
+                .filter(p -> p.getIdEvent().equals(idEvent))
+                .findFirst()
+                .orElseThrow(() -> new ParticipationNotFoundException("Participação não encontrada."));
+        if(participation.getPosition().getRank() >= myParticipation.getPosition().getRank()) {
+            throw new InadequateUserPosition();
+        }
         participation.setPosition(updateParticipationDTO.position());
         participation.setUserParticipation(updateParticipationDTO.participation());
         participationRepository.save(participation);
