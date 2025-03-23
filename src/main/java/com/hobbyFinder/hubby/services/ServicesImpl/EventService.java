@@ -9,10 +9,8 @@ import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
-import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.models.entities.Local;
-import com.hobbyFinder.hubby.models.entities.Participation;
-import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.entities.*;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
@@ -181,8 +179,11 @@ public class EventService implements EventInterface {
         LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
                 .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
         );
+        Photo photo = event.getPhoto();
+        PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
-                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size());
+                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
+                photoDto);
     }
 
     @Override
@@ -192,7 +193,10 @@ public class EventService implements EventInterface {
         LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
                 .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
         );
+        Photo photo = event.getPhoto();
+        PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
-                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size());
+                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
+                photoDto);
     }
 }
