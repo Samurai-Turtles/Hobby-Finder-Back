@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +33,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
             "JOIN a.participation p " +
             "WHERE p.idUser = :userId " +
             "AND p.position = com.hobbyFinder.hubby.models.enums.ParticipationPosition.CREATOR " +
-            "AND a.comment IS NOT NULL")
+            "AND a IS NOT NULL")
     Double findAverageStarsByUser(UUID userId);
 }
