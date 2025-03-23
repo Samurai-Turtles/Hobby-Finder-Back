@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import java.util.List;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.entities.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class NotificationService {
       "Sua solicitação para participar do evento '%s' foi rejeitada.",
       event.getName()
     );
-    sendNotification(user, message);
+    sendNotification(user, message, user.getPhoto());
   }
 
   public void notifyRequestAccepted(UUID userId, UUID eventId) {
@@ -50,7 +51,7 @@ public class NotificationService {
       "Você foi aceito no evento '%s'.",
       event.getName()
     );
-    sendNotification(user, message);
+    sendNotification(user, message, user.getPhoto());
   }
 
   public void notifyEventCancelled(UUID userId, UUID eventId) {
@@ -60,7 +61,7 @@ public class NotificationService {
       "Sua solicitação para participar do evento '%s' foi cancelada.",
       event.getName()
     );
-    sendNotification(user, message);
+    sendNotification(user, message, user.getPhoto());
   }
 
   public void notifyUserRemoved(UUID userId, UUID eventId) {
@@ -70,7 +71,7 @@ public class NotificationService {
       "Você foi removido do evento '%s' pelo organizador.",
       event.getName()
     );
-    sendNotification(user, message);
+    sendNotification(user, message, user.getPhoto());
   }
 
   public void notifyNewParticipantsConfirmed(UUID userId, UUID eventId) {
@@ -80,7 +81,7 @@ public class NotificationService {
       "Novos participantes foram confirmados no evento '%s'.",
       event.getName()
     );
-    sendNotification(user, message);
+    sendNotification(user, message, user.getPhoto());
   }
 
   public void notifyNewParticipationRequest(
@@ -95,11 +96,11 @@ public class NotificationService {
       requesterUsername,
       event.getName()
     );
-    sendNotification(organizer, message);
+    sendNotification(organizer, message, organizer.getPhoto());
   }
 
-  private void sendNotification(User user, String message) {
-    Notification notification = new Notification(message, user);
+  private void sendNotification(User user, String message, Photo photo) {
+    Notification notification = new Notification(user, message, photo);
     notificationRepository.save(notification);
   }
 
@@ -116,13 +117,4 @@ public class NotificationService {
       .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
   }
 
-  public List<Notification> getNotificationsByUser(
-    UUID userId,
-    int qtdNotificacaoPerPagina,
-    int pagina
-  ) {
-    throw new UnsupportedOperationException(
-      "Unimplemented method 'getNotificationsByUser'"
-    );
-  }
 }

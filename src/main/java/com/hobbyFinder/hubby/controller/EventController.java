@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 
 import jakarta.validation.Valid;
-import jdk.jshell.spi.ExecutionControl;
 
 @RestController
 public class EventController {

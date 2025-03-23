@@ -44,6 +44,8 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "photo_id")
     private Photo photo = new Photo();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Notification> notifications;
     @Transient
     private double stars;
 
