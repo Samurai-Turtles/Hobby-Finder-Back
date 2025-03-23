@@ -70,21 +70,29 @@ public class EventController {
     }
 
     @GetMapping(EventRoutes.GET_EVENT_BY_ID)
-    public ResponseEntity<EventDto> get(@PathVariable UUID id) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+    public ResponseEntity<EventDto> get
+            (@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventService.getEvent(id));
     }
 
     @PutMapping(EventRoutes.PUT_EVENT)
     public ResponseEntity<EventDto> put(
             @PathVariable UUID id,
-            @RequestBody EventPutDto eventPutDto) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+            @RequestBody EventPutDto eventPutDto) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventService.updateEvent(id,eventPutDto));
     }
 
     @DeleteMapping(EventRoutes.DELETE_EVENT)
     public ResponseEntity<Void> delete(
-            @PathVariable UUID id) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+            @PathVariable UUID id) {
+        eventService.deleteEvent(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @GetMapping(EventRoutes.GET_ALL_EVENT_PARTICIPATIONS)

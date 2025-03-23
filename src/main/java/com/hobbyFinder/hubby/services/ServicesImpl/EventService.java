@@ -1,8 +1,13 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.exception.EventException.InvalidCapacityException;
 import com.hobbyFinder.hubby.exception.EventException.InvalidDateException;
+import com.hobbyFinder.hubby.exception.EventException.UserNotEventPermissionException;
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.events.EventDto;
+import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
+import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Local;
@@ -97,7 +102,20 @@ public class EventService implements EventInterface {
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
     }
 
+    @Override
+    public void checkPermission(UUID idEvent) {
+        Event event = findEvent(idEvent);
+        UUID userId = getUserLogged.getUserLogged().getId();
+        boolean isCreator = event.getParticipations().stream()
+                .anyMatch(participation ->
+                        participation.getIdUser().equals(userId) &&
+                                participation.getPosition() == ParticipationPosition.CREATOR);
+        if (!isCreator) {
+            throw new UserNotEventPermissionException();
+        }
+    }
     public void deleteEvent(UUID uuid) {
+        checkPermission(uuid);
         eventRepository.delete(findEvent(uuid));
         eventRepository.flush();
     }
@@ -126,5 +144,57 @@ public class EventService implements EventInterface {
                 .findFirst()
                 .get()
                 .getIdUser();
+    }
+
+    @Override
+    public EventDto updateEvent(UUID id, EventPutDto eventPutDto) {
+        checkPermission(id);
+        checkValidData(eventPutDto.begin(), eventPutDto.end());
+        Event event = findEvent(id);
+        if(eventPutDto.maxUserAmount() < event.getParticipations().size()) {
+            throw new InvalidCapacityException();
+        }
+        if (eventPutDto.Name() != null) {
+            event.setName(eventPutDto.Name());
+        }
+        if (eventPutDto.begin() != null) {
+            checkValidData(eventPutDto.begin(), eventPutDto.end());
+            event.setEventBegin(eventPutDto.begin());
+            event.setEventEnd(eventPutDto.end());
+        }
+        if (eventPutDto.local() != null) {
+            Local local = Local.builder().street(eventPutDto.local().street())
+                    .district(eventPutDto.local().district())
+                    .number(eventPutDto.local().number())
+                    .city(eventPutDto.local().city())
+                    .state(eventPutDto.local().state()).build();
+
+        }
+        if (eventPutDto.privacy() != null) {
+            event.setPrivacy(eventPutDto.privacy());
+        }
+        if (eventPutDto.description() != null) {
+            event.setDescription(eventPutDto.description());
+        }
+        if (eventPutDto.maxUserAmount() != null ) {
+            event.setMaxUserAmount(eventPutDto.maxUserAmount());
+        }
+        eventRepository.save(event);
+        LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
+                .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
+        );
+        return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
+                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size());
+    }
+
+    @Override
+    public EventDto getEvent(UUID id) {
+        Event event = findEvent(id);
+        checkUserParticipating(event);
+        LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
+                .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
+        );
+        return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
+                event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size());
     }
 }
