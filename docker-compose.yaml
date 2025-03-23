@@ -37,5 +37,5 @@ services:
     volumes:
       - ./data/minio:/data
     restart: unless-stopped
-    container_name: fakeaws
+    container_name: ${FAKE_AWS_CONTAINER_NAME}
     command: server /data --console-address ":9001"

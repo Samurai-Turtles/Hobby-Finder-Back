@@ -3,6 +3,8 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import java.util.Set;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.entities.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,12 +42,15 @@ public class UserService implements UserInterface {
   @Override
   public UserResponseDTO getUserResponse(UUID uuid) {
     User user = getUser(uuid);
+    Photo photo = user.getPhoto();
+    PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
     return new UserResponseDTO(
       user.getId(),
       user.getUsername(),
       user.getFullName(),
       user.getBio(),
       user.getInterests(),
+      photoDto,
       user.getStars()
     );
   }
