@@ -1,120 +1,75 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import java.util.List;
-import java.util.UUID;
 
-import com.hobbyFinder.hubby.models.entities.Photo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hobbyFinder.hubby.models.entities.*;
+import com.hobbyFinder.hubby.services.IServices.NotificationInterface;
+import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
-import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
-import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.models.entities.Notification;
-import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.NotificationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 
 @Service
-public class NotificationService {
+@AllArgsConstructor
+public class NotificationService implements NotificationInterface {
 
-  private final NotificationRepository notificationRepository;
-  private final UserRepository userRepository;
-  private final EventRepository eventRepository;
+  private NotificationRepository notificationRepository;
+  private UserInterface userRepository;
 
-  @Autowired
-  public NotificationService(
-    NotificationRepository notificationRepository,
-    UserRepository userRepository,
-    EventRepository eventRepository
-  ) {
-    this.notificationRepository = notificationRepository;
-    this.userRepository = userRepository;
-    this.eventRepository = eventRepository;
+  private static final String  NOTIFY_CHANGE_EVENT = "O Evento '%s' ocorreu mudanças.";
+  private static final String  NOTIFY_SOLICITATION = "O Usuário '%s' quer participar do seu evento '%s'.";
+  private static final String  NOTIFY_APROVE = "Você foi Aprovado no Evento '%s'.";
+  private static final String  NOTIFY_CONFIRM = "O Usuário '%s' foi Aprovado no Evento '%s'.";
+
+  @Override
+  public void notifyChangeEvent(Event event) {
+    List<Participation> participations = event.getParticipations();
+    User userTurn;
+    Photo photo = event.getPhoto();
+    String message;
+    for (Participation participation : participations) {
+      userTurn = userRepository.getUser(participation.getIdEvent());
+      message = String.format(NOTIFY_CHANGE_EVENT, event.getName());
+      postNotification(userTurn, photo, message);
+    }
   }
 
-  public void notifyRequestRejected(UUID userId, UUID eventId) {
-    User user = findUserById(userId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "Sua solicitação para participar do evento '%s' foi rejeitada.",
-      event.getName()
-    );
-    sendNotification(user, message, user.getPhoto());
+  @Override
+  public void notifySolicitation(User user, Event event) {
+    notifyOrganizer(event, NOTIFY_SOLICITATION, user);
   }
 
-  public void notifyRequestAccepted(UUID userId, UUID eventId) {
-    User user = findUserById(userId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "Você foi aceito no evento '%s'.",
-      event.getName()
-    );
-    sendNotification(user, message, user.getPhoto());
+  @Override
+  public void notifyAproveSolicitation(User user, Event event) {
+    String message = String.format(NOTIFY_APROVE, event.getName());
+
+    postNotification(user, event.getPhoto(), message);
   }
 
-  public void notifyEventCancelled(UUID userId, UUID eventId) {
-    User user = findUserById(userId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "Sua solicitação para participar do evento '%s' foi cancelada.",
-      event.getName()
-    );
-    sendNotification(user, message, user.getPhoto());
+  @Override
+  public void notifyConfirmParticipation(User user, Event event) {
+    notifyOrganizer(event, NOTIFY_CONFIRM, user);
   }
 
-  public void notifyUserRemoved(UUID userId, UUID eventId) {
-    User user = findUserById(userId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "Você foi removido do evento '%s' pelo organizador.",
-      event.getName()
-    );
-    sendNotification(user, message, user.getPhoto());
+  private void notifyOrganizer(Event event, String constant, User user) {
+    User organizer;
+    Photo photoUser = user.getPhoto();
+    for (Participation participation : event.getParticipations()) {
+      if (!participation.isOrganizerParticipation())
+        continue;
+
+      organizer = userRepository.getUser(participation.getIdUser());
+      String message = String.format(constant, user.getUsername(),event.getName());
+      postNotification(organizer, photoUser, message);
+    }
   }
 
-  public void notifyNewParticipantsConfirmed(UUID userId, UUID eventId) {
-    User user = findUserById(userId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "Novos participantes foram confirmados no evento '%s'.",
-      event.getName()
-    );
-    sendNotification(user, message, user.getPhoto());
-  }
-
-  public void notifyNewParticipationRequest(
-    UUID organizerId,
-    UUID eventId,
-    String requesterUsername
-  ) {
-    User organizer = findUserById(organizerId);
-    Event event = findEventById(eventId);
-    String message = String.format(
-      "O usuário '%s' deseja participar do evento '%s'.",
-      requesterUsername,
-      event.getName()
-    );
-    sendNotification(organizer, message, organizer.getPhoto());
-  }
-
-  private void sendNotification(User user, String message, Photo photo) {
+  private void postNotification(User user, Photo photo, String message) {
     Notification notification = new Notification(user, message, photo);
+
     notificationRepository.save(notification);
   }
-
-  // Métodos auxiliares para encontrar usuário e evento
-  private User findUserById(UUID userId) {
-    return userRepository
-      .findById(userId)
-      .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
-  }
-
-  private Event findEventById(UUID eventId) {
-    return eventRepository
-      .findById(eventId)
-      .orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
-  }
-
 }

@@ -36,4 +36,7 @@ public class Participation {
     @JoinColumn(name = "avaliation_id")
     private Avaliation avaliation;
 
+    public boolean isOrganizerParticipation() {
+        return ParticipationPosition.ADMIN.getRank() <= this.position.getRank();
+    }
 }

@@ -16,6 +16,7 @@ import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.util.GetUserLogged;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,20 +30,19 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class EventService implements EventInterface {
 
-    @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
     private ParticipationRepository participationRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     @Lazy
     private GetUserLogged getUserLogged;
+
+    private NotificationService notificationService;
 
     @Override
     public void registerEvent(EventCreateDto eventCreateDto) {
@@ -176,6 +176,9 @@ public class EventService implements EventInterface {
             event.setMaxUserAmount(eventPutDto.maxUserAmount());
         }
         eventRepository.save(event);
+
+        notificationService.notifyChangeEvent(event);
+
         LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
                 .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
         );

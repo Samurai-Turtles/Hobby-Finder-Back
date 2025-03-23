@@ -1,5 +1,6 @@
 package com.hobbyFinder.hubby.models.entities;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -30,6 +31,9 @@ public class Notification {
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  @Column(nullable = false)
+  private LocalDate date = LocalDate.now();
 
   public Notification(User user, String message, Photo photo) {
     this.user = user;

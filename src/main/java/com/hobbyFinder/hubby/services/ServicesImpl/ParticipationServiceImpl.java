@@ -47,6 +47,9 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     @Autowired
     private ParticipationRepository participationRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public void selfDeleteUserFromEvent(ParticipationDto participationDto) {
         eventInterface.findEvent(participationDto.idEvent());
@@ -77,6 +80,9 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         checkEventParticipation(participation.getIdEvent(), idEvent);
         participation.setUserParticipation(updateParticipationDTO.participation());
         participationRepository.save(participation);
+        User user = userInterface.getUser(participation.getIdUser());
+        Event event = eventInterface.findEvent(idEvent);
+        notificationService.notifyConfirmParticipation(user, event);
     }
 
     @Override

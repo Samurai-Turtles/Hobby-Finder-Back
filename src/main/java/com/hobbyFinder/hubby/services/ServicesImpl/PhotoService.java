@@ -9,12 +9,14 @@ import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.PhotoInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class PhotoService implements PhotoInterface {
 
     private final PhotoRepository photoRepository;
@@ -24,16 +26,6 @@ public class PhotoService implements PhotoInterface {
     private final UserRepository userRepository;
 
     private final EventRepository eventRepository;
-
-    public PhotoService(PhotoRepository photoRepository,
-                        GetUserLogged getUserLogged,
-                        UserRepository userRepository,
-                        EventRepository eventRepository) {
-        this.photoRepository = photoRepository;
-        this.getUserLogged = getUserLogged;
-        this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
-    }
 
     @Override
     public void uploadUserPhoto(MultipartFile file) {

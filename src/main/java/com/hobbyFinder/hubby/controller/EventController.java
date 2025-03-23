@@ -8,7 +8,6 @@ import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationEvent;
-import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
 import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
 import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;

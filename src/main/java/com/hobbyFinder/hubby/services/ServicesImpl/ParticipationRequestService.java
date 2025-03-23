@@ -42,6 +42,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     private UserRepository userRepository;
     private ParticipationRequestRepository requestRepository;
     private ParticipationRepository participationRepository;
+    private NotificationService notificationService;
 
     @Override
     public void newParticipationRequest(UUID targetEventId) {
@@ -62,6 +63,8 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
             requestRepository.save(newRequest);
             requestRepository.flush();
+
+            notificationService.notifySolicitation(userLogged, targetEvent);
 
         } else if (!userAlreadyParticipate) {
             checkEventCapacity(targetEventId);
