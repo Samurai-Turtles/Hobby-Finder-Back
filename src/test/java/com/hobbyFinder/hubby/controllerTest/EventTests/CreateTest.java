@@ -67,4 +67,37 @@ public class CreateTest {
                 .andExpect(status().isCreated());
 
     }
+
+    @Transactional
+    @Test
+    @DisplayName("Evento cadastrado com qualquer campo nulo que não seja max_user_amount e description.")
+    void testCreateEventNull() throws Exception {
+
+        EventCreateDto eventCreateDto = new EventCreateDto(null, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
+                EventConstants.UNUSED_DATE_TIME_EVENT_END, EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
+                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
+
+        driver.perform(post(EventRoutes.POST_EVENT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(eventCreateDto)))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Data do fim de evento não pode ser antes do que data de início.")
+    void testEventIncorrectDate() throws Exception {
+
+        EventCreateDto eventCreateDto = new EventCreateDto(null, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
+                EventConstants.UNUSED_DATE_TIME_EVENT_END, EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
+                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
+
+        driver.perform(post(EventRoutes.POST_EVENT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(objectMapper.writeValueAsString(eventCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
 }
