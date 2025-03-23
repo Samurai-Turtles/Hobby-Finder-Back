@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicException;
+import com.hobbyFinder.hubby.exception.EntityStateException.InvalidPositionParticipateRequest;
 import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
 import com.hobbyFinder.hubby.exception.EventException.EventCrowdedException;
 import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
@@ -86,6 +87,8 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
             throw new EventIsPublicException("Eventos públicos não possuem lista de solicitações");
         }
 
+        checkUserPositionInEvent(targetEventUuid);
+
         Page<ParticipationRequest> out = requestRepository.findByEvent(targetEvent, pageable);
 
         if (out.getContent().isEmpty()) {
@@ -93,7 +96,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         }
 
         return out.map(request -> new ParticipationRequestEventDto(request.getId(),
-                mappingToEventResponse(request.getEvent())));
+                mappingToUserResponse(request.getUser())));
     }
 
     @Override
@@ -106,7 +109,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
         }
 
         return out.map(
-                request -> new ParticipationRequestUserDto(request.getId(), mappingToUserResponse(request.getUser())));
+                request -> new ParticipationRequestUserDto(request.getId(), mappingToEventResponse(request.getEvent())));
     }
 
     @Override
@@ -218,10 +221,10 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
         Participation targetParticipation = userLogged.getParticipations().stream()
                 .filter(participation -> participation.getIdEvent().equals(targetEventId)).findFirst()
-                .orElseThrow(() -> new NotFoundException("Usuário não participa do evento informado."));
+                .orElse(null);
 
-        if (targetParticipation.getPosition().equals(ParticipationPosition.PARTICIPANT)) {
-            throw new InadequateUserPosition();
+        if (targetParticipation == null || targetParticipation.getPosition().equals(ParticipationPosition.PARTICIPANT)) {
+            throw new InvalidPositionParticipateRequest();
         }
     }
 

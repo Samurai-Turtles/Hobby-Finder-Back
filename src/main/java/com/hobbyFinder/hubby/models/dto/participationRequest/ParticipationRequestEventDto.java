@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record ParticipationRequestEventDto(
         @NotNull UUID id,
-        @NotNull EventRequestResponse evento) {
+        @NotNull UserRequestResponse usuario) {
 }

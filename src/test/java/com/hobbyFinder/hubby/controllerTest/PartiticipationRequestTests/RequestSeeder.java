@@ -41,12 +41,25 @@ public class RequestSeeder {
         createRequest(eventId);
     }
 
+    public void seedRequest(UUID eventId, String userToken) throws Exception {
+        createRequest(eventId, userToken);
+    }
+
     protected void createRequest(UUID eventId) throws Exception {
         String uri = "/api/evento/" + eventId + "/request";
 
         driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
+    }
+
+    protected void createRequest(UUID eventId, String userToken) throws Exception {
+        String uri = "/api/evento/" + eventId + "/request";
+
+        driver.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isNoContent());
     }
 
