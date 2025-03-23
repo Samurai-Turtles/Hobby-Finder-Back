@@ -14,6 +14,7 @@ import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserAlreadyInEventException;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.participationRequest.EventRequestResponse;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
@@ -118,7 +119,11 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     @Override
     public void deleteParticipationRequestByUser(UUID targetRequestId) {
         User userLogged = getUserLogged.getUserLogged();
-        ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
+        ParticipationRequest targetRequest = requestRepository.findById(targetRequestId).orElse(null);
+
+        if(targetRequest == null) {
+            throw new NotFoundException("Requisição não encontrada.");
+        }
 
         if (!targetRequest.getUser().equals(userLogged)) {
             throw new NonOwnerUserException("Usuário não possui a requisição informada");
@@ -129,8 +134,8 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
     @Override
     public void acceptRequest(UUID targetEventId, UUID targetRequestId) {
-        checkUserPositionInEvent(targetEventId);
         checkEventCapacity(targetEventId);
+        checkUserPositionInEvent(targetEventId);
 
         ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
         Participation newParticipation = createParticipationObject(targetEventId, targetRequest.getUser().getId());
@@ -152,9 +157,15 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
 
     @Override
     public void declineRequest(UUID targetEventId, UUID targetRequstId) {
+        eventRepository.findById(targetEventId).orElseThrow(() -> new NotFoundException("Evento não encontrado."));
         checkUserPositionInEvent(targetEventId);
 
-        ParticipationRequest targetRequest = requestRepository.getReferenceById(targetEventId);
+        ParticipationRequest targetRequest = requestRepository.findById(targetRequstId).orElse(null);
+        
+        if(targetRequest == null) {
+            throw new NotFoundException("Requisição não encontrada.");
+        }
+
         requestRepository.delete(targetRequest);
     }
 
@@ -164,7 +175,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
      * @param targetEventId - id do evento a checar
      */
     private void checkEventCapacity(UUID targetEventId) {
-        Event targetEvent = eventRepository.getReferenceById(targetEventId);
+        Event targetEvent = eventRepository.findById(targetEventId).orElseThrow(() -> new NotFoundException("Evento não encontrado."));
 
         if (targetEvent.getParticipations().size() >= targetEvent.getMaxUserAmount()) {
             throw new EventCrowdedException();

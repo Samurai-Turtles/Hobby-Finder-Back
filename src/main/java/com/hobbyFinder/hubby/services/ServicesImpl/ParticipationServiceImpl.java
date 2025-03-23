@@ -132,7 +132,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         }
         Page<Participation> participationsPage = participationRepository.findByIdEvent(idEvent, pageable);
 
-        if (participationsPage.hasContent()) {
+        if (!participationsPage.hasContent()) {
             throw new PageIsEmptyException("A página indicada esta vazia");
         }
         return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdUser(), participation.getUserParticipation()));
