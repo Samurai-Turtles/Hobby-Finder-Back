@@ -75,10 +75,10 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     }
 
     @Override
-    public void updateParticipation(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
+    public void updateParticipation(UUID idEvent, UUID idParticipation, UserParticipation userParticipation) {
         Participation participation = findParticipation(idParticipation);
         checkEventParticipation(participation.getIdEvent(), idEvent);
-        participation.setUserParticipation(updateParticipationDTO.participation());
+        participation.setUserParticipation(userParticipation);
         participationRepository.save(participation);
         User user = userInterface.getUser(participation.getIdUser());
         Event event = eventInterface.findEvent(idEvent);
@@ -118,7 +118,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         User user = getUserLogged.getUserLogged();
         Page<Participation> participationPage = participationRepository.findByUserId(user.getId(), pageable);
 
-        if (participationPage.hasContent()) {
+        if (!participationPage.hasContent()) {
             throw new PageIsEmptyException("A página indicada está vazia");
         }
         return participationPage.map(participation -> new GetResponseParticipationsUser(participation.getIdEvent(), participation.getUserParticipation()));
@@ -141,6 +141,15 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     @Override
     public UpdateParticipationDto participationManagement(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO) {
         Participation participation = findParticipation(idParticipation);
+        eventInterface.findEvent(idEvent);
+        User user = getUserLogged.getUserLogged();
+        Participation myParticipation = user.getParticipations().stream()
+                .filter(p -> p.getIdEvent().equals(idEvent))
+                .findFirst()
+                .orElseThrow(() -> new ParticipationNotFoundException("Participação não encontrada."));
+        if(participation.getPosition().getRank() >= myParticipation.getPosition().getRank()) {
+            throw new InadequateUserPosition();
+        }
         participation.setPosition(updateParticipationDTO.position());
         participation.setUserParticipation(updateParticipationDTO.participation());
         participationRepository.save(participation);

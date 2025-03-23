@@ -64,7 +64,6 @@ public class UserDeleteParticipationTest {
         this.eventRepository.deleteAll();
     }
 
-    //Função apenas utilizada enquanto a rota de getEvent não está pronto
     private UUID getEventId() {
         return eventRepository.findAll().get(0).getId();
     }

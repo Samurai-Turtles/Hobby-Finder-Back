@@ -101,8 +101,8 @@ public class UserController {
     @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
     public ResponseEntity<Void> userUpdateParticipation(
             @PathVariable UUID eventId, @PathVariable UUID participationId,
-            @RequestBody @Valid UpdateParticipationDto updateParticipationDto) {
-        participationInterface.updateParticipation(eventId, participationId, updateParticipationDto);
+            @RequestParam UserParticipation userParticipation) {
+        participationInterface.updateParticipation(eventId, participationId, userParticipation);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
