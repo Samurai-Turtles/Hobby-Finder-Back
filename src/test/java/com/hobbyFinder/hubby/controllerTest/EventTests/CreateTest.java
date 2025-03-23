@@ -1,13 +1,14 @@
 package com.hobbyFinder.hubby.controllerTest.EventTests;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.EventException.EventExceptionsMessages;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
+import com.hobbyFinder.hubby.repositories.EventRepository;
 import jakarta.transaction.Transactional;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,8 @@ public class CreateTest {
     private UserSeeder userSeeder;
     @Autowired
     private EventSeeder eventSeeder;
+    @Autowired
+    private EventRepository eventRepository;
 
     private String token;
 
@@ -55,7 +58,9 @@ public class CreateTest {
     }
 
     @AfterEach
-    void tearDown() throws Exception {}
+    void tearDown() throws Exception {
+        this.eventRepository.deleteAll();
+    }
 
     @Transactional
     @Test

@@ -51,7 +51,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     public void selfDeleteUserFromEvent(ParticipationDto participationDto) {
         Participation participation = findParticipation(participationDto.idParticipation());
         checkEventParticipation(participation.getIdEvent(), participationDto.idEvent());
-        if(getUserLogged.getUserLogged().getId().equals(participation.getIdUser())) {
+        if(!getUserLogged.getUserLogged().getId().equals(participation.getIdUser())) {
             throw new UserIdConflictException();
         }
         removeParticipation(participationDto.idParticipation());
