@@ -72,7 +72,7 @@ public class ParticipationRequestController {
             @PathVariable UUID targetEventId,
             @PathVariable UUID targetRequestId) {
 
-        participationRequest.declineRequest(targetEventId, targetEventId);
+        participationRequest.declineRequest(targetEventId, targetRequestId);
         return ResponseEntity.noContent().build();
     }
 
