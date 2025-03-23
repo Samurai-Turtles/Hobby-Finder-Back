@@ -59,16 +59,13 @@ public class User implements UserDetails {
         this.interests = new ArrayList<>();
         this.participations = new ArrayList<>();
         this.requests = new ArrayList<>();
+        this.photo = new Photo();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    public boolean isSameUser(User user) {
-        return this.id.equals(user.getId());
     }
 
     @Override

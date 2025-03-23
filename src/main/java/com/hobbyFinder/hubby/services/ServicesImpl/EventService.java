@@ -64,6 +64,7 @@ public class EventService implements EventInterface {
                 .description(eventCreateDto.description())
                 .maxUserAmount(eventCreateDto.maxUserAmount())
                 .participations(new ArrayList<Participation>())
+                .photo(new Photo())
                 .creator(userCreated)
                 .build();
 

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-@DisplayName("Testes de rota: criação de evento")
+@DisplayName("Testes de rota: Deleção de Participação em evento.")
 public class UserDeleteParticipationTest {
 
     @Autowired
