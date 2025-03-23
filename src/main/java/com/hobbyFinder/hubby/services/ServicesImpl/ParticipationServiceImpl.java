@@ -49,6 +49,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
 
     @Override
     public void selfDeleteUserFromEvent(ParticipationDto participationDto) {
+        eventInterface.findEvent(participationDto.idEvent());
         Participation participation = findParticipation(participationDto.idParticipation());
         checkEventParticipation(participation.getIdEvent(), participationDto.idEvent());
         if(!getUserLogged.getUserLogged().getId().equals(participation.getIdUser())) {
@@ -88,6 +89,8 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     }
 
     private void checkEventParticipation(UUID eventId, UUID participationEventId) {
+        eventInterface.findEvent(participationEventId);
+
         if(!eventId.equals(participationEventId)) {
             throw new IncorrectEventIdParticipation();
         }

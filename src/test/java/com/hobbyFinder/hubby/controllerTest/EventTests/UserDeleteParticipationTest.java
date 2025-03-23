@@ -86,26 +86,6 @@ public class UserDeleteParticipationTest {
 
     @Transactional
     @Test
-    @DisplayName("Identificador do evento é o mesmo do parâmetro passado.")
-    void testSelfUserDeleteParticipationNotFound() throws Exception {
-
-        UUID idEvent = getEventId();
-        UUID idParticipation = eventRepository.findById(idEvent).get().getParticipations().get(0).getIdParticipation();
-        UUID idRandomEvent = UUID.randomUUID();
-
-        String responseJsonString = driver.perform(delete(UserRoutes.USER_BASE + "/delete-event/" + idRandomEvent + "/participation/" + idParticipation)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isConflict())
-                .andReturn().getResponse().getContentAsString();
-
-        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(customErrorType.getMessage(), ParticipationExceptionsMessages.INCORRECT_EVENT_ID);
-
-    }
-
-    @Transactional
-    @Test
     @DisplayName("Identificador de participação não foi cadastrado")
     void testSelfUserDeleteParticipationInvalid() throws Exception {
         UUID idEvent = getEventId();
@@ -119,6 +99,25 @@ public class UserDeleteParticipationTest {
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
         assertEquals(customErrorType.getMessage(),"Participação não encontrada!");
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("Identificador de evento não foi cadastrado")
+    void testSelfUserDeleteUnexistentEvent() throws Exception {
+
+        UUID idEvent = UUID.randomUUID();
+        UUID idParticipation = UUID.randomUUID();
+
+        String responseJsonString = driver.perform(delete(UserRoutes.USER_BASE + "/delete-event/" + idEvent + "/participation/" + idParticipation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(customErrorType.getMessage(),"Evento não encontrado.");
+
     }
 
     //Esse teste só existe por causa de uma singularidade do código, pois foi pedido para ser armazenado ids.
