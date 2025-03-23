@@ -61,6 +61,7 @@ public class EventService implements EventInterface{
                 .participations(new ArrayList<Participation>())
                 .build();
 
+        this.eventRepository.save(event);
         Participation participation= newParticipation(new ParticipationCreateDto(event.getId(), getUserLogged.getUserLogged().getId(),
                 UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.CREATOR));
         event.getParticipations().add(participation);

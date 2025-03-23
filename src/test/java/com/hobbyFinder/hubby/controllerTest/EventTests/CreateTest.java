@@ -4,6 +4,8 @@ package com.hobbyFinder.hubby.controllerTest.EventTests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
+import com.hobbyFinder.hubby.exception.CustomErrorType;
+import com.hobbyFinder.hubby.exception.EventException.EventExceptionsMessages;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -90,14 +96,18 @@ public class CreateTest {
     @DisplayName("Data do fim de evento não pode ser antes do que data de início.")
     void testEventIncorrectDate() throws Exception {
 
-        EventCreateDto eventCreateDto = new EventCreateDto(null, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
-                EventConstants.UNUSED_DATE_TIME_EVENT_END, EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
+        EventCreateDto eventCreateDto = new EventCreateDto(EventConstants.UNUSED_NAME_EVENT, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
+                LocalDateTime.now().minusMonths(12), EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
                 EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
 
-        driver.perform(post(EventRoutes.POST_EVENT)
+        String responseJsonString = driver.perform(post(EventRoutes.POST_EVENT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(eventCreateDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        assertEquals(EventExceptionsMessages.INCORRECT_DATE, customErrorType.getMessage());
     }
 }

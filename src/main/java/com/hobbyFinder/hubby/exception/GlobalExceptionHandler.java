@@ -38,8 +38,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HubbyException.class)
     @ResponseBody
-    public CustomErrorType handleHubbyException(HubbyException ex) {
-        return defaultCustomErrorType(ex.getMessage());
+    public ResponseEntity<CustomErrorType> handleHubbyException(HubbyException ex) {
+        ResponseStatus status = ex.getClass().getAnnotation(ResponseStatus.class);
+        return ResponseEntity.status(status.value()).body(defaultCustomErrorType(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
