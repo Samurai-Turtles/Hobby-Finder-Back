@@ -26,7 +26,7 @@ import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.repositories.EventRepository;
-import com.hobbyFinder.hubby.repositories.ParticipationRequestRepository;
+import com.hobbyFinder.hubby.repositories.RequestRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -56,7 +56,7 @@ public class GetAllEventRequestTest {
     private EventRepository eventRepository;
 
     @Autowired
-    private ParticipationRequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     @BeforeEach
     void setUp() throws Exception {

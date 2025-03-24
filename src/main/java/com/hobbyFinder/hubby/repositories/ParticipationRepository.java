@@ -1,6 +1,6 @@
 package com.hobbyFinder.hubby.repositories;
 
-import com.hobbyFinder.hubby.models.entities.Avaliation;
+import com.hobbyFinder.hubby.models.entities.Evaluation;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +26,10 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
     @Query("SELECT AVG(a.stars) FROM Participation p JOIN p.avaliation a where p.idEvent = :eventId")
     double avgStarsByEvent(UUID eventId);
 
-    @Query("SELECT a FROM Avaliation a WHERE a.participation.idEvent = :eventId AND a.comment IS NOT NULL AND a.comment <> '' ORDER BY a.stars DESC")
-    List<Avaliation> getAvaliationByEventOrdered(UUID eventId);
+    @Query("SELECT a FROM Evaluation a WHERE a.participation.idEvent = :eventId AND a.comment IS NOT NULL AND a.comment <> '' ORDER BY a.stars DESC")
+    List<Evaluation> getAvaliationByEventOrdered(UUID eventId);
 
-    @Query("SELECT AVG(a.stars) FROM Avaliation a " +
+    @Query("SELECT AVG(a.stars) FROM Evaluation a " +
             "JOIN a.participation p " +
             "WHERE p.idUser = :userId " +
             "AND p.position = com.hobbyFinder.hubby.models.enums.ParticipationPosition.CREATOR " +

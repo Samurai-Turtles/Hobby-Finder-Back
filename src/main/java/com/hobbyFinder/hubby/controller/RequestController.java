@@ -15,71 +15,71 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hobbyFinder.hubby.controller.routes.ParticipationRequestRoutes;
+import com.hobbyFinder.hubby.controller.routes.RequestRoutes;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
-import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
+import com.hobbyFinder.hubby.services.IServices.RequestInterface;
 
 import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public class ParticipationRequestController {
+public class RequestController {
 
-    private ParticipationRequestInterface participationRequest;
+    private RequestInterface requestService;
 
-    @PostMapping(ParticipationRequestRoutes.POST_REQUEST)
+    @PostMapping(RequestRoutes.POST_REQUEST)
     public ResponseEntity<Void> createNewParticipationRequest(@PathVariable UUID targetEventId) {
 
-        participationRequest.newParticipationRequest(targetEventId);
+        requestService.newRequest(targetEventId);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_EVENT)
+    @GetMapping(RequestRoutes.GET_REQUESTS_BY_EVENT)
     public ResponseEntity<Page<ParticipationRequestEventDto>> getParticipationRequestsByEvent(
             @PathVariable UUID targetEventId,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ParticipationRequestEventDto> requestPages = participationRequest.getAllEventRequests(targetEventId, pageable);
+        Page<ParticipationRequestEventDto> requestPages = requestService.getAllEventRequests(targetEventId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(requestPages);
     }
 
-    @GetMapping(ParticipationRequestRoutes.GET_REQUESTS_BY_USER)
+    @GetMapping(RequestRoutes.GET_REQUESTS_BY_USER)
     public ResponseEntity<Page<ParticipationRequestUserDto>> getParticipationRequestsByUser(
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ParticipationRequestUserDto> requestPage = participationRequest.getAllUserRequests(pageable);
+        Page<ParticipationRequestUserDto> requestPage = requestService.getAllUserRequests(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(requestPage);
     }
 
-    @PutMapping(ParticipationRequestRoutes.ACCEPT_REQUEST)
+    @PutMapping(RequestRoutes.ACCEPT_REQUEST)
     public ResponseEntity<Void> acceptParticipationRequest(
             @PathVariable UUID targetEventId,
             @PathVariable UUID targetRequestId) {
 
-        participationRequest.acceptRequest(targetEventId, targetRequestId);
+        requestService.acceptRequest(targetEventId, targetRequestId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ParticipationRequestRoutes.DELETE_REQUEST)
+    @DeleteMapping(RequestRoutes.DELETE_REQUEST)
     public ResponseEntity<Void> declineParticipationRequest(
             @PathVariable UUID targetEventId,
             @PathVariable UUID targetRequestId) {
 
-        participationRequest.declineRequest(targetEventId, targetRequestId);
+        requestService.declineRequest(targetEventId, targetRequestId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ParticipationRequestRoutes.DELETE_REQUEST_BY_USER)
+    @DeleteMapping(RequestRoutes.DELETE_REQUEST_BY_USER)
     public ResponseEntity<Void> deleteParticipationRequest(@PathVariable UUID targetRequestId) {
 
-        participationRequest.deleteParticipationRequestByUser(targetRequestId);
+        requestService.deleteRequestByUser(targetRequestId);
         return ResponseEntity.noContent().build();
     }
 

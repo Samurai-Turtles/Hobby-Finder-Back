@@ -35,9 +35,6 @@ public class UserController {
     @Autowired
     private UserInterface userInterface;
 
-    @Autowired
-    private ParticipationInterface participationInterface;
-
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
     public ResponseEntity<UserResponseDTO> getUser(@RequestParam UUID id) throws UserNotFoundException {
@@ -89,35 +86,4 @@ public class UserController {
         throw new ExecutionControl.NotImplementedException("Não implementado!");
     }
 
-    //deleta sua própria participacao
-    @DeleteMapping(UserRoutes.USER_DELETE_PARTICIPATION)
-    public ResponseEntity<Void> userDeleteParticipation(@PathVariable UUID eventId, @PathVariable UUID participationId) {
-        ParticipationDto participationDto = new ParticipationDto(eventId, participationId);
-        participationInterface.selfDeleteUserFromEvent(participationDto);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-    }
-
-    @PutMapping(UserRoutes.USER_UPDATE_PARTICIPATION)
-    public ResponseEntity<Void> userUpdateParticipation(
-            @PathVariable UUID eventId, @PathVariable UUID participationId,
-            @RequestParam UserParticipation userParticipation) {
-        participationInterface.updateParticipation(eventId, participationId, userParticipation);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-    }
-
-    @GetMapping(UserRoutes.GET_ALL_USER_PARTICIPATIONS)
-    public ResponseEntity<Page<GetResponseParticipationsUser>> getAllParticipationsUser(
-        @RequestParam(defaultValue = "20") int size,
-        @RequestParam(defaultValue = "0") int page) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(participationInterface.getParticipationsUser(pageable));
-    }
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Avaliation {
+public class Evaluation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,7 +29,7 @@ public class Avaliation {
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 
-    public Avaliation(PostAvaliationDto avaliationDto, Participation participation) {
+    public Evaluation(PostAvaliationDto avaliationDto, Participation participation) {
         this.stars = avaliationDto.stars();
         this.comment = avaliationDto.comment();
         this.participation = participation;

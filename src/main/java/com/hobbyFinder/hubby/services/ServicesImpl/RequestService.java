@@ -12,9 +12,7 @@ import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserExceptio
 import com.hobbyFinder.hubby.exception.EventException.EventCrowdedException;
 import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
-import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserAlreadyInEventException;
-import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.participationRequest.EventRequestResponse;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
@@ -27,26 +25,26 @@ import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
-import com.hobbyFinder.hubby.repositories.ParticipationRequestRepository;
+import com.hobbyFinder.hubby.repositories.RequestRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
-import com.hobbyFinder.hubby.services.IServices.ParticipationRequestInterface;
+import com.hobbyFinder.hubby.services.IServices.RequestInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class ParticipationRequestService implements ParticipationRequestInterface {
+public class RequestService implements RequestInterface {
 
     private GetUserLogged getUserLogged;
     private EventRepository eventRepository;
     private UserRepository userRepository;
-    private ParticipationRequestRepository requestRepository;
+    private RequestRepository requestRepository;
     private ParticipationRepository participationRepository;
     private NotificationService notificationService;
 
     @Override
-    public void newParticipationRequest(UUID targetEventId) {
+    public void newRequest(UUID targetEventId) {
         User userLogged = getUserLogged.getUserLogged();
         Event targetEvent = eventRepository.getReferenceById(targetEventId);
         boolean userAlreadyParticipate = userAlreadyParticipate(userLogged, targetEvent);
@@ -117,7 +115,7 @@ public class ParticipationRequestService implements ParticipationRequestInterfac
     }
 
     @Override
-    public void deleteParticipationRequestByUser(UUID targetRequestId) {
+    public void deleteRequestByUser(UUID targetRequestId) {
         User userLogged = getUserLogged.getUserLogged();
         ParticipationRequest targetRequest = requestRepository.findById(targetRequestId).orElse(null);
 

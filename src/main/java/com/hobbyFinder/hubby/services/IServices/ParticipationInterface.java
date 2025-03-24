@@ -22,7 +22,4 @@ public interface ParticipationInterface {
     Page<GetResponseParticipationsUser> getParticipationsUser(Pageable pageable);
     Page<GetResponseParticipationEvent> getParticipationEvents(UUID idEvent, Pageable pageable);
     UpdateParticipationDto participationManagement(UUID idEvent, UUID idParticipation, UpdateParticipationDto updateParticipationDTO);
-
-    ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime);
-    Collection<ResponseAvaliationDto> getEventAvaliations(UUID idEvent);
 }

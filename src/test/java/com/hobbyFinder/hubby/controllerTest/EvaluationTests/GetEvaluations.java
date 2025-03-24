@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.EventTests;
+package com.hobbyFinder.hubby.controllerTest.EvaluationTests;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -11,5 +11,5 @@ import org.springframework.test.context.ActiveProfiles;
 @Transactional
 @ActiveProfiles("test")
 @DisplayName("Testes de rota: obter evento por identificador de Evento")
-public class CreateAvaliation {
+public class GetEvaluations {
 }

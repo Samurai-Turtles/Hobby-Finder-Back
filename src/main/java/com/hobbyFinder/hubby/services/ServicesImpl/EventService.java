@@ -4,7 +4,6 @@ import com.hobbyFinder.hubby.exception.EventException.InvalidCapacityException;
 import com.hobbyFinder.hubby.exception.EventException.InvalidDateException;
 import com.hobbyFinder.hubby.exception.EventException.UserNotEventPermissionException;
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
-import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.events.EventDto;
 import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
@@ -12,12 +11,12 @@ import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
 import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
 import com.hobbyFinder.hubby.models.entities.*;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
+import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +101,7 @@ public class EventService implements EventInterface {
                 .idUser(participationDTO.idUser())
                 .userParticipation(participationDTO.userParticipation())
                 .position(participationDTO.participationPosition())
-                .avaliation(null)
+                .evaluation(null)
                 .build();
         participationRepository.save(participation);
         return participation;
@@ -140,12 +139,10 @@ public class EventService implements EventInterface {
     }
 
     @Override
-    public void checkUserParticipating(Event event) {
-        if (event.getParticipations()
+    public boolean checkUserParticipating(Event event) {
+        return  event.getParticipations()
                 .stream()
-                .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()))) {
-            throw new UserNotInEventException();
-        }
+                .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()));
     }
 
     @Override
@@ -203,12 +200,24 @@ public class EventService implements EventInterface {
     @Override
     public EventDto getEvent(UUID id) {
         Event event = findEvent(id);
-        checkUserParticipating(event);
+
+        boolean isParticipating = checkUserParticipating(event);
+        boolean isPrivateEvent = event.getPrivacy().equals(PrivacyEnum.PRIVATE);
+
+        Photo photo = event.getPhoto();
+        PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
+
+        if (!isParticipating && isPrivateEvent)
+        {
+            return new EventDto(event.getId(), event.getName(), null, null, null,
+                    event.getPrivacy(), null, 0, 0,
+                    photoDto);
+        }
+
         LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
                 .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
         );
-        Photo photo = event.getPhoto();
-        PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
+
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
                 photoDto);

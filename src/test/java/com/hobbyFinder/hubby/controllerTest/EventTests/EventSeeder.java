@@ -17,7 +17,7 @@ public class EventSeeder {
     private final MockMvc driver;
     private final ObjectMapper objectMapper;
     private final UserSeeder userSeeder;
-    protected String token;
+    public String token;
 
     public EventSeeder(MockMvc driver, ObjectMapper mapper, UserSeeder userSeeder) {
         this.driver = driver;

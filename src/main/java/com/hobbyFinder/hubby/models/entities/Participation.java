@@ -33,8 +33,8 @@ public class Participation {
     private ParticipationPosition position;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "avaliation_id")
-    private Avaliation avaliation;
+    @JoinColumn(name = "evaluation_id")
+    private Evaluation evaluation;
 
     public boolean isOrganizerParticipation() {
         return ParticipationPosition.ADMIN.getRank() <= this.position.getRank();

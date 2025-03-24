@@ -1,8 +1,9 @@
-package com.hobbyFinder.hubby.controllerTest.EventTests;
+package com.hobbyFinder.hubby.controllerTest.ParticipationTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hobbyFinder.hubby.controller.routes.EventRoutes;
+import com.hobbyFinder.hubby.controller.routes.ParticipationRoutes;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
+import com.hobbyFinder.hubby.controllerTest.EventTests.EventSeeder;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
@@ -102,7 +103,7 @@ public class ParticipationManagementTest {
         UUID newParticipation = createParticipation();
         UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+        driver.perform(put(ParticipationRoutes.PARTICIPATION_MANAGEMENT, idEvent, newParticipation)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(updateParticipationDto)))
@@ -118,7 +119,7 @@ public class ParticipationManagementTest {
         UUID newParticipation = createParticipation();
         UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+        String responseJsonString = driver.perform(put(ParticipationRoutes.PARTICIPATION_MANAGEMENT, idEvent, newParticipation)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(updateParticipationDto)))
@@ -138,7 +139,7 @@ public class ParticipationManagementTest {
         UUID newParticipation = UUID.randomUUID();
         UpdateParticipationDto updateParticipationDto = new UpdateParticipationDto(UserParticipation.CONFIRMED_PRESENCE, ParticipationPosition.ADMIN);
 
-        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + newParticipation)
+        String responseJsonString = driver.perform(put(ParticipationRoutes.PARTICIPATION_MANAGEMENT, idEvent, newParticipation)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(updateParticipationDto)))
@@ -167,7 +168,7 @@ public class ParticipationManagementTest {
         //Logando o outro usuário.
         String segundoToken = userSeeder.loginSegundoUser();
 
-        String responseJsonString = driver.perform(put(EventRoutes.EVENT_BASE + "/" + idEvent + "/participation/" + idParticipation)
+        String responseJsonString = driver.perform(put(ParticipationRoutes.PARTICIPATION_MANAGEMENT, idEvent, idParticipation)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + segundoToken)
                         .content(objectMapper.writeValueAsString(updateParticipationDto)))

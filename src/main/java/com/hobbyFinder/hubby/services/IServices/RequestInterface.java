@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestUserDto;
 
-public interface ParticipationRequestInterface {
+public interface RequestInterface {
 
     /**
      * Cria uma nova solicitação para participação de um usuário em um evento
@@ -16,7 +16,7 @@ public interface ParticipationRequestInterface {
      * 
      * @param targetEventId - id válido do evento de interesse
      */
-    void newParticipationRequest(UUID targetEventId);
+    void newRequest(UUID targetEventId);
 
     /**
      * Busca todas as solicitações de participação relacionadas a um evento privado.
@@ -40,7 +40,7 @@ public interface ParticipationRequestInterface {
      * 
      * @param targetRequestId - id da solicitação a ser deletada
      */
-    void deleteParticipationRequestByUser(UUID targetRequestId);
+    void deleteRequestByUser(UUID targetRequestId);
 
     /**
      * Aceita uma solicitação de participação que está vinculada a um evento.

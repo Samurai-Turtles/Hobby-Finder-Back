@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.repositories.EventRepository;
-import com.hobbyFinder.hubby.repositories.ParticipationRequestRepository;
+import com.hobbyFinder.hubby.repositories.RequestRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -51,7 +51,7 @@ public class DeleteRequestUserTest {
     private EventRepository eventRepository;
 
     @Autowired
-    private ParticipationRequestRepository requestRepository;
+    private RequestRepository requestRepository;
 
     @BeforeEach
     void setUp() throws Exception {

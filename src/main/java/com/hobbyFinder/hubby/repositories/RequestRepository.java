@@ -12,7 +12,7 @@ import com.hobbyFinder.hubby.models.entities.User;
 import java.util.List;
 
 
-public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, UUID> {
+public interface RequestRepository extends JpaRepository<ParticipationRequest, UUID> {
 
     List<ParticipationRequest> findByUser(User user);
 

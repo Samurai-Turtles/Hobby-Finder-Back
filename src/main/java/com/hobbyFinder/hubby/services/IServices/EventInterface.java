@@ -13,7 +13,7 @@ public interface EventInterface {
     void checkPermission(UUID idEvent);
     void deleteEvent(UUID uuid);
     void updateEventAvaliation(UUID idEvent, double stars);
-    void checkUserParticipating(Event event);
+    boolean checkUserParticipating(Event event);
     UUID getEventOwnerId(Event event);
 
     EventDto updateEvent(UUID id, EventPutDto eventPutDto);
