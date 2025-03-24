@@ -10,6 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-@DisplayName("Testes de rota: obter evento por identificador de Evento")
+@DisplayName("Testes de rota: obter avaliações de eventos em que participo.")
 public class GetEvaluations {
 }
