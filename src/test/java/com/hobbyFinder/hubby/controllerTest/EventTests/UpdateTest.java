@@ -71,7 +71,7 @@ public class UpdateTest {
                 "Novo Nome",
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2),
-                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado"),
+                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
                 10
@@ -93,7 +93,7 @@ public class UpdateTest {
                 "Novo Nome",
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2),
-                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado"),
+                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
                 10
@@ -113,7 +113,7 @@ public class UpdateTest {
                 "Novo Nome",
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2),
-                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado"),
+                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
                 0
@@ -135,7 +135,7 @@ public class UpdateTest {
                 "Novo Nome",
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2),
-                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado"),
+                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
                 10
@@ -154,7 +154,7 @@ public class UpdateTest {
                 "Novo Nome",
                 LocalDateTime.now().plusDays(2),
                 LocalDateTime.now().plusDays(1),
-                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado"),
+                new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado",40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
                 10

@@ -1,16 +1,12 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
-import com.hobbyFinder.hubby.exception.EventException.EventNotEndedException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
 import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.IncorrectEventIdParticipation;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserIdConflictException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
-import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
 import com.hobbyFinder.hubby.models.dto.participations.*;
-import com.hobbyFinder.hubby.models.entities.Evaluation;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.User;
@@ -26,10 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ParticipationServiceImpl implements ParticipationInterface {

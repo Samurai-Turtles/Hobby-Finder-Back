@@ -41,7 +41,7 @@ public class RequestConstants {
 
         public static final LocalDto LOCAL_DTO = new LocalDto(STREET_EVENT1, DISTRICT_EVENT1, NUMBER_EVENT1,
                         CITY_EVENT1,
-                        COUNTRY_EVENT1);
+                        COUNTRY_EVENT1, 0, 0);
 
         public static final EventCreateDto EVENT_PRIVATE_MAX_5 = new EventCreateDto(NAME_EVENT, DATE_TIME_EVENT_BEGIN,
                         DATE_TIME_EVENT_END,

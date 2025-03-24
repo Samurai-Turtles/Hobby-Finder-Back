@@ -1,20 +1,18 @@
 package com.hobbyFinder.hubby.controller;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.events.*;
+import com.hobbyFinder.hubby.controller.Constants.PageConstants;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
-import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 
@@ -58,6 +56,35 @@ public class EventController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    @GetMapping(EventRoutes.GET_EVENT_BY_AUTH_USER)
+    public ResponseEntity<Page<EventDto>> GetByAuthUser
+            (@RequestParam Optional<Double>     latitude,
+             @RequestParam Optional<Double>     longitude,
+             @RequestParam Optional<Integer>    eventPerPage,
+             @RequestParam Optional<Integer>    page,
+             @RequestParam Optional<String>     name) {
+
+        Pageable pageable = PageRequest.of(page.orElse(PageConstants.PAGE_INDEX), eventPerPage.orElse(PageConstants.EVENTS_PER_PAGE));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventService.getEventByAuthUser(latitude, longitude, name, pageable));
+    }
+
+    @GetMapping(EventRoutes.GET_EVENT_BY_USER_ID)
+    public ResponseEntity<Page<EventDto>> GetByUserId
+            (@PathVariable UUID userId,
+             @RequestParam Optional<Integer>    eventPerPage,
+             @RequestParam Optional<Integer>    page,
+             @RequestParam Optional<String>     name) {
+
+        Pageable pageable = PageRequest.of(page.orElse(PageConstants.PAGE_INDEX), eventPerPage.orElse(PageConstants.EVENTS_PER_PAGE));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventService.getByUserId(userId, name, pageable));
     }
 
 }

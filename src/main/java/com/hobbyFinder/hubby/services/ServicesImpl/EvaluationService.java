@@ -3,8 +3,8 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import com.hobbyFinder.hubby.exception.EventException.EventNotEndedException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
-import com.hobbyFinder.hubby.models.dto.avaliations.ResponseAvaliationDto;
+import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
+import com.hobbyFinder.hubby.models.dto.evaluations.ResponseEvaluationDto;
 import com.hobbyFinder.hubby.models.entities.Evaluation;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
@@ -32,7 +32,7 @@ public class EvaluationService implements EvaluationInterface {
     private ParticipationRepository participationRepository;
 
     @Override
-    public ResponseAvaliationDto evaluateEvent(UUID idEvent, PostAvaliationDto postAvaliationDTO, LocalDateTime requestTime) {
+    public ResponseEvaluationDto evaluateEvent(UUID idEvent, PostEvaluationDto postAvaliationDTO, LocalDateTime requestTime) {
         Event event = this.eventInterface.findEvent(idEvent);
         this.eventInterface.checkUserParticipating(event);
 
@@ -47,13 +47,13 @@ public class EvaluationService implements EvaluationInterface {
 
         this.eventInterface.updateEventAvaliation(event.getId(), getAvgStarsByEvent(event.getId()));
 
-        UUID idEventOwner = this.eventInterface.getEventOwnerId(event);
+        UUID idEventOwner = event.getCreator().getId();
         this.userInterface.updateUserAvaliation(idEventOwner, getAvgStarsByUser(idEventOwner));
-        return new ResponseAvaliationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment());
+        return new ResponseEvaluationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment());
     }
 
     @Override
-    public Collection<ResponseAvaliationDto> getEventAvaliations(UUID idEvent) {
+    public Collection<ResponseEvaluationDto> getEventAvaliations(UUID idEvent) {
         Event event = this.eventInterface.findEvent(idEvent);
         this.eventInterface.checkUserParticipating(event);
 
@@ -63,7 +63,7 @@ public class EvaluationService implements EvaluationInterface {
 
         return this.participationRepository.getAvaliationByEventOrdered(event.getId())
                 .stream()
-                .map(avl -> new ResponseAvaliationDto(avl.getId(), avl.getStars(), avl.getComment()))
+                .map(avl -> new ResponseEvaluationDto(avl.getId(), avl.getStars(), avl.getComment()))
                 .collect(Collectors.toList());
     }
 

@@ -1,6 +1,6 @@
 package com.hobbyFinder.hubby.models.entities;
 
-import com.hobbyFinder.hubby.models.dto.avaliations.PostAvaliationDto;
+import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -29,7 +29,7 @@ public class Evaluation {
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 
-    public Evaluation(PostAvaliationDto avaliationDto, Participation participation) {
+    public Evaluation(PostEvaluationDto avaliationDto, Participation participation) {
         this.stars = avaliationDto.stars();
         this.comment = avaliationDto.comment();
         this.participation = participation;

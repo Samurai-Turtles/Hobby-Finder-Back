@@ -15,6 +15,7 @@ import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
+import com.hobbyFinder.hubby.controller.Constants.PageConstants;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -23,9 +24,11 @@ import org.springframework.stereotype.Service;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -82,7 +85,7 @@ public class EventService implements EventInterface {
     }
 
     private EventDto postEventDto(Event event, Local local) {
-        LocalDto localDto = new LocalDto(local.getStreet(), local.getDistrict(), local.getNumber(), local.getCity(), local.getState());
+        LocalDto localDto = new LocalDto(local.getStreet(), local.getDistrict(), local.getNumber(), local.getCity(), local.getState(), local.getLongitude(), local.getLatitude());
         Photo photo = event.getPhoto();
         PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
@@ -116,11 +119,8 @@ public class EventService implements EventInterface {
     @Override
     public void checkPermission(UUID idEvent) {
         Event event = findEvent(idEvent);
-        UUID userId = getUserLogged.getUserLogged().getId();
-        boolean isCreator = event.getParticipations().stream()
-                .anyMatch(participation ->
-                        participation.getIdUser().equals(userId) &&
-                                participation.getPosition() == ParticipationPosition.CREATOR);
+        User user = getUserLogged.getUserLogged();
+        boolean isCreator = event.getCreator().isSameUser(user);
         if (!isCreator) {
             throw new UserNotEventPermissionException();
         }
@@ -143,11 +143,6 @@ public class EventService implements EventInterface {
         return  event.getParticipations()
                 .stream()
                 .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()));
-    }
-
-    @Override
-    public UUID getEventOwnerId(Event event) {
-        return event.getCreator().getId();
     }
 
     @Override
@@ -187,11 +182,13 @@ public class EventService implements EventInterface {
 
         notificationService.notifyChangeEvent(event);
 
-        LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
-                .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
-        );
+        Local local = event.getLocal();
+        LocalDto localDto = new LocalDto(local.getStreet(), local.getDistrict(), local.getNumber(), local.getCity(), local.getState(), local.getLongitude(), local.getLatitude());
+
         Photo photo = event.getPhoto();
+
         PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
+
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
                 photoDto);
@@ -214,12 +211,41 @@ public class EventService implements EventInterface {
                     photoDto);
         }
 
-        LocalDto localDto = new LocalDto(event.getLocal().getStreet(), event.getLocal().getDistrict(), event.getLocal()
-                .getNumber(), event.getLocal().getCity(),event.getLocal().getState()
-        );
+        Local local = event.getLocal();
+
+        LocalDto localDto = new LocalDto(local.getStreet(), local.getDistrict(), local.getNumber(), local.getCity(), local.getState(), local.getLongitude(), local.getLatitude());
 
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
                 photoDto);
+    }
+
+    @Override
+    public Page<EventDto> getEventByAuthUser(Optional<Double> latitude, Optional<Double> longitude, Optional<String> name, Pageable pageable) {
+        boolean isLatitudePresent = latitude.isPresent();
+        boolean isLongitudePresent = longitude.isPresent();
+        String prefix = name.orElse(PageConstants.Prefix) + "%";
+
+        Page<Event> retorno;
+        if (isLongitudePresent && isLatitudePresent) {
+            double realLatitude  = latitude.get();
+            double realLongitude = longitude.get();
+            retorno = eventRepository.findEventsByLatitudeLongitude(realLatitude, realLongitude, prefix, pageable);
+        }
+        else {
+            retorno = eventRepository.findEventsByName(prefix, pageable);
+        }
+
+        return retorno.map(event -> postEventDto(event, event.getLocal()));
+
+    }
+
+    @Override
+    public Page<EventDto> getByUserId(UUID userId, Optional<String> name, Pageable pageable) {
+        String prefix = name.orElse(PageConstants.Prefix) + "%";
+
+        Page<Event> retorno = eventRepository.findByUserId(userId, prefix, pageable);
+
+        return retorno.map(event -> postEventDto(event, event.getLocal()));
     }
 }

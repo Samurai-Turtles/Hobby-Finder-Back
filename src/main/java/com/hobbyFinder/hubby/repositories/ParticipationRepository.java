@@ -23,7 +23,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
     Page<Participation> findByIdEvent(@Param("idEvent") UUID idEvent, Pageable pageable);
 
 
-    @Query("SELECT AVG(a.stars) FROM Participation p JOIN p.avaliation a where p.idEvent = :eventId")
+    @Query("SELECT AVG(a.stars) FROM Participation p JOIN p.evaluation a where p.idEvent = :eventId")
     double avgStarsByEvent(UUID eventId);
 
     @Query("SELECT a FROM Evaluation a WHERE a.participation.idEvent = :eventId AND a.comment IS NOT NULL AND a.comment <> '' ORDER BY a.stars DESC")

@@ -7,5 +7,7 @@ public record LocalDto(
         @NotNull String district,
         @NotNull String number,
         @NotNull String city,
-        @NotNull String state) {
+        @NotNull String state,
+        double longitude,
+        double latitude) {
 }

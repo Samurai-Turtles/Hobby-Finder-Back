@@ -7,6 +7,14 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       APPLICATION_NAME: ${APPLICATION_NAME}
+      FAKE_AWS_PORT: ${FAKE_AWS_PORT}
+      FAKE_AWS_CONSOLE_PORT: ${FAKE_AWS_CONSOLE_PORT}
+      FAKE_AWS_USER: ${FAKE_AWS_USER}
+      FAKE_AWS_PSWD: ${FAKE_AWS_PSWD}
+      FAKE_AWS_BUCKET: ${FAKE_AWS_BUCKET}
+      FAKE_AWS_REGION: ${FAKE_AWS_REGION}
+      FAKE_AWS_CONTAINER_NAME: ${FAKE_AWS_CONTAINER_NAME}
+      FAKE_AWS_ENDPOINT: ${FAKE_AWS_ENDPOINT}
     depends_on:
       - postgres
       - fakeaws
@@ -39,3 +47,14 @@ services:
     restart: unless-stopped
     container_name: ${FAKE_AWS_CONTAINER_NAME}
     command: server /data --console-address ":9001"
+
+  pgadmin4:
+    user: "${UID}:${GID}"
+    image: dpage/pgadmin4:8.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${APPLICATION_NAME}@ccc.com
+      PGADMIN_DEFAULT_PASSWORD: ${APPLICATION_NAME}
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    ports:
+      - '8082:80'
