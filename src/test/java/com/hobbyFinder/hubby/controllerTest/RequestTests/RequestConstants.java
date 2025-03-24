@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.PartiticipationRequestTests;
+package com.hobbyFinder.hubby.controllerTest.RequestTests;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

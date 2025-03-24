@@ -1,7 +1,8 @@
-package com.hobbyFinder.hubby.controllerTest.PartiticipationRequestTests;
+package com.hobbyFinder.hubby.controllerTest.RequestTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.UUID;
@@ -28,9 +29,9 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DisplayName("Testes da rota: usuário deleta sua solicitação")
-public class DeleteRequestUserTest {
-
+@DisplayName("Testes da rota: deletar solicitações de um usuário")
+public class DeletarRequestTest {
+    
     private String token;
 
     private String tokenCreator;
@@ -75,15 +76,37 @@ public class DeleteRequestUserTest {
     @DisplayName("Rejeita a Solicitação de um usuário")
     void testDeclineSolicitacoesUsuario() throws Exception {
         UUID eventId = eventRepository.findAll().get(0).getId();
-        String uri = RequestConstants.URI_USER_CONTEXT;
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventId));
 
         requestSeeder.seedRequest(eventId, token);
 
         driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", "Bearer " + tokenCreator))
                 .andExpect(status().isNoContent());
 
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Tentar rejeitar a solicitação de participação sendo um usuário sem cargo")
+    void testUsuarioSemCargoDeclineSolicitacoes() throws Exception {
+        UUID eventId = eventRepository.findAll().get(0).getId();
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventId));
+
+        requestSeeder.seedRequest(eventId, token);
+
+        String responseJsonString = driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertEquals(customErrorType.getMessage(), "O usuário não possui cargo para essa ação.");
     }
 
     @Test
@@ -91,18 +114,19 @@ public class DeleteRequestUserTest {
     @DisplayName("Tentar rejeitar a solicitação de participação com um id inválido")
     void testDeclineSolicitacoesEventoIdErrado() throws Exception {
         UUID eventId = eventRepository.findAll().get(0).getId();
-        String uri = RequestConstants.URI_USER_CONTEXT;
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(UUID.randomUUID()));
 
         requestSeeder.seedRequest(eventId, token);
 
-        String responseJsonString = driver.perform(delete(uri + "/" + UUID.randomUUID())
+        String responseJsonString = driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", "Bearer " + tokenCreator))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(customErrorType.getMessage(), "Requisição não encontrada.");
+        assertEquals(customErrorType.getMessage(), "Evento não encontrado.");
     }
 
 }

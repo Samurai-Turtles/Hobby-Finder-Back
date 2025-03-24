@@ -1,4 +1,4 @@
-package com.hobbyFinder.hubby.controllerTest.PartiticipationRequestTests;
+package com.hobbyFinder.hubby.controllerTest.RequestTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.RequestRepository;
@@ -32,9 +33,9 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DisplayName("Testes da rota: obter solicitações por usuário")
-public class GetAllUserRequestTest {
-    
+@DisplayName("Testes da rota: obter solicitações por evento")
+public class GetAllEventRequestTest {
+
     private String token;
 
     private String tokenCreator;
@@ -76,16 +77,19 @@ public class GetAllUserRequestTest {
 
     @Test
     @Transactional
-    @DisplayName("Listar solicitações de participação de um usuario")
-    void testListaSolicitacoesUsuario() throws Exception {
+    @DisplayName("Listar solicitações de participação de um evento")
+    void testListaSolicitacoesEvento() throws Exception {
         UUID eventId = eventRepository.findAll().get(0).getId();
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventId));
+
         requestSeeder.seedRequest(eventId, token);
 
-        String responseJsonString = driver.perform(get(RequestConstants.URI_USER_CONTEXT)
+        String responseJsonString = driver.perform(get(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("size", "20")
                 .param("page", "0")
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", "Bearer " + tokenCreator))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -101,20 +105,78 @@ public class GetAllUserRequestTest {
 
     @Test
     @Transactional
-    @DisplayName("Tentar listar solicitações de participação de um Usuario sem solicitações")
-    void testListaSemSolicitacoesUsuario() throws Exception {
+    @DisplayName("Tentar listar solicitações de participação de um Evento sem solicitações")
+    void testListaSemSolicitacoesEvento() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(0).getId()));
 
-        String responseJsonString = driver.perform(get(RequestConstants.URI_USER_CONTEXT)
+        String responseJsonString = driver.perform(get(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("size", "20")
                 .param("page", "0")
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", "Bearer " + tokenCreator))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
 
         assertEquals(customErrorType.getMessage(), "A página indicada está vazia");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Tentar listar solicitações de participação de um Evento a partir de um usuário inválido")
+    void testListarSolicitacoesEventoUsuarioInvalido() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(0).getId()));
+
+        String responseJsonString = driver.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("size", "20")
+                .param("page", "0")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertEquals(customErrorType.getMessage(), ParticipationExceptionsMessages.INVALID_USER_POSITION);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Tentar listar solicitações de participação de um Evento público")
+    void testListarSolicitacoesEventoPublico() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(2).getId()));
+
+        String responseJsonString = driver.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("size", "20")
+                .param("page", "0")
+                .header("Authorization", "Bearer " + tokenCreator))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertEquals(customErrorType.getMessage(), "Eventos públicos não possuem lista de solicitações");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Tentar listar solicitações de participação de um evento inválido")
+    void testListarSolicitacoesEventoInvalido() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(999L));
+
+        driver.perform(get(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("size", "20")
+                .param("page", "0")
+                .header("Authorization", "Bearer " + tokenCreator))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
     }
 
 }

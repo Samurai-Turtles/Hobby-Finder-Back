@@ -1,11 +1,10 @@
-package com.hobbyFinder.hubby.controllerTest.PartiticipationRequestTests;
+package com.hobbyFinder.hubby.controllerTest.RequestTests;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
+import com.hobbyFinder.hubby.exception.EventException.EventExceptionsMessages;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.RequestRepository;
 
@@ -29,9 +30,9 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DisplayName("Testes da rota: deletar solicitações de um usuário")
-public class DeletarRequestTest {
-    
+@DisplayName("Testes da rota: criar solicitação")
+public class CreateRequestTest {
+
     private String token;
 
     private String tokenCreator;
@@ -63,7 +64,6 @@ public class DeletarRequestTest {
         tokenCreator = userSeeder.loginPrimeiroUser();
         requestSeeder.createEvent(RequestConstants.EVENT_PRIVATE_MAX_5, tokenCreator);
         requestSeeder.createEvent(RequestConstants.EVENT_PRIVATE_MAX_1, tokenCreator);
-        requestSeeder.createEvent(RequestConstants.EVENT_PUBLIC, tokenCreator);
     }
 
     @AfterEach
@@ -73,60 +73,76 @@ public class DeletarRequestTest {
 
     @Test
     @Transactional
-    @DisplayName("Rejeita a Solicitação de um usuário")
-    void testDeclineSolicitacoesUsuario() throws Exception {
-        UUID eventId = eventRepository.findAll().get(0).getId();
+    @DisplayName("Solicitação registrada com sucesso")
+    void testNovaSolicitacao() throws Exception {
         String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
-                String.valueOf(eventId));
+                String.valueOf(eventRepository.findAll().get(0).getId()));
+        Long preExecution = requestRepository.count();
 
-        requestSeeder.seedRequest(eventId, token);
-
-        driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + tokenCreator))
-                .andExpect(status().isNoContent());
-
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("Tentar rejeitar a solicitação de participação sendo um usuário sem cargo")
-    void testUsuarioSemCargoDeclineSolicitacoes() throws Exception {
-        UUID eventId = eventRepository.findAll().get(0).getId();
-        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
-                String.valueOf(eventId));
-
-        requestSeeder.seedRequest(eventId, token);
-
-        String responseJsonString = driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
+        driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token))
-                .andExpect(status().isForbidden())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isNoContent());
 
-        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-
-        assertEquals(customErrorType.getMessage(), "O usuário não possui cargo para essa ação.");
+        assertNotEquals(preExecution, requestRepository.findAll().size());
     }
 
     @Test
     @Transactional
-    @DisplayName("Tentar rejeitar a solicitação de participação com um id inválido")
-    void testDeclineSolicitacoesEventoIdErrado() throws Exception {
-        UUID eventId = eventRepository.findAll().get(0).getId();
-        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
-                String.valueOf(UUID.randomUUID()));
+    @DisplayName("Solicitação com id de evento inválido")
+    void testIdEventoInvalido() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}", String.valueOf(9999L));
+        Long preExecution = requestRepository.count();
 
-        requestSeeder.seedRequest(eventId, token);
-
-        String responseJsonString = driver.perform(delete(uri + "/" + requestRepository.findAll().get(0).getId())
+        driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + tokenCreator))
-                .andExpect(status().isNotFound())
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(preExecution, requestRepository.findAll().size());
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Solicitação para participar de um evento cheio")
+    void testIdEventoCheio() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(1).getId()));
+        Long preExecution = requestRepository.count();
+
+        String responseJsonString = driver.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isConflict())
                 .andReturn().getResponse().getContentAsString();
 
         CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-        assertEquals(customErrorType.getMessage(), "Evento não encontrado.");
+
+        assertAll(
+                () -> assertEquals(preExecution, requestRepository.findAll().size()),
+                () -> assertEquals(customErrorType.getMessage(), EventExceptionsMessages.EVENT_CROWDED));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Solicitação para participar de um evento ao que o usuário já participa")
+    void testUserJaParticipando() throws Exception {
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventRepository.findAll().get(1).getId()));
+        Long preExecution = requestRepository.count();
+
+        String responseJsonString = driver.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + tokenCreator))
+                .andExpect(status().isUnprocessableEntity())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType customErrorType = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        assertAll(
+                () -> assertEquals(preExecution, requestRepository.findAll().size()),
+                () -> assertEquals(customErrorType.getMessage(), ParticipationExceptionsMessages.USER_ALREADY_PARTICIPATE));
     }
 
 }
