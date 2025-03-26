@@ -5,6 +5,7 @@ import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
+import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,7 +65,6 @@ public class UpdateTest {
     private UUID getEventId() {
         return eventRepository.findAll().get(0).getId();
     }
-
     @Test
     @DisplayName("Atualiza um evento com sucesso")
     void testUpdateEventSuccess() throws Exception {
@@ -82,6 +83,170 @@ public class UpdateTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(eventPutDto)))
                 .andExpect(status().isOk());
+    }
+    @Test
+    @DisplayName("Atualiza apenas o nome do evento")
+    void updateEventNameOnly() throws Exception {
+        EventPutDto eventPutDto = new EventPutDto(
+                "Novo Nome",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas a data de início do evento")
+    void updateEventStartDateOnly() throws Exception {
+        LocalDateTime newStartDate = LocalDateTime.now();
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                newStartDate,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals(newStartDate, updated.getEventBegin());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas a data de término do evento")
+    void updateEventEndDateOnly() throws Exception {
+        LocalDateTime newEndDate = LocalDateTime.now().plusYears(100);
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                null,
+                newEndDate,
+                null,
+                null,
+                null,
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals(newEndDate, updated.getEventEnd());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas o local do evento")
+    void updateEventLocationOnly() throws Exception {
+        LocalDto newLocation = new LocalDto(
+                "Nova Rua", "Novo Bairro", "456",
+                "Nova Cidade", "Novo Estado", 50, 80
+        );
+
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                null,
+                null,
+                newLocation,
+                null,
+                null,
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals("Nova Rua", updated.getLocal().getStreet());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas a privacidade do evento")
+    void updateEventPrivacyOnly() throws Exception {
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                null,
+                null,
+                null,
+                PrivacyEnum.PRIVATE,
+                null,
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals(PrivacyEnum.PRIVATE, updated.getPrivacy());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas a descrição do evento")
+    void updateEventDescriptionOnly() throws Exception {
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                "Nova descrição do evento",
+                null
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals("Nova descrição do evento", updated.getDescription());
+    }
+
+    @Test
+    @DisplayName("Atualiza apenas o limite de participantes do evento")
+    void updateEventParticipantLimitOnly() throws Exception {
+        EventPutDto eventPutDto = new EventPutDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                20
+        );
+
+        driver.perform(put(EventRoutes.PUT_EVENT, eventId)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(eventPutDto)))
+                .andExpect(status().isOk());
+
+        Event updated = eventRepository.findById(eventId).orElseThrow();
+        assertEquals(20, updated.getMaxUserAmount());
     }
 
     @Test
