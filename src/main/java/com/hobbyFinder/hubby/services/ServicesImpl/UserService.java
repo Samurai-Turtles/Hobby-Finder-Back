@@ -3,8 +3,6 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 import java.util.Set;
 import java.util.UUID;
 
-import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
-import com.hobbyFinder.hubby.models.entities.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,9 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
 import com.hobbyFinder.hubby.models.dto.user.UserDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.models.entities.Email;
+import com.hobbyFinder.hubby.models.entities.Photo;
 import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.repositories.UserRepository;
@@ -35,6 +36,9 @@ public class UserService implements UserInterface {
   @Autowired
   private UserValidator userValidator;
 
+  @Autowired
+  private EmailService emailService;
+
   private final Set<InterestEnum> validInterests = Set.of(
     InterestEnum.values()
   );
@@ -43,7 +47,11 @@ public class UserService implements UserInterface {
   public UserResponseDTO getUserResponse(UUID uuid) {
     User user = getUser(uuid);
     Photo photo = user.getPhoto();
-    PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
+    PhotoDto photoDto = new PhotoDto(
+      photo.getId(),
+      photo.getExtension(),
+      photo.isSaved()
+    );
     return new UserResponseDTO(
       user.getId(),
       user.getUsername(),
@@ -88,9 +96,9 @@ public class UserService implements UserInterface {
     }
 
     if (request.interests() != null) {
-      if (
-        !validInterests.containsAll(request.interests())
-      ) throw new TagInvalidaException("Tag invalida");
+      if (!validInterests.containsAll(request.interests())) {
+        throw new TagInvalidaException("Tag invalida");
+      }
       user.setInterests(request.interests());
     }
 
@@ -110,5 +118,21 @@ public class UserService implements UserInterface {
     User user = getUser(idUser);
     user.setStars(stars);
     this.userRepository.save(user);
+  }
+
+  public void recoverPassword(String email) {
+    User user = userRepository
+      .findByEmail(email)
+      .orElseThrow(() ->
+        new UserNotFoundException("Email não associado a nenhum usuário.")
+      );
+
+    String subject = "Recuperação de Senha";
+    String body =
+      "Recebemos sua solicitação de recuperação de senha. Sua nova senha é: [nova_senha]."; // Placeholder para nova senha
+
+    Email recoveryEmail = new Email(email, subject, body);
+
+    emailService.sendEmail(recoveryEmail);
   }
 }
