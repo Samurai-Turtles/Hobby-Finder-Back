@@ -1,30 +1,35 @@
 package com.hobbyFinder.hubby.controller;
 
-import com.hobbyFinder.hubby.controller.routes.UserRoutes;
-import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
-import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
-import com.hobbyFinder.hubby.exception.HubbyException;
-import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
-import com.hobbyFinder.hubby.models.dto.participations.GetResponseParticipationsUser;
-import com.hobbyFinder.hubby.models.dto.participations.ParticipationDto;
-import com.hobbyFinder.hubby.models.dto.participations.UpdateParticipationDto;
-import com.hobbyFinder.hubby.models.dto.user.*;
-import com.hobbyFinder.hubby.models.enums.UserParticipation;
-import com.hobbyFinder.hubby.services.IServices.AuthInterface;
-import com.hobbyFinder.hubby.services.IServices.ParticipationInterface;
-import com.hobbyFinder.hubby.services.IServices.UserInterface;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import jdk.jshell.spi.ExecutionControl;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import com.hobbyFinder.hubby.controller.routes.UserRoutes;
+import com.hobbyFinder.hubby.exception.HubbyException;
+import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
+import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
+import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
+import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
+import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
+import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
+import com.hobbyFinder.hubby.models.dto.user.UserDTO;
+import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
+import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.services.IServices.AuthInterface;
+import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import com.hobbyFinder.hubby.services.ServicesImpl.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
@@ -34,6 +39,9 @@ public class UserController {
 
     @Autowired
     private UserInterface userInterface;
+
+    @Autowired
+    private UserService userService;
 
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
@@ -82,8 +90,8 @@ public class UserController {
     }
 
     @DeleteMapping(UserRoutes.RECOVER_PASSOWRD)
-    public ResponseEntity<Void> recoverPassword() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Não implementado!");
+    public ResponseEntity<Void> recoverPassword(@RequestBody @Valid String email) {
+        userService.recoverPassword(email);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }
