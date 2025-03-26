@@ -39,7 +39,7 @@ public class NotificationService implements NotificationInterface {
     Photo photo = event.getPhoto();
     String message;
     for (Participation participation : participations) {
-      userTurn = userRepository.getUser(participation.getIdEvent());
+      userTurn = userRepository.getUser(participation.getIdUser());
       message = String.format(NOTIFY_CHANGE_EVENT, event.getName());
       postNotification(userTurn, photo, message);
     }

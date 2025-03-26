@@ -148,17 +148,19 @@ public class EventService implements EventInterface {
     @Override
     public EventDto updateEvent(UUID id, EventPutDto eventPutDto) {
         checkPermission(id);
-        checkValidData(eventPutDto.begin(), eventPutDto.end());
         Event event = findEvent(id);
-        if(eventPutDto.maxUserAmount() < event.getParticipations().size()) {
-            throw new InvalidCapacityException();
-        }
         if (eventPutDto.Name() != null) {
             event.setName(eventPutDto.Name());
         }
-        if (eventPutDto.begin() != null) {
+        if (eventPutDto.begin() != null && eventPutDto.end() != null) {
             checkValidData(eventPutDto.begin(), eventPutDto.end());
             event.setEventBegin(eventPutDto.begin());
+            event.setEventEnd(eventPutDto.end());
+        } else if (eventPutDto.begin() != null) {
+            checkValidData(eventPutDto.begin(), event.getEventEnd());
+            event.setEventBegin(eventPutDto.begin());
+        } else if (eventPutDto.end() != null) {
+            checkValidData(event.getEventBegin(), eventPutDto.end());
             event.setEventEnd(eventPutDto.end());
         }
         if (eventPutDto.local() != null) {
@@ -167,7 +169,7 @@ public class EventService implements EventInterface {
                     .number(eventPutDto.local().number())
                     .city(eventPutDto.local().city())
                     .state(eventPutDto.local().state()).build();
-
+            event.setLocal(local);
         }
         if (eventPutDto.privacy() != null) {
             event.setPrivacy(eventPutDto.privacy());
@@ -176,6 +178,9 @@ public class EventService implements EventInterface {
             event.setDescription(eventPutDto.description());
         }
         if (eventPutDto.maxUserAmount() != null ) {
+            if(eventPutDto.maxUserAmount() < event.getParticipations().size()) {
+                throw new InvalidCapacityException();
+            }
             event.setMaxUserAmount(eventPutDto.maxUserAmount());
         }
         eventRepository.save(event);
@@ -193,6 +198,7 @@ public class EventService implements EventInterface {
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
                 photoDto);
     }
+
 
     @Override
     public EventDto getEvent(UUID id) {
