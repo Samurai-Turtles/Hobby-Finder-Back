@@ -31,8 +31,8 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
 
     @Query("SELECT AVG(a.stars) FROM Evaluation a " +
             "JOIN a.participation p " +
-            "WHERE p.idUser = :userId " +
-            "AND p.position = com.hobbyFinder.hubby.models.enums.ParticipationPosition.CREATOR " +
+            "JOIN Event e ON p.idEvent = e.id " +
+            "WHERE e.creator.id = :userId " +
             "AND a IS NOT NULL")
     Double findAverageStarsByUser(UUID userId);
 }

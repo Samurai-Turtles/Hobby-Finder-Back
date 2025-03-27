@@ -2,7 +2,8 @@ package com.hobbyFinder.hubby.models.entities;
 
 import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.util.UUID;
@@ -19,7 +20,8 @@ public class Evaluation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Size(min = 0, max = 5)
+    @Min(value = 0, message = "Avaliação deve ser no mínimo 0")
+    @Max(value = 5, message = "Avaliação deve ser no máximo 5")
     private int stars;
 
     @Column
