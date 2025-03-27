@@ -36,8 +36,8 @@ public class UserService implements UserInterface {
   @Autowired
   private UserValidator userValidator;
 
-  @Autowired
-  private EmailService emailService;
+//  @Autowired
+//  private EmailService emailService;
 
   private final Set<InterestEnum> validInterests = Set.of(
     InterestEnum.values()
@@ -121,18 +121,18 @@ public class UserService implements UserInterface {
   }
 
   public void recoverPassword(String email) {
-    User user = userRepository
-      .findByEmail(email)
-      .orElseThrow(() ->
-        new UserNotFoundException("Email não associado a nenhum usuário.")
-      );
-
-    String subject = "Recuperação de Senha";
-    String body =
-      "Recebemos sua solicitação de recuperação de senha. Sua nova senha é: [nova_senha]."; // Placeholder para nova senha
-
-    Email recoveryEmail = new Email(email, subject, body);
-
-    emailService.sendEmail(recoveryEmail);
+//    User user = userRepository
+//      .findByEmail(email)
+//      .orElseThrow(() ->
+//        new UserNotFoundException("Email não associado a nenhum usuário.")
+//      );
+//
+//    String subject = "Recuperação de Senha";
+//    String body =
+//      "Recebemos sua solicitação de recuperação de senha. Sua nova senha é: [nova_senha]."; // Placeholder para nova senha
+//
+//    Email recoveryEmail = new Email(email, subject, body);
+//
+//    emailService.sendEmail(recoveryEmail);
   }
 }
