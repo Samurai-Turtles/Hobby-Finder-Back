@@ -142,7 +142,7 @@ public class EventService implements EventInterface {
     public boolean checkUserParticipating(Event event) {
         return  event.getParticipations()
                 .stream()
-                .noneMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()));
+                .anyMatch(p -> p.getIdUser().equals(getUserLogged.getUserLogged().getId()));
     }
 
     @Override
