@@ -248,6 +248,8 @@ public class EventService implements EventInterface {
 
     @Override
     public Page<EventDto> getByUserId(UUID userId, Optional<String> name, Pageable pageable) {
+        User user = getUserLogged.getUserLogged();
+
         String prefix = name.orElse(PageConstants.Prefix) + "%";
 
         Page<Event> retorno = eventRepository.findByUserId(userId, prefix, pageable);
