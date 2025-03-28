@@ -39,4 +39,8 @@ public class Participation {
     public boolean isOrganizerParticipation() {
         return ParticipationPosition.ADMIN.getRank() <= this.position.getRank();
     }
+
+    public boolean isConfirmed() {
+        return UserParticipation.CONFIRMED_PRESENCE.equals(userParticipation);
+    }
 }
