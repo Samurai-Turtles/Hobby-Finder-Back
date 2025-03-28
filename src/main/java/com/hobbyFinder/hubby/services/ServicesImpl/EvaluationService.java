@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class EvaluationService implements EvaluationInterface {
         Event event = this.eventInterface.findEvent(idEvent);
         this.eventInterface.checkUserParticipating(event);
 
-        if (event.getEventEnd().isBefore(requestTime)) {
+        if (requestTime.isBefore(event.getEventEnd())) {
             throw new EventNotEndedException();
         }
 
@@ -57,7 +58,7 @@ public class EvaluationService implements EvaluationInterface {
         Event event = this.eventInterface.findEvent(idEvent);
         this.eventInterface.checkUserParticipating(event);
 
-        if (!(getParticipationFromEvent(event).getPosition().getRank() == 3)) {
+        if (!(getParticipationFromEvent(event).getPosition().getRank() == 2)) {
             throw new InadequateUserPosition();
         }
 
@@ -82,5 +83,4 @@ public class EvaluationService implements EvaluationInterface {
     private double getAvgStarsByUser(UUID idUser) {
         return this.participationRepository.findAverageStarsByUser(idUser);
     }
-
 }
