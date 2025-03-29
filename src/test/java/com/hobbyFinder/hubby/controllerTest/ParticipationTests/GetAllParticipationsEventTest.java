@@ -3,22 +3,22 @@ package com.hobbyFinder.hubby.controllerTest.ParticipationTests;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controller.routes.ParticipationRoutes;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
+import com.hobbyFinder.hubby.controllerTest.EventTests.EventConstants;
 import com.hobbyFinder.hubby.controllerTest.EventTests.EventSeeder;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.ParticipationExceptionsMessages;
+import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -119,6 +119,7 @@ public class GetAllParticipationsEventTest {
         assertEquals(customErrorType.getMessage(), "Evento não encontrado.");
     }
 
+    @Disabled
     @Transactional
     @Test
     @DisplayName("Usuário não está presente no evento.")

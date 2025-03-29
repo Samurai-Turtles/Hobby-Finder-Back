@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -39,11 +41,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
 
             var login = tokenService.validateToken(token);
-            User user =  userRepository.findByUsername(login);
+            Optional<User> user =  userRepository.findById(UUID.fromString(login));
 
-            //Costomização feita para pegar todos os possíveis atributos desejavéis.
-            CustomPrincipal customPrincipal = new CustomPrincipal(user.getUsername(), user.getEmail());
-            var authentication = new UsernamePasswordAuthenticationToken(customPrincipal, null, user.getAuthorities());
+            //Como o token já é válido nesse ponto, esse optional é apenas por causa de uma função já existe no repositório.
+            CustomPrincipal customPrincipal = new CustomPrincipal(user.get().getUsername(), user.get().getEmail());
+            var authentication = new UsernamePasswordAuthenticationToken(customPrincipal, null, user.get().getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
