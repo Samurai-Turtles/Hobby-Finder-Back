@@ -2,11 +2,13 @@ services:
   spring:
     build: .
     environment:
+      DB_NAME: postgres
       DB_PORT: ${DB_PORT}
       DB_CURRENT: ${DB_CURRENT}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       APPLICATION_NAME: ${APPLICATION_NAME}
+      FAKE_AWS_NAME: fakeaws
       FAKE_AWS_PORT: ${FAKE_AWS_PORT}
       FAKE_AWS_CONSOLE_PORT: ${FAKE_AWS_CONSOLE_PORT}
       FAKE_AWS_USER: ${FAKE_AWS_USER}

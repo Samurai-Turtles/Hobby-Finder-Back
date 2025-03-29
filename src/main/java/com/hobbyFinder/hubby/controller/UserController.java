@@ -5,13 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
 import com.hobbyFinder.hubby.exception.HubbyException;
@@ -45,7 +39,7 @@ public class UserController {
 
     //pode haver refatoracao do endpoint a seguir se for decidido que haverá user e person
     @GetMapping(UserRoutes.GET_USER_BY_ID)
-    public ResponseEntity<UserResponseDTO> getUser(@RequestParam UUID id) throws UserNotFoundException {
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) throws UserNotFoundException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userInterface.getUserResponse(id));

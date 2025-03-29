@@ -46,7 +46,8 @@ public class RequestSeeder {
     }
 
     protected void createRequest(UUID eventId) throws Exception {
-        String uri = "/api/evento/" + eventId + "/request";
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventId));
 
         driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +56,8 @@ public class RequestSeeder {
     }
 
     protected void createRequest(UUID eventId, String userToken) throws Exception {
-        String uri = "/api/evento/" + eventId + "/request";
+        String uri = RequestConstants.URI_EVENT_CONTEXT.replace("{targetEventId}",
+                String.valueOf(eventId));
 
         driver.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
