@@ -2,22 +2,24 @@ package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import java.util.List;
 
-import com.hobbyFinder.hubby.models.dto.notifications.NotificationDto;
-import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
-import com.hobbyFinder.hubby.models.dto.user.UserDTO;
-import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
-import com.hobbyFinder.hubby.models.entities.*;
-import com.hobbyFinder.hubby.services.IServices.NotificationInterface;
-import com.hobbyFinder.hubby.services.IServices.UserInterface;
-import com.hobbyFinder.hubby.util.GetUserLogged;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.hobbyFinder.hubby.repositories.EventRepository;
+import com.hobbyFinder.hubby.models.dto.notifications.NotificationDto;
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.models.entities.Event;
+import com.hobbyFinder.hubby.models.entities.Notification;
+import com.hobbyFinder.hubby.models.entities.Participation;
+import com.hobbyFinder.hubby.models.entities.Photo;
+import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.NotificationRepository;
-import com.hobbyFinder.hubby.repositories.UserRepository;
+import com.hobbyFinder.hubby.services.IServices.NotificationInterface;
+import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import com.hobbyFinder.hubby.util.GetUserLogged;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -100,7 +102,7 @@ public class NotificationService implements NotificationInterface {
     }
   }
 
-  private void postNotification(User user, Photo photo, String message) {
+  public void postNotification(User user, Photo photo, String message) {
     Notification notification = new Notification(user, message, photo);
 
     notificationRepository.save(notification);
