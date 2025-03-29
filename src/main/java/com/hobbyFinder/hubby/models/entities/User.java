@@ -31,7 +31,9 @@ public class User implements UserDetails {
     @Builder.Default
     private List<ParticipationRequest> requests = new ArrayList<>();
 
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String username;
     private String password;
     private UserRole role;
