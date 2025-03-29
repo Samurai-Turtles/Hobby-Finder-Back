@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.controller;
 import com.hobbyFinder.hubby.controller.routes.PhotoRoutes;
 import com.hobbyFinder.hubby.services.ServicesImpl.PhotoService;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public class PhotoController {
         this.photoService.uploadEventPhoto(id, file);
     }
 
-    @PostMapping(PhotoRoutes.PHOTO_BY_ID)
+    @GetMapping(PhotoRoutes.PHOTO_BY_ID)
     public byte[] getPhoto(UUID id) {
         return this.photoService.GetPhotoById(id);
     }
