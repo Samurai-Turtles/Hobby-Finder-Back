@@ -1,6 +1,6 @@
 package com.hobbyFinder.hubby.controller.routes;
 
-public classRequestRoutes {
+public class RequestRoutes {
 
     public static final String POST_REQUEST = EventRoutes.EVENT_BASE + "/{targetEventId}/request";
     public static final String GET_REQUESTS_BY_EVENT = EventRoutes.EVENT_BASE + "/{targetEventId}/request";
