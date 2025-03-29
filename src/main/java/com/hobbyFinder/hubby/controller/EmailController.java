@@ -1,25 +1,23 @@
-//package com.hobbyFinder.hubby.controller;
-//
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import com.hobbyFinder.hubby.models.entities.Email;
-//import com.hobbyFinder.hubby.services.ServicesImpl.EmailService;
-//
-//@RestController
-//@RequestMapping("email")
-//public class EmailController {
-//
-//  private final EmailService emailService;
-//
-//  public EmailController(EmailService emailService) {
-//    this.emailService = emailService;
-//  }
-//
-//  @PostMapping
-//  public void sendEmail(@RequestBody Email email) {
-//    emailService.sendEmail(email);
-//  }
-//}
+package com.hobbyFinder.hubby.controller;
+
+import com.hobbyFinder.hubby.models.dto.email.EmailDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import com.hobbyFinder.hubby.services.ServicesImpl.EmailService;
+
+@RestController
+@RequestMapping("/api/emails")
+@RequiredArgsConstructor
+public class EmailController {
+
+    private final EmailService emailService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void enviarEmail(@RequestBody EmailDto emailDto) {
+        emailService.enviaEmail(emailDto);
+
+    }
+}

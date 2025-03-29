@@ -1,26 +1,23 @@
-//package com.hobbyFinder.hubby.services.ServicesImpl;
-//
-//import org.springframework.mail.SimpleMailMessage;
-//import org.springframework.mail.javamail.JavaMailSender;
-//import org.springframework.stereotype.Service;
-//
-//import com.hobbyFinder.hubby.models.entities.Email;
-//
-//@Service
-//public class EmailService {
-//
-//  private final JavaMailSender mailSender;
-//
-//  public EmailService(JavaMailSender mailSender) {
-//    this.mailSender = mailSender;
-//  }
-//
-//  public void sendEmail(Email email) {
-//    var message = new SimpleMailMessage();
-//    message.setFrom("noreply@gmail.com");
-//    message.setTo(email.to());
-//    message.setSubject(email.subject());
-//    message.setText(email.body());
-//    mailSender.send(message);
-//  }
-//}
+package com.hobbyFinder.hubby.services.ServicesImpl;
+
+import com.hobbyFinder.hubby.models.dto.email.EmailDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class EmailService {
+
+    private final JavaMailSender javaMailSender;
+
+    public void enviaEmail(EmailDto emailDto) {
+        var message = new SimpleMailMessage();
+        message.setFrom("suportehobbyfinder@gmail.com");
+        message.setTo(emailDto.email());
+        message.setSubject("Recuperação de senha - HobbyFinder");
+        message.setText(emailDto.texto());
+        javaMailSender.send(message);
+    }
+}
