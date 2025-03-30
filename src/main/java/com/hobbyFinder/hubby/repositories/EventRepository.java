@@ -30,11 +30,11 @@ public interface EventRepository extends JpaRepository<Event, UUID>{
 
     @Query("SELECT event " +
             "FROM Event event " +
-            "WHERE event.name LIKE :Prefix " +
+            "WHERE event.name LIKE :prefix " +
             "ORDER BY (abs(event.local.latitude - :latitude) + abs(event.local.longitude - :longitude)) ASC ")
     Page<Event> findEventsByLatitudeLongitude(double latitude, double longitude, String prefix, Pageable page);
 
-    @Query("SELECT event FROM Event event WHERE event.name LIKE :Prefix")
+    @Query("SELECT event FROM Event event WHERE event.name LIKE :prefix")
     Page<Event> findEventsByName(String prefix, Pageable page);
 
     @Query("SELECT event " +
