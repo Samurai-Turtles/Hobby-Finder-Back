@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controllerTest.EventTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
+import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.exception.EventException.EventExceptionsMessages;
@@ -69,7 +70,7 @@ public class CreateTest {
 
         EventCreateDto eventCreateDto = new EventCreateDto(EventConstants.UNUSED_NAME_EVENT, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
                 EventConstants.UNUSED_DATE_TIME_EVENT_END, EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
-                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
+                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT, UserConstants.INTERESSE_USADO);
 
         driver.perform(post(EventRoutes.POST_EVENT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +87,7 @@ public class CreateTest {
 
         EventCreateDto eventCreateDto = new EventCreateDto(null, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
                 EventConstants.UNUSED_DATE_TIME_EVENT_END, EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
-                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
+                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT, UserConstants.INTERESSE_USADO);
 
         driver.perform(post(EventRoutes.POST_EVENT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +104,7 @@ public class CreateTest {
 
         EventCreateDto eventCreateDto = new EventCreateDto(EventConstants.UNUSED_NAME_EVENT, EventConstants.UNUSED_DATE_TIME_EVENT_BEGIN,
                 LocalDateTime.now().minusMonths(12), EventConstants.UNUSED_LOCAL, EventConstants.UNUSED_PRIVACY_ENUM,
-                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT);
+                EventConstants.UNUSED_DESCRIPTION, EventConstants.UNUSED_MAX_USER_AMOUNT, UserConstants.INTERESSE_USADO);
 
         String responseJsonString = driver.perform(post(EventRoutes.POST_EVENT)
                         .contentType(MediaType.APPLICATION_JSON)

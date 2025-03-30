@@ -1,11 +1,14 @@
 package com.hobbyFinder.hubby.controllerTest.EventTests;
 
+import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.entities.Local;
 import com.hobbyFinder.hubby.models.entities.Participation;
 import com.hobbyFinder.hubby.models.entities.ParticipationRequest;
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,11 +63,11 @@ public class EventConstants {
 
     public static final LocalDto LOCAL_DTO = new LocalDto(STREET_EVENT1, DISTRICT_EVENT1, NUMBER_EVENT1, CITY_EVENT1, COUNTRY_EVENT1, 40, 60);
     public static final EventCreateDto EVENT_CREATE_DTO = new EventCreateDto(NAME_EVENT, DATE_TIME_EVENT_BEGIN, DATE_TIME_EVENT_END,
-            LOCAL_DTO, PRIVACY_ENUM1, DESCRIPTION, MAX_USER_AMOUNT);
+            LOCAL_DTO, PRIVACY_ENUM1, DESCRIPTION, MAX_USER_AMOUNT, UserConstants.INTERESSE_USADO);
 
     public static final LocalDto LOCAL_DTO2 = new LocalDto(STREET_EVENT2, DISTRICT_EVENT2, NUMBER_EVENT2, CITY_EVENT2, COUNTRY_EVENT2, 50, 70);
     public static final EventCreateDto EVENT_CREATE_DTO2 = new EventCreateDto(NAME_EVENT2, DATE_TIME_EVENT_BEGIN2, DATE_TIME_EVENT_END2,
-            LOCAL_DTO2, PRIVACY_ENUM2, DESCRIPTION2, MAX_USER_AMOUNT2);
+            LOCAL_DTO2, PRIVACY_ENUM2, DESCRIPTION2, MAX_USER_AMOUNT2, UserConstants.INTERESSE_USADO);
 
     public static final LocalDto UNUSED_LOCAL = new LocalDto(UNUSED_STREET_EVENT, UNUSED_DISTRICT_EVENT, UNUSED_NUMBER_EVENT, UNUSED_CITY_EVENT, UNUSED_COUNTRY_EVENT, 90, 110);
 

@@ -103,7 +103,7 @@ public class GetEventById {
     @DisplayName("Obtém um evento privado sem ser participante - deve retornar dados limitados")
     void testGetPrivateEventNotParticipant() throws Exception {
         String otherUserToken = userSeeder.loginSegundoUser();
-        EventPutDto eventPutDto = new EventPutDto(null, null, null, null, PrivacyEnum.PRIVATE, null, null);
+        EventPutDto eventPutDto = new EventPutDto(null, null, null, null, PrivacyEnum.PRIVATE, null, null, null);
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +126,7 @@ public class GetEventById {
     @Test
     @DisplayName("Obtém um evento privado sendo participante ")
     void testGetPrivateEventAsParticipant() throws Exception {
-        EventPutDto eventPutDto = new EventPutDto(null, null, null, null, PrivacyEnum.PRIVATE, null, null);
+        EventPutDto eventPutDto = new EventPutDto(null, null, null, null, PrivacyEnum.PRIVATE, null, null, null);
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)

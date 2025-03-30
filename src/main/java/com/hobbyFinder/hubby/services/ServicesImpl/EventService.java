@@ -1,5 +1,6 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import com.hobbyFinder.hubby.controller.Constants.EventConstants;
 import com.hobbyFinder.hubby.exception.EventException.InvalidCapacityException;
 import com.hobbyFinder.hubby.exception.EventException.InvalidDateException;
 import com.hobbyFinder.hubby.exception.EventException.UserNotEventPermissionException;
@@ -10,6 +11,7 @@ import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.dto.participations.ParticipationCreateDto;
 import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
 import com.hobbyFinder.hubby.models.entities.*;
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 import com.hobbyFinder.hubby.models.enums.UserParticipation;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,6 +71,7 @@ public class EventService implements EventInterface {
                 .participations(new ArrayList<Participation>())
                 .photo(new Photo())
                 .creator(userCreated)
+                .interest(eventCreateDto.interestEnum())
                 .build();
 
         this.eventRepository.save(event);
@@ -90,7 +94,7 @@ public class EventService implements EventInterface {
         PhotoDto photoDto = new PhotoDto(photo.getId(), photo.getExtension(), photo.isSaved());
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
-                photoDto);
+                photoDto, event.getInterest());
     }
 
     private void checkValidData(LocalDateTime begin, LocalDateTime end) {
@@ -183,6 +187,9 @@ public class EventService implements EventInterface {
             }
             event.setMaxUserAmount(eventPutDto.maxUserAmount());
         }
+        if (eventPutDto.interestEnum() != null) {
+            event.setInterest(eventPutDto.interestEnum());
+        }
         eventRepository.save(event);
 
         notificationService.notifyChangeEvent(event);
@@ -196,7 +203,7 @@ public class EventService implements EventInterface {
 
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
-                photoDto);
+                photoDto, event.getInterest());
     }
 
 
@@ -214,7 +221,7 @@ public class EventService implements EventInterface {
         {
             return new EventDto(event.getId(), event.getName(), null, null, null,
                     event.getPrivacy(), null, 0, 0,
-                    photoDto);
+                    photoDto, event.getInterest());
         }
 
         Local local = event.getLocal();
@@ -223,23 +230,31 @@ public class EventService implements EventInterface {
 
         return new EventDto(event.getId(), event.getName(), event.getEventBegin(), event.getEventEnd(), localDto,
                 event.getPrivacy(), event.getDescription(), event.getMaxUserAmount(), event.getParticipations().size(),
-                photoDto);
+                photoDto, event.getInterest());
     }
 
     @Override
     public Page<EventDto> getEventByAuthUser(Optional<Double> latitude, Optional<Double> longitude, Optional<String> name, Pageable pageable) {
+        User user = getUserLogged.getUserLogged();
+
         boolean isLatitudePresent = latitude.isPresent();
         boolean isLongitudePresent = longitude.isPresent();
         String prefix = name.orElse(PageConstants.Prefix) + "%";
 
         Page<Event> retorno;
+
+        List<InterestEnum> interests = user.getInterests();
+
+        if (interests.isEmpty())
+            interests = EventConstants.ALL_INTERESTS;
+
         if (isLongitudePresent && isLatitudePresent) {
             double realLatitude  = latitude.get();
             double realLongitude = longitude.get();
-            retorno = eventRepository.findEventsByLatitudeLongitude(realLatitude, realLongitude, prefix, pageable);
+            retorno = eventRepository.findEventsByLatitudeLongitude(realLatitude, realLongitude, prefix, interests, pageable);
         }
         else {
-            retorno = eventRepository.findEventsByName(prefix, pageable);
+            retorno = eventRepository.findEventsByName(prefix, interests, pageable);
         }
 
         return retorno.map(event -> postEventDto(event, event.getLocal()));

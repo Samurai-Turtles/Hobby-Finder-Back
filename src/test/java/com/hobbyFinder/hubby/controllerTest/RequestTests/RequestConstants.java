@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
 import com.hobbyFinder.hubby.controller.routes.UserRoutes;
+import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.models.dto.events.EventCreateDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
 import com.hobbyFinder.hubby.models.entities.Participation;
@@ -45,13 +46,13 @@ public class RequestConstants {
 
         public static final EventCreateDto EVENT_PRIVATE_MAX_5 = new EventCreateDto(NAME_EVENT, DATE_TIME_EVENT_BEGIN,
                         DATE_TIME_EVENT_END,
-                        LOCAL_DTO, PRIVACY_ENUM1, DESCRIPTION, MAX_USER_AMOUNT);
+                        LOCAL_DTO, PRIVACY_ENUM1, DESCRIPTION, MAX_USER_AMOUNT, UserConstants.INTERESSE_NAO_USADO);
 
         public static final EventCreateDto EVENT_PRIVATE_MAX_1 = new EventCreateDto(NAME_EVENT2, DATE_TIME_EVENT_BEGIN,
                         DATE_TIME_EVENT_END,
-                        LOCAL_DTO, PRIVACY_ENUM2, DESCRIPTION, MAX_USER_AMOUNT2);
+                        LOCAL_DTO, PRIVACY_ENUM2, DESCRIPTION, MAX_USER_AMOUNT2, UserConstants.INTERESSE_NAO_USADO);
 
         public static final EventCreateDto EVENT_PUBLIC = new EventCreateDto(NAME_EVENT2, DATE_TIME_EVENT_BEGIN,
                         DATE_TIME_EVENT_END,
-                        LOCAL_DTO, PRIVACY_ENUM3, DESCRIPTION, MAX_USER_AMOUNT);
+                        LOCAL_DTO, PRIVACY_ENUM3, DESCRIPTION, MAX_USER_AMOUNT, UserConstants.INTERESSE_NAO_USADO);
 }

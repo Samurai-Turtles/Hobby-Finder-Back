@@ -104,7 +104,7 @@ class UpdateTest {
                 "NovaSenha123",
                 "Novo Nome",
                 "Nova bio",
-                List.of(InterestEnum.SPORT, InterestEnum.ANIME)
+                List.of(InterestEnum.Karaoke)
         );
 
         String responseJson = performUpdateRequest(updateRequest)

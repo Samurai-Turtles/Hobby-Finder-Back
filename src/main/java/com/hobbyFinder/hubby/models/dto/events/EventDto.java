@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventDto(
@@ -16,5 +17,6 @@ public record EventDto(
         String description,
         int MaxUserAmmount,
         int userCount,
-        PhotoDto photoDto) {
+        PhotoDto photoDto,
+        InterestEnum interestEnum) {
 }

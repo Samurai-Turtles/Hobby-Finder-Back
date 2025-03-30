@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.repositories;
 
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,12 +31,12 @@ public interface EventRepository extends JpaRepository<Event, UUID>{
 
     @Query("SELECT event " +
             "FROM Event event " +
-            "WHERE event.name LIKE :prefix " +
+            "WHERE event.name LIKE :prefix AND event.interest in :interestEnums " +
             "ORDER BY (abs(event.local.latitude - :latitude) + abs(event.local.longitude - :longitude)) ASC ")
-    Page<Event> findEventsByLatitudeLongitude(double latitude, double longitude, String prefix, Pageable page);
+    Page<Event> findEventsByLatitudeLongitude(double latitude, double longitude, String prefix, List<InterestEnum> interestEnums, Pageable page);
 
-    @Query("SELECT event FROM Event event WHERE event.name LIKE :prefix")
-    Page<Event> findEventsByName(String prefix, Pageable page);
+    @Query("SELECT event FROM Event event WHERE event.name LIKE :prefix AND event.interest in :interestEnums")
+    Page<Event> findEventsByName(String prefix, List<InterestEnum> interestEnums, Pageable page);
 
     @Query("SELECT event " +
             "FROM Event event " +

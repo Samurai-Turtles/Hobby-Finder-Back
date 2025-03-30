@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.models.dto.events;
 
 import java.time.LocalDateTime;
 
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 import com.hobbyFinder.hubby.models.enums.PrivacyEnum;
 
 public record EventPutDto(
@@ -11,5 +12,6 @@ public record EventPutDto(
         LocalDto local,
         PrivacyEnum privacy,
         String description,
-        Integer maxUserAmount) {
+        Integer maxUserAmount,
+        InterestEnum interestEnum) {
 }

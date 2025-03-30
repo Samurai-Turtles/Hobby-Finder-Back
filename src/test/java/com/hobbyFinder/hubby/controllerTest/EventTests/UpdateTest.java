@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controllerTest.EventTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controller.routes.EventRoutes;
+import com.hobbyFinder.hubby.controllerTest.UserTests.UserConstants;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.models.dto.events.EventPutDto;
 import com.hobbyFinder.hubby.models.dto.events.LocalDto;
@@ -75,7 +76,8 @@ public class UpdateTest {
                 new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
-                10
+                10,
+                UserConstants.INTERESSE_NAO_USADO
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
@@ -89,6 +91,7 @@ public class UpdateTest {
     void updateEventNameOnly() throws Exception {
         EventPutDto eventPutDto = new EventPutDto(
                 "Novo Nome",
+                null,
                 null,
                 null,
                 null,
@@ -115,6 +118,7 @@ public class UpdateTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -136,6 +140,7 @@ public class UpdateTest {
                 null,
                 null,
                 newEndDate,
+                null,
                 null,
                 null,
                 null,
@@ -167,6 +172,7 @@ public class UpdateTest {
                 newLocation,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -189,6 +195,7 @@ public class UpdateTest {
                 null,
                 null,
                 PrivacyEnum.PRIVATE,
+                null,
                 null,
                 null
         );
@@ -213,6 +220,7 @@ public class UpdateTest {
                 null,
                 null,
                 "Nova descrição do evento",
+                null,
                 null
         );
 
@@ -236,7 +244,8 @@ public class UpdateTest {
                 null,
                 null,
                 null,
-                20
+                20,
+                null
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
@@ -261,7 +270,8 @@ public class UpdateTest {
                 new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
-                10
+                10,
+                null
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, nonExistentEventId)
@@ -281,7 +291,8 @@ public class UpdateTest {
                 new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
-                0
+                0,
+                null
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
@@ -303,7 +314,8 @@ public class UpdateTest {
                 new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado", 40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
-                10
+                10,
+                null
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)
@@ -322,7 +334,8 @@ public class UpdateTest {
                 new LocalDto("Nova Rua", "Novo Bairro", "123", "Nova Cidade", "Novo Estado",40, 70),
                 PrivacyEnum.PUBLIC,
                 "Nova Descrição",
-                10
+                10,
+                null
         );
 
         driver.perform(put(EventRoutes.PUT_EVENT, eventId)

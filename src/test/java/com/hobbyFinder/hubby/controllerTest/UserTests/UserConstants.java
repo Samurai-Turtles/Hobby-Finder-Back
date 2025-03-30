@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controllerTest.UserTests;
 
 import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
 import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
+import com.hobbyFinder.hubby.models.enums.InterestEnum;
 
 public class UserConstants {
 
@@ -24,6 +25,9 @@ public class UserConstants {
     public static final String FULL_NAME_NAO_UTILIZADO = "Nome Inteiro";
 
     public static final String LOGIN_INEXISTENTE = "esseUserNaoExiste@gmail.com";
+
+    public static final InterestEnum INTERESSE_USADO = InterestEnum.Balada;
+    public static final InterestEnum INTERESSE_NAO_USADO = InterestEnum.Karaoke;
 
     public static final RegisterDTO primeiroRegistroDto = new RegisterDTO(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD, USER1_FULL_NAME);
     public static final AuthDTO primeiroAuthDto = new AuthDTO(USER1_EMAIL, USER1_PASSWORD);
