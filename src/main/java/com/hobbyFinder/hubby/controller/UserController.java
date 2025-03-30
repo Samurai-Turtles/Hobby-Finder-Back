@@ -2,6 +2,7 @@ package com.hobbyFinder.hubby.controller;
 
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.dto.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,6 @@ import com.hobbyFinder.hubby.exception.HubbyException;
 import com.hobbyFinder.hubby.exception.AuthException.Login.CredenciaisLoginException;
 import com.hobbyFinder.hubby.exception.AuthException.Registro.CredenciaisRegistroException;
 import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
-import com.hobbyFinder.hubby.models.dto.user.AuthDTO;
-import com.hobbyFinder.hubby.models.dto.user.LoginResponseDTO;
-import com.hobbyFinder.hubby.models.dto.user.RegisterDTO;
-import com.hobbyFinder.hubby.models.dto.user.UserDTO;
-import com.hobbyFinder.hubby.models.dto.user.UserPutDTO;
-import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.services.IServices.AuthInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.services.ServicesImpl.UserService;
@@ -76,16 +71,17 @@ public class UserController {
     }
 
     @DeleteMapping(UserRoutes.DELETE)
-    public ResponseEntity<Void> delete()  {
+    public ResponseEntity<Void> delete() {
         userInterface.deleteUser();
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    @DeleteMapping(UserRoutes.RECOVER_PASSOWRD)
-    public ResponseEntity<Void> recoverPassword(@RequestBody @Valid String email) {
-        userService.recoverPassword(email);
+    @PostMapping(UserRoutes.RECOVER_PASSWORD)
+    public ResponseEntity<Void> recoverPassword(@RequestBody @Valid RecoverPasswordDTO request) {
+        userService.recoverPassword(request.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }

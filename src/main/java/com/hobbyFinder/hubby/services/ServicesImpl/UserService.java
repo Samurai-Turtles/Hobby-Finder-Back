@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.hobbyFinder.hubby.models.dto.email.EmailDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hobbyFinder.hubby.exception.TagInvalidaException;
@@ -34,15 +35,18 @@ public class UserService implements UserInterface {
 
     private final EmailService emailService;
 
+    private final PasswordEncoder passwordEncoder;
+
     private final Set<InterestEnum> validInterests = Set.of(
             InterestEnum.values()
     );
 
-    public UserService(UserRepository userRepository, GetUserLogged userLogged, UserValidator userValidator, EmailService emailService) {
+    public UserService(UserRepository userRepository, GetUserLogged userLogged, UserValidator userValidator, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userLogged = userLogged;
         this.userValidator = userValidator;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -129,7 +133,9 @@ public class UserService implements UserInterface {
 
         String newPassword = UUID.randomUUID().toString();
 
-        user.setPassword(newPassword);
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        user.setPassword(encodedPassword);
         userRepository.save(user);
 
         sendPasswordRecoveryEmail(user.getEmail(), newPassword);
