@@ -3,6 +3,7 @@ package com.hobbyFinder.hubby.controller;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.exception.NotFound.PageNotExistException;
 import com.hobbyFinder.hubby.models.dto.events.*;
 import com.hobbyFinder.hubby.controller.Constants.PageConstants;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
@@ -65,7 +66,9 @@ public class EventController {
              @RequestParam Optional<Integer>    eventPerPage,
              @RequestParam Optional<Integer>    page,
              @RequestParam Optional<String>     name) {
-
+        if (page.orElse(1)< 0 || eventPerPage.orElse(1) < 0) {
+            throw new PageNotExistException("Page or eventPerPage não pode ser menor que 0");
+        }
         Pageable pageable = PageRequest.of(page.orElse(PageConstants.PAGE_INDEX), eventPerPage.orElse(PageConstants.EVENTS_PER_PAGE));
 
         return ResponseEntity
@@ -80,6 +83,9 @@ public class EventController {
              @RequestParam Optional<Integer>    page,
              @RequestParam Optional<String>     name) {
 
+        if (page.orElse(1)< 0 || eventPerPage.orElse(1) < 0) {
+            throw new PageNotExistException("Page or eventPerPage não pode ser menor que 0");
+        }
         Pageable pageable = PageRequest.of(page.orElse(PageConstants.PAGE_INDEX), eventPerPage.orElse(PageConstants.EVENTS_PER_PAGE));
 
         return ResponseEntity
