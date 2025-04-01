@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ public class GetNotificationsTests {
     testUser = userRepository.save(testUser);
 
     testNotification =
-      new Notification(testUser, "Test notification message", null);
+      new Notification(testUser, "Test notification message", null, testUser.getId(), NotificationEnum.PARTICIPATION);
     notificationRepository.save(testNotification);
 
     // Mock do GetUserLogged para retornar o usuário de teste
