@@ -133,6 +133,12 @@ public class EventService implements EventInterface {
     }
     public void deleteEvent(UUID uuid) {
         checkPermission(uuid);
+        Event event = findEvent(uuid);
+        UUID idUser = event.getCreator().getId();
+        UUID idParticipation = event.getParticipations().stream()
+                .filter(p -> p.getIdUser().equals(idUser)).findFirst().get().getIdParticipation();
+        participationRepository.deleteUserParticipationsByParticipationId(idParticipation);
+        participationRepository.flush();
         eventRepository.delete(findEvent(uuid));
         eventRepository.flush();
     }

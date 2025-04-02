@@ -2,9 +2,11 @@ package com.hobbyFinder.hubby.repositories;
 
 import com.hobbyFinder.hubby.models.entities.Evaluation;
 import com.hobbyFinder.hubby.models.entities.Participation;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -35,4 +37,9 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
             "WHERE e.creator.id = :userId " +
             "AND a IS NOT NULL")
     Double findAverageStarsByUser(UUID userId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM users_participations WHERE participations_id_participation = :participationId", nativeQuery = true)
+    void deleteUserParticipationsByParticipationId(@Param("participationId") UUID participationId);
 }

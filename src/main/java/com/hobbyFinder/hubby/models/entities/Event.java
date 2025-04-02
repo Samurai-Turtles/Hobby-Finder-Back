@@ -53,7 +53,7 @@ public class Event {
     @Transient
     private double avaliationStars;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
 
