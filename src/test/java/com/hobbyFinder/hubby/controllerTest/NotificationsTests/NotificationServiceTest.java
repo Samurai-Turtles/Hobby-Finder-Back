@@ -220,7 +220,7 @@ public class NotificationServiceTest {
       usuario,
       mensagem,
       usuario.getPhoto(),
-      new HashMap<>(),
+      null, null,
       NotificationEnum.PARTICIPATION
     );
 
@@ -237,7 +237,7 @@ public class NotificationServiceTest {
       .thenReturn(new PageImpl<>(listaNotificacoes));
 
     // Act
-    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, new HashMap<>(), NotificationEnum.PARTICIPATION);
+    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, null, null, NotificationEnum.PARTICIPATION);
 
     // Assert
     verify(notificationRepository).save(any(Notification.class));

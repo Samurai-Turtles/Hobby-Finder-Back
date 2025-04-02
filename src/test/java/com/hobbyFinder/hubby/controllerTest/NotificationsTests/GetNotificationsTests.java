@@ -55,7 +55,7 @@ public class GetNotificationsTests {
     testUser = userRepository.save(testUser);
 
     testNotification =
-      new Notification(testUser, "Test notification message", null, new HashMap<>(), NotificationEnum.PARTICIPATION);
+      new Notification(testUser, "Test notification message", null, null, null, NotificationEnum.PARTICIPATION);
     notificationRepository.save(testNotification);
 
     // Mock do GetUserLogged para retornar o usuário de teste
