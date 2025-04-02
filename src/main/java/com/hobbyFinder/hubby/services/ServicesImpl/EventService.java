@@ -59,7 +59,9 @@ public class EventService implements EventInterface {
                 .district(eventCreateDto.local().district())
                 .number(eventCreateDto.local().number())
                 .city(eventCreateDto.local().city())
-                .state(eventCreateDto.local().state()).build();
+                .state(eventCreateDto.local().state())
+                .longitude(eventCreateDto.local().longitude())
+                .latitude(eventCreateDto.local().latitude()).build();
 
         Event event = Event.builder().name(eventCreateDto.Name())
                 .EventBegin(eventCreateDto.begin())
@@ -172,6 +174,8 @@ public class EventService implements EventInterface {
                     .district(eventPutDto.local().district())
                     .number(eventPutDto.local().number())
                     .city(eventPutDto.local().city())
+                    .latitude(eventPutDto.local().latitude())
+                    .longitude(eventPutDto.local().longitude())
                     .state(eventPutDto.local().state()).build();
             event.setLocal(local);
         }

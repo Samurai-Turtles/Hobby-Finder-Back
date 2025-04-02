@@ -29,7 +29,10 @@ public class Local {
     @Column(nullable = false)
     private String state;
 
+    @Column(nullable = false)
     private double latitude;
+
+    @Column(nullable = false)
     private double longitude;
 
 }
