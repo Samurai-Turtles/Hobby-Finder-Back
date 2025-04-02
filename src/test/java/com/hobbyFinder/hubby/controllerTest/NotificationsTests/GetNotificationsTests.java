@@ -23,6 +23,8 @@ import com.hobbyFinder.hubby.repositories.NotificationRepository;
 import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 
+import java.util.HashMap;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -53,7 +55,7 @@ public class GetNotificationsTests {
     testUser = userRepository.save(testUser);
 
     testNotification =
-      new Notification(testUser, "Test notification message", null, testUser.getId(), NotificationEnum.PARTICIPATION);
+      new Notification(testUser, "Test notification message", null, new HashMap<>(), NotificationEnum.PARTICIPATION);
     notificationRepository.save(testNotification);
 
     // Mock do GetUserLogged para retornar o usuário de teste

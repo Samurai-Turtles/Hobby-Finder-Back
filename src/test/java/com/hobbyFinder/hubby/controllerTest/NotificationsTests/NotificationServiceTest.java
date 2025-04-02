@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -219,7 +220,7 @@ public class NotificationServiceTest {
       usuario,
       mensagem,
       usuario.getPhoto(),
-      usuario.getId(),
+      new HashMap<>(),
       NotificationEnum.PARTICIPATION
     );
 
@@ -236,7 +237,7 @@ public class NotificationServiceTest {
       .thenReturn(new PageImpl<>(listaNotificacoes));
 
     // Act
-    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, usuario.getId(), NotificationEnum.PARTICIPATION);
+    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, new HashMap<>(), NotificationEnum.PARTICIPATION);
 
     // Assert
     verify(notificationRepository).save(any(Notification.class));
