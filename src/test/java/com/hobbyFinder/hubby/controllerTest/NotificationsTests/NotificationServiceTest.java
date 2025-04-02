@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -169,7 +171,7 @@ public class NotificationServiceTest {
     when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
 
     // Act
-    notificationService.notifySolicitation(usuario, evento);
+    notificationService.notifyConfirmParticipation(usuario, evento, participacao);
 
     // Assert
     verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
@@ -198,7 +200,7 @@ public class NotificationServiceTest {
     when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
 
     // Act
-    notificationService.notifyConfirmParticipation(usuario, evento);
+    notificationService.notifyConfirmParticipation(usuario, evento, participacao);
 
     // Assert
     verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
@@ -217,7 +219,9 @@ public class NotificationServiceTest {
     Notification notificacao = new Notification(
       usuario,
       mensagem,
-      usuario.getPhoto()
+      usuario.getPhoto(),
+      null, null,
+      NotificationEnum.PARTICIPATION
     );
 
     when(getUserLogged.getUserLogged()).thenReturn(usuario);
@@ -233,7 +237,7 @@ public class NotificationServiceTest {
       .thenReturn(new PageImpl<>(listaNotificacoes));
 
     // Act
-    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem);
+    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, null, null, NotificationEnum.PARTICIPATION);
 
     // Assert
     verify(notificationRepository).save(any(Notification.class));

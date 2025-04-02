@@ -1,7 +1,12 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.entities.*;
+import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,17 +14,13 @@ import org.springframework.stereotype.Service;
 import com.hobbyFinder.hubby.models.dto.notifications.NotificationDto;
 import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
 import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
-import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.models.entities.Notification;
-import com.hobbyFinder.hubby.models.entities.Participation;
-import com.hobbyFinder.hubby.models.entities.Photo;
-import com.hobbyFinder.hubby.models.entities.User;
 import com.hobbyFinder.hubby.repositories.NotificationRepository;
 import com.hobbyFinder.hubby.services.IServices.NotificationInterface;
 import com.hobbyFinder.hubby.services.IServices.UserInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @AllArgsConstructor
@@ -29,10 +30,10 @@ public class NotificationService implements NotificationInterface {
   private UserInterface userRepository;
   private GetUserLogged getUserLogged;
 
-  private static final String  NOTIFY_CHANGE_EVENT = "O Evento '%s' ocorreu mudanças.";
-  private static final String  NOTIFY_SOLICITATION = "O Usuário '%s' quer participar do seu evento '%s'.";
-  private static final String  NOTIFY_APROVE = "Você foi Aprovado no Evento '%s'.";
-  private static final String  NOTIFY_CONFIRM = "O Usuário '%s' foi Aprovado no Evento '%s'.";
+  private static final String  NOTIFY_CHANGE_EVENT = "O Evento '%s' começará em.";
+  private static final String  NOTIFY_SOLICITATION = "O Usuário '%s' deseja participar no evento '%s'.";
+  private static final String  NOTIFY_APROVE = "Sua solicitação para participar no evento '%s' foi aceita.";
+  private static final String  NOTIFY_CONFIRM = "O Usuário '%s' confirmou sua presença no evento '%s'.";
 
   @Override
   public void notifyChangeEvent(Event event) {
@@ -43,25 +44,25 @@ public class NotificationService implements NotificationInterface {
     for (Participation participation : participations) {
       userTurn = userRepository.getUser(participation.getIdUser());
       message = String.format(NOTIFY_CHANGE_EVENT, event.getName());
-      postNotification(userTurn, photo, message);
+      postNotification(userTurn, photo, message, event.getId(), null, NotificationEnum.CHANGE_EVENT);
     }
   }
 
   @Override
-  public void notifySolicitation(User user, Event event) {
-    notifyOrganizer(event, NOTIFY_SOLICITATION, user);
+  public void notifySolicitation(User user, Event event, ParticipationRequest request) {
+    notifyOrganizer(event, NOTIFY_SOLICITATION, user, request.getId(), NotificationEnum.ORGANIZER_SOLICITATION);
   }
 
   @Override
   public void notifyAproveSolicitation(User user, Event event) {
     String message = String.format(NOTIFY_APROVE, event.getName());
 
-    postNotification(user, event.getPhoto(), message);
+    postNotification(user, event.getPhoto(), message, event.getId(), null, NotificationEnum.CLIENT_SOLICITATION);
   }
 
   @Override
-  public void notifyConfirmParticipation(User user, Event event) {
-    notifyOrganizer(event, NOTIFY_CONFIRM, user);
+  public void notifyConfirmParticipation(User user, Event event, Participation participation) {
+    notifyOrganizer(event, NOTIFY_CONFIRM, user, participation.getIdParticipation(), NotificationEnum.PARTICIPATION);
   }
 
   @Override
@@ -84,12 +85,13 @@ public class NotificationService implements NotificationInterface {
 
     NotificationDto notificationDto = new NotificationDto(
             notification.getId(), notification.getMessage(), photoDto,
-            userDTO, notification.getDate());
+            userDTO, notification.getDate(), notification.getIdEVento(), notification.getIdAssociacao(),
+            notification.getType());
 
     return notificationDto;
   }
 
-  private void notifyOrganizer(Event event, String constant, User user) {
+  private void notifyOrganizer(Event event, String constant, User user, UUID id, NotificationEnum type) {
     User organizer;
     Photo photoUser = user.getPhoto();
     for (Participation participation : event.getParticipations()) {
@@ -98,12 +100,12 @@ public class NotificationService implements NotificationInterface {
 
       organizer = userRepository.getUser(participation.getIdUser());
       String message = String.format(constant, user.getUsername(),event.getName());
-      postNotification(organizer, photoUser, message);
+      postNotification(organizer, photoUser, message, event.getId(), id, type);
     }
   }
 
-  public void postNotification(User user, Photo photo, String message) {
-    Notification notification = new Notification(user, message, photo);
+  public void postNotification(User user, Photo photo, String message, UUID idEvento, UUID idAssociacao, NotificationEnum type) {
+    Notification notification = new Notification(user, message, photo, idEvento, idAssociacao, type);
 
     notificationRepository.save(notification);
   }
