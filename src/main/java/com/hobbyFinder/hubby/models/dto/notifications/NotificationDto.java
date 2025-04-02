@@ -5,6 +5,7 @@ import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
 import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,7 +14,8 @@ public record NotificationDto(
         String message,
         PhotoDto photo,
         UserResponseDTO userDto,
-        LocalDate date,
-        HashMap<String, String> objectForFront,
+        LocalDateTime date,
+        UUID idEVento,
+        UUID idSolicitacao,
         NotificationEnum notificationEnum) {
 }

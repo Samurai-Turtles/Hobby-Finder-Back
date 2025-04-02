@@ -41,12 +41,10 @@ public class NotificationService implements NotificationInterface {
     User userTurn;
     Photo photo = event.getPhoto();
     String message;
-    HashMap<String, String> notificationObject = new HashMap<String, String>();
-    notificationObject.put("idEvento", event.getId().toString());
     for (Participation participation : participations) {
       userTurn = userRepository.getUser(participation.getIdUser());
       message = String.format(NOTIFY_CHANGE_EVENT, event.getName());
-      postNotification(userTurn, photo, message, notificationObject, NotificationEnum.CHANGE_EVENT);
+      postNotification(userTurn, photo, message, event.getId(), null, NotificationEnum.CHANGE_EVENT);
     }
   }
 
@@ -59,11 +57,7 @@ public class NotificationService implements NotificationInterface {
   public void notifyAproveSolicitation(User user, Event event) {
     String message = String.format(NOTIFY_APROVE, event.getName());
 
-    HashMap<String, String> notificationObject = new HashMap<>();
-
-    notificationObject.put("idEvento", event.getId().toString());
-
-    postNotification(user, event.getPhoto(), message, notificationObject, NotificationEnum.CLIENT_SOLICITATION);
+    postNotification(user, event.getPhoto(), message, event.getId(), null, NotificationEnum.CLIENT_SOLICITATION);
   }
 
   @Override
@@ -91,7 +85,8 @@ public class NotificationService implements NotificationInterface {
 
     NotificationDto notificationDto = new NotificationDto(
             notification.getId(), notification.getMessage(), photoDto,
-            userDTO, notification.getDate(), notification.getIdNotification(), notification.getType());
+            userDTO, notification.getDate(), notification.getIdEVento(), notification.getIdAssociacao(),
+            notification.getType());
 
     return notificationDto;
   }
@@ -99,21 +94,18 @@ public class NotificationService implements NotificationInterface {
   private void notifyOrganizer(Event event, String constant, User user, UUID id, NotificationEnum type) {
     User organizer;
     Photo photoUser = user.getPhoto();
-    HashMap<String, String> notificationObject = new HashMap<>();
-    notificationObject.put("idEvento", event.getId().toString());
-    notificationObject.put("idAssociado", id.toString());
     for (Participation participation : event.getParticipations()) {
       if (!participation.isOrganizerParticipation())
         continue;
 
       organizer = userRepository.getUser(participation.getIdUser());
       String message = String.format(constant, user.getUsername(),event.getName());
-      postNotification(organizer, photoUser, message, notificationObject, type);
+      postNotification(organizer, photoUser, message, event.getId(), id, type);
     }
   }
 
-  public void postNotification(User user, Photo photo, String message, HashMap<String, String> notificationObject, NotificationEnum type) {
-    Notification notification = new Notification(user, message, photo, notificationObject, type);
+  public void postNotification(User user, Photo photo, String message, UUID idEvento, UUID idAssociacao, NotificationEnum type) {
+    Notification notification = new Notification(user, message, photo, idEvento, idAssociacao, type);
 
     notificationRepository.save(notification);
   }
