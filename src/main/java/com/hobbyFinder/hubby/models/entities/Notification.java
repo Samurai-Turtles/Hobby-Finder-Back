@@ -1,6 +1,7 @@
 package com.hobbyFinder.hubby.models.entities;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.hobbyFinder.hubby.models.enums.NotificationEnum;
@@ -33,18 +34,17 @@ public class Notification {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  private UUID idNotification;
+  private HashMap<String, String> idNotification;
 
   private NotificationEnum type;
 
   @Column(nullable = false)
   private LocalDate date = LocalDate.now();
 
-  public Notification(User user, String message, Photo photo, UUID idNotification, NotificationEnum type) {
+  public Notification(User user, String message, Photo photo, HashMap<String, String> notificationObject, NotificationEnum type) {
     this.user = user;
     this.message = message;
     this.photo = photo;
-    this.idNotification = idNotification;
     this.type = type;
   }
 

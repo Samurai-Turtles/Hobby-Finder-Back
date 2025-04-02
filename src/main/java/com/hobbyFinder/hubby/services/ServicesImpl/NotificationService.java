@@ -1,5 +1,7 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,10 +30,10 @@ public class NotificationService implements NotificationInterface {
   private UserInterface userRepository;
   private GetUserLogged getUserLogged;
 
-  private static final String  NOTIFY_CHANGE_EVENT = "O Evento '%s' ocorreu mudanças.";
-  private static final String  NOTIFY_SOLICITATION = "O Usuário '%s' quer participar do seu evento '%s'.";
-  private static final String  NOTIFY_APROVE = "Você foi Aprovado no Evento '%s'.";
-  private static final String  NOTIFY_CONFIRM = "O Usuário '%s' foi Aprovado no Evento '%s'.";
+  private static final String  NOTIFY_CHANGE_EVENT = "O Evento '%s' começará em.";
+  private static final String  NOTIFY_SOLICITATION = "O Usuário '%s' deseja participar no evento '%s'.";
+  private static final String  NOTIFY_APROVE = "Sua solicitação para participar no evento '%s' foi aceita.";
+  private static final String  NOTIFY_CONFIRM = "O Usuário '%s' confirmou sua presença no evento '%s'.";
 
   @Override
   public void notifyChangeEvent(Event event) {
@@ -39,10 +41,12 @@ public class NotificationService implements NotificationInterface {
     User userTurn;
     Photo photo = event.getPhoto();
     String message;
+    HashMap<String, String> notificationObject = new HashMap<String, String>();
+    notificationObject.put("idEvento", event.getId().toString());
     for (Participation participation : participations) {
       userTurn = userRepository.getUser(participation.getIdUser());
       message = String.format(NOTIFY_CHANGE_EVENT, event.getName());
-      postNotification(userTurn, photo, message, event.getId(), NotificationEnum.CHANGE_EVENT);
+      postNotification(userTurn, photo, message, notificationObject, NotificationEnum.CHANGE_EVENT);
     }
   }
 
@@ -55,7 +59,9 @@ public class NotificationService implements NotificationInterface {
   public void notifyAproveSolicitation(User user, Event event) {
     String message = String.format(NOTIFY_APROVE, event.getName());
 
-    postNotification(user, event.getPhoto(), message, user.getId(), NotificationEnum.CLIENT_SOLICITATION);
+
+
+    postNotification(user, event.getPhoto(), message, new HashMap<>(), NotificationEnum.CLIENT_SOLICITATION);
   }
 
   @Override
@@ -91,18 +97,21 @@ public class NotificationService implements NotificationInterface {
   private void notifyOrganizer(Event event, String constant, User user, UUID id, NotificationEnum type) {
     User organizer;
     Photo photoUser = user.getPhoto();
+    HashMap<String, String> notificationObject = new HashMap<>();
+    notificationObject.put("idEvento", event.getId().toString());
+    notificationObject.put("idAssociado", id.toString());
     for (Participation participation : event.getParticipations()) {
       if (!participation.isOrganizerParticipation())
         continue;
 
       organizer = userRepository.getUser(participation.getIdUser());
       String message = String.format(constant, user.getUsername(),event.getName());
-      postNotification(organizer, photoUser, message, id, type);
+      postNotification(organizer, photoUser, message, notificationObject, type);
     }
   }
 
-  public void postNotification(User user, Photo photo, String message, UUID idNotification, NotificationEnum type) {
-    Notification notification = new Notification(user, message, photo, idNotification, type);
+  public void postNotification(User user, Photo photo, String message, HashMap<String, String> notificationObject, NotificationEnum type) {
+    Notification notification = new Notification(user, message, photo, notificationObject, type);
 
     notificationRepository.save(notification);
   }
