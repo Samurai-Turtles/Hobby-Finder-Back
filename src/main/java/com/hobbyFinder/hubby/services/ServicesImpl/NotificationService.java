@@ -59,9 +59,11 @@ public class NotificationService implements NotificationInterface {
   public void notifyAproveSolicitation(User user, Event event) {
     String message = String.format(NOTIFY_APROVE, event.getName());
 
+    HashMap<String, String> notificationObject = new HashMap<>();
 
+    notificationObject.put("idEvento", event.getId().toString());
 
-    postNotification(user, event.getPhoto(), message, new HashMap<>(), NotificationEnum.CLIENT_SOLICITATION);
+    postNotification(user, event.getPhoto(), message, notificationObject, NotificationEnum.CLIENT_SOLICITATION);
   }
 
   @Override
