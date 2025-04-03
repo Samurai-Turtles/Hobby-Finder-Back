@@ -17,9 +17,9 @@ public class SituationController {
     private SituationInterface situationService;
 
     @GetMapping(SituationRoutes.SITUATION_BASE)
-    public ResponseEntity<SituationDto> getSituationByAuthUser(UUID id) {
+    public ResponseEntity<SituationDto> getSituationByAuthUser(UUID idEvent) {
         return ResponseEntity.ok(
-                situationService.getSituationByAuthUser(id));
+                situationService.getSituationByAuthUser(idEvent));
     }
 
 }
