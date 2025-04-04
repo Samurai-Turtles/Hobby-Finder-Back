@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.auth.signer.AwsS3V4Signer;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -34,12 +39,19 @@ public class S3Config {
 
     @Bean
     public S3Client s3Client() {
+        SdkHttpClient httpClient = ApacheHttpClient.builder().build();
+
         return S3Client.builder()
-                .endpointOverride(URI.create(s3Endpoint)) // Endpoint do MinIO
-                .region(Region.of(region)) // Região do S3
+                .endpointOverride(URI.create(s3Endpoint))
+                .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
                 ))
+                .httpClient(httpClient)
+                .serviceConfiguration(s3 -> s3.pathStyleAccessEnabled(true)) // <--- ESSENCIAL PARA MINIO
+                .overrideConfiguration(ClientOverrideConfiguration.builder()
+                        .putAdvancedOption(SdkAdvancedClientOption.SIGNER, AwsS3V4Signer.create())
+                        .build())
                 .build();
     }
 

@@ -42,6 +42,9 @@ services:
       - '9000:${FAKE_AWS_PORT}'
       - '9001:${FAKE_AWS_CONSOLE_PORT}'
     environment:
+      MINIO_REGION: us-east-1
+      MINIO_DOMAIN: my-minio.local
+      MINIO_API_SELECT: on
       MINIO_ROOT_USER: ${FAKE_AWS_USER}
       MINIO_ROOT_PASSWORD: ${FAKE_AWS_PSWD}
     volumes:
