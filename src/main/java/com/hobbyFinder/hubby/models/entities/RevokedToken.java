@@ -14,7 +14,7 @@ public class RevokedToken {
     private long id;
 
     @Getter
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 1000)
     private String token;
 
     @Column
