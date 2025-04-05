@@ -132,7 +132,6 @@ public class UserService implements UserInterface {
                 .orElseThrow(() -> new UserNotFoundException("Email não associado a nenhum usuário."));
 
         String newPassword = UUID.randomUUID().toString();
-
         String encodedPassword = passwordEncoder.encode(newPassword);
 
         user.setPassword(encodedPassword);
@@ -142,8 +141,10 @@ public class UserService implements UserInterface {
     }
 
     private void sendPasswordRecoveryEmail(String toEmail, String newPassword) {
-        EmailDto emailDto = new EmailDto(toEmail, "Sua nova senha é: " + newPassword);
+        String subject = "Recuperação de senha - Hobby Finder";
+        String message = "Sua nova senha é: " + newPassword;
 
+        EmailDto emailDto = new EmailDto(toEmail, subject, message);
         emailService.enviaEmail(emailDto);
     }
 

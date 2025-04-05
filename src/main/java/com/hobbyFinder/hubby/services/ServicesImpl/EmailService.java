@@ -20,7 +20,7 @@ public class EmailService {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(remetente);
         simpleMailMessage.setTo(emailDto.email());
-        simpleMailMessage.setSubject("Recuperação de senha - HobbyFinder");
+        simpleMailMessage.setSubject(emailDto.assunto());
         simpleMailMessage.setText(emailDto.texto());
         javaMailSender.send(simpleMailMessage);
 

@@ -1,4 +1,4 @@
 package com.hobbyFinder.hubby.models.dto.email;
 
-public record EmailDto(String email, String texto) {
+public record EmailDto(String email, String assunto, String texto) {
 }
