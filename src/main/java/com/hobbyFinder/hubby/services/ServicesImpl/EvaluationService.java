@@ -1,27 +1,36 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
-import com.hobbyFinder.hubby.exception.EventException.EventNotEndedException;
-import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
-import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
-import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
-import com.hobbyFinder.hubby.models.dto.evaluations.ResponseEvaluationDto;
-import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
-import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
-import com.hobbyFinder.hubby.models.entities.*;
-import com.hobbyFinder.hubby.repositories.ParticipationRepository;
-import com.hobbyFinder.hubby.services.IServices.EvaluationInterface;
-import com.hobbyFinder.hubby.services.IServices.EventInterface;
-import com.hobbyFinder.hubby.services.IServices.UserInterface;
-import com.hobbyFinder.hubby.util.GetUserLogged;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.hobbyFinder.hubby.exception.EventException.EventNotEndedException;
+import com.hobbyFinder.hubby.exception.NotFound.ParticipationNotFoundException;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPosition;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserIdConflictException;
+import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
+import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
+import com.hobbyFinder.hubby.models.dto.evaluations.ResponseEvaluationDto;
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.dto.situations.UserRateSituationDto;
+import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.models.entities.Evaluation;
+import com.hobbyFinder.hubby.models.entities.Event;
+import com.hobbyFinder.hubby.models.entities.Participation;
+import com.hobbyFinder.hubby.models.entities.Photo;
+import com.hobbyFinder.hubby.models.entities.User;
+import com.hobbyFinder.hubby.models.enums.RateSituationEnum;
+import com.hobbyFinder.hubby.repositories.ParticipationRepository;
+import com.hobbyFinder.hubby.services.IServices.EvaluationInterface;
+import com.hobbyFinder.hubby.services.IServices.EventInterface;
+import com.hobbyFinder.hubby.services.IServices.UserInterface;
+import com.hobbyFinder.hubby.util.GetUserLogged;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -95,6 +104,24 @@ public class EvaluationService implements EvaluationInterface {
             responseList.add(responseDto);
         }
         return responseList;
+    }
+
+    @Override
+    public UserRateSituationDto hasUserAlreadyRatedTheEvent(UUID idParticipation) {
+        User userLogged = getUserLogged.getUserLogged();
+        Participation participation = participationRepository.findById(idParticipation)
+                .orElseThrow(() -> new ParticipationNotFoundException("Participação não encontrada"));
+        RateSituationEnum rateSituation = RateSituationEnum.NOT_RATED;
+
+        if (!participation.getIdUser().equals(userLogged.getId())) {
+            throw new UserIdConflictException();
+        }
+
+        if (participation.getEvaluation() != null) {
+            rateSituation = RateSituationEnum.ALREADY_RATED;
+        }
+
+        return new UserRateSituationDto(rateSituation);
     }
 
     private Participation getParticipationFromEvent(Event event) {
