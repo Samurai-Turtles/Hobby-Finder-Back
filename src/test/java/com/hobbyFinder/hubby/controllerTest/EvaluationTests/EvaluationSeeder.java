@@ -56,11 +56,13 @@ public class EvaluationSeeder {
                     .builder()
                     .stars(i)
                     .comment(EvaluationConstants.COMMENT)
+                    .user(users.get(i))
                     .build());
             createParticipation(this.idSecondEvent, users.get(i).getId(), Evaluation
                     .builder()
                     .stars(i + 1)
                     .comment(EvaluationConstants.COMMENT)
+                    .user(users.get(i))
                     .build());
         }
     }

@@ -59,13 +59,12 @@ public class EvaluationService implements EvaluationInterface {
         this.eventInterface.updateEventAvaliation(event.getId(), getAvgStarsByEvent(event.getId()));
 
         UUID idEventOwner = event.getCreator().getId();
-        UserResponseDTO userResponseDTO = getUserResponseDTO(avaliation);
+        UserResponseDTO userResponseDTO = getUserResponseDTO(getUserLogged.getUserLogged());
         this.userInterface.updateUserAvaliation(idEventOwner, getAvgStarsByUser(idEventOwner));
         return new ResponseEvaluationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment(), userResponseDTO);
     }
 
-    private static UserResponseDTO getUserResponseDTO(Evaluation avaliation) {
-        User userEvaluation = avaliation.getUser();
+    private static UserResponseDTO getUserResponseDTO(User userEvaluation) {
         Photo photo = userEvaluation.getPhoto();
         PhotoDto photoDto = new PhotoDto(
                 photo.getId(),
@@ -92,7 +91,7 @@ public class EvaluationService implements EvaluationInterface {
         List<ResponseEvaluationDto> responseList = new ArrayList<>();
 
         for (Evaluation evaluation : evaluations) {
-            UserResponseDTO userResponseDTO = getUserResponseDTO(evaluation);
+            UserResponseDTO userResponseDTO = getUserResponseDTO(getUserLogged.getUserLogged());
 
             ResponseEvaluationDto responseDto = new ResponseEvaluationDto(
                     evaluation.getId(),

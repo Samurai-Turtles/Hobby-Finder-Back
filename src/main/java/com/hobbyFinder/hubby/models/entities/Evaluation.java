@@ -31,7 +31,7 @@ public class Evaluation {
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
