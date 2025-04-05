@@ -31,9 +31,14 @@ public class Evaluation {
     @JoinColumn(name = "participation_id", nullable = false)
     private Participation participation;
 
-    public Evaluation(PostEvaluationDto avaliationDto, Participation participation) {
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Evaluation(PostEvaluationDto avaliationDto, Participation participation, User user) {
         this.stars = avaliationDto.stars();
         this.comment = avaliationDto.comment();
         this.participation = participation;
+        this.user = user;
     }
 }

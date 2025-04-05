@@ -5,9 +5,9 @@ import com.hobbyFinder.hubby.exception.ParticipationExceptions.InadequateUserPos
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserNotInEventException;
 import com.hobbyFinder.hubby.models.dto.evaluations.PostEvaluationDto;
 import com.hobbyFinder.hubby.models.dto.evaluations.ResponseEvaluationDto;
-import com.hobbyFinder.hubby.models.entities.Evaluation;
-import com.hobbyFinder.hubby.models.entities.Event;
-import com.hobbyFinder.hubby.models.entities.Participation;
+import com.hobbyFinder.hubby.models.dto.photos.PhotoDto;
+import com.hobbyFinder.hubby.models.dto.user.UserResponseDTO;
+import com.hobbyFinder.hubby.models.entities.*;
 import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.services.IServices.EvaluationInterface;
 import com.hobbyFinder.hubby.services.IServices.EventInterface;
@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -42,15 +43,28 @@ public class EvaluationService implements EvaluationInterface {
         }
 
         Participation participation = getParticipationFromEvent(event);
-        Evaluation avaliation = new Evaluation(postAvaliationDTO, participation);
+        Evaluation avaliation = new Evaluation(postAvaliationDTO, participation, getUserLogged.getUserLogged());
         participation.setEvaluation(avaliation);
         this.participationRepository.save(participation);
 
         this.eventInterface.updateEventAvaliation(event.getId(), getAvgStarsByEvent(event.getId()));
 
         UUID idEventOwner = event.getCreator().getId();
+        UserResponseDTO userResponseDTO = getUserResponseDTO(avaliation);
         this.userInterface.updateUserAvaliation(idEventOwner, getAvgStarsByUser(idEventOwner));
-        return new ResponseEvaluationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment());
+        return new ResponseEvaluationDto(avaliation.getId(), avaliation.getStars(), avaliation.getComment(), userResponseDTO);
+    }
+
+    private static UserResponseDTO getUserResponseDTO(Evaluation avaliation) {
+        User userEvaluation = avaliation.getUser();
+        Photo photo = userEvaluation.getPhoto();
+        PhotoDto photoDto = new PhotoDto(
+                photo.getId(),
+                photo.getExtension(),
+                photo.isSaved()
+        );
+        return new UserResponseDTO(userEvaluation.getId(), userEvaluation.getUsername(),userEvaluation.getFullName(),
+                userEvaluation.getBio(), userEvaluation.getInterests(), photoDto, userEvaluation.getStars());
     }
 
     @Override
@@ -62,10 +76,25 @@ public class EvaluationService implements EvaluationInterface {
             throw new InadequateUserPosition();
         }
 
-        return this.participationRepository.getAvaliationByEventOrdered(event.getId())
+        List<Evaluation> evaluations = this.participationRepository.getAvaliationByEventOrdered(event.getId())
                 .stream()
-                .map(avl -> new ResponseEvaluationDto(avl.getId(), avl.getStars(), avl.getComment()))
-                .collect(Collectors.toList());
+                .toList();
+
+        List<ResponseEvaluationDto> responseList = new ArrayList<>();
+
+        for (Evaluation evaluation : evaluations) {
+            UserResponseDTO userResponseDTO = getUserResponseDTO(evaluation);
+
+            ResponseEvaluationDto responseDto = new ResponseEvaluationDto(
+                    evaluation.getId(),
+                    evaluation.getStars(),
+                    evaluation.getComment(),
+                    userResponseDTO
+            );
+
+            responseList.add(responseDto);
+        }
+        return responseList;
     }
 
     private Participation getParticipationFromEvent(Event event) {
