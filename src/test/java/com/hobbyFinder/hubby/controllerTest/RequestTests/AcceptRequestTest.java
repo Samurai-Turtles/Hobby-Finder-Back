@@ -1,6 +1,7 @@
 package com.hobbyFinder.hubby.controllerTest.RequestTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbyFinder.hubby.controllerTest.UserTests.UserSeeder;
 import com.hobbyFinder.hubby.exception.CustomErrorType;
 import com.hobbyFinder.hubby.repositories.EventRepository;
+import com.hobbyFinder.hubby.repositories.ParticipationRepository;
 import com.hobbyFinder.hubby.repositories.RequestRepository;
 
 import jakarta.transaction.Transactional;
@@ -52,6 +54,9 @@ public class AcceptRequestTest {
 
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private ParticipationRepository participationRepository;
 
     @BeforeEach
     void setUp() throws Exception {

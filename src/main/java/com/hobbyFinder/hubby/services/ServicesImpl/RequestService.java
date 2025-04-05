@@ -10,8 +10,10 @@ import com.hobbyFinder.hubby.exception.EntityStateException.EventIsPublicExcepti
 import com.hobbyFinder.hubby.exception.EntityStateException.InvalidPositionParticipateRequest;
 import com.hobbyFinder.hubby.exception.EntityStateException.NonOwnerUserException;
 import com.hobbyFinder.hubby.exception.EventException.EventCrowdedException;
+import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.NotFoundException;
 import com.hobbyFinder.hubby.exception.NotFound.PageIsEmptyException;
+import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.exception.ParticipationExceptions.UserAlreadyInEventException;
 import com.hobbyFinder.hubby.models.dto.participationRequest.EventRequestResponse;
 import com.hobbyFinder.hubby.models.dto.participationRequest.ParticipationRequestEventDto;
@@ -69,6 +71,7 @@ public class RequestService implements RequestInterface {
             checkEventCapacity(targetEventId);
 
             Participation newParticipation = createParticipationObject(targetEventId, userLogged.getId());
+            newParticipation.setUserParticipation(UserParticipation.CONFIRMED_PRESENCE);
 
             participationRepository.save(newParticipation);
             participationRepository.flush();
@@ -138,18 +141,19 @@ public class RequestService implements RequestInterface {
         ParticipationRequest targetRequest = requestRepository.getReferenceById(targetRequestId);
         Participation newParticipation = createParticipationObject(targetEventId, targetRequest.getUser().getId());
 
-        Event targetEvent = eventRepository.getReferenceById(targetEventId);
-        targetRequest.getUser().getParticipations().add(newParticipation);
+        Event targetEvent = eventRepository.findById(targetEventId).orElseThrow(() -> new EventNotFoundException("Evento não encontrado."));
+        User targetUser = userRepository.findById(targetRequest.getUser().getId()).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+        participationRepository.save(newParticipation);
+        
+        targetUser.getParticipations().add(newParticipation);
         targetEvent.getParticipations().add(newParticipation);
 
         eventRepository.save(targetEvent);
-        userRepository.save(targetRequest.getUser());
+        userRepository.save(targetUser);
 
-        participationRepository.save(newParticipation);
-        participationRepository.flush();
 
         requestRepository.delete(targetRequest);
-        requestRepository.flush();
+
 
     }
 
