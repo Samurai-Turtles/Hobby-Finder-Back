@@ -42,4 +42,9 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
     @Modifying
     @Query(value = "DELETE FROM users_participations WHERE participations_id_participation = :participationId", nativeQuery = true)
     void deleteUserParticipationsByParticipationId(@Param("participationId") UUID participationId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM event_participations WHERE participations_id_participation = :participationId", nativeQuery = true)
+    void deleteFromEventParticipations(@Param("participationId") UUID participationId);
 }

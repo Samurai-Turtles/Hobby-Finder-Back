@@ -62,6 +62,8 @@ public class ParticipationServiceImpl implements ParticipationInterface {
     @Override
     public void removeParticipation(UUID participationId) {
         Participation participation = findParticipation(participationId);
+        participationRepository.deleteUserParticipationsByParticipationId(participationId);
+        participationRepository.deleteFromEventParticipations(participationId);
         participationRepository.delete(participation);
         participationRepository.flush();
     }
