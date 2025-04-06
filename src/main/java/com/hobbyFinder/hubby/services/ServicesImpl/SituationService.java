@@ -1,6 +1,7 @@
 package com.hobbyFinder.hubby.services.ServicesImpl;
 
 import com.hobbyFinder.hubby.exception.NotFound.EventNotFoundException;
+import com.hobbyFinder.hubby.exception.NotFound.UserNotFoundException;
 import com.hobbyFinder.hubby.models.dto.situations.SituationDto;
 import com.hobbyFinder.hubby.models.entities.Event;
 import com.hobbyFinder.hubby.models.entities.Participation;
@@ -10,6 +11,7 @@ import com.hobbyFinder.hubby.models.enums.ParticipationPosition;
 import com.hobbyFinder.hubby.models.enums.SituationEnum;
 import com.hobbyFinder.hubby.repositories.EventRepository;
 import com.hobbyFinder.hubby.repositories.RequestRepository;
+import com.hobbyFinder.hubby.repositories.UserRepository;
 import com.hobbyFinder.hubby.services.IServices.SituationInterface;
 import com.hobbyFinder.hubby.util.GetUserLogged;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ public class SituationService implements SituationInterface {
     private EventRepository eventRepository;
     private RequestRepository requestRepository;
     private GetUserLogged getUserLogged;
+    private UserRepository userRepository;
 
     private SituationDto getSituation(User user, UUID eventId) {
         Event event = eventRepository.findById(eventId).orElse(null);
@@ -73,5 +76,11 @@ public class SituationService implements SituationInterface {
     public SituationDto getSituationByAuthUser(UUID eventId) {
         User user = getUserLogged.getUserLogged();
         return getSituation(user, eventId);
+    }
+
+    @Override
+    public SituationDto getSituationByUserId(UUID idUser, UUID idEvent) {
+        User user = userRepository.findById(idUser).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+        return getSituation(user, idEvent);
     }
 }

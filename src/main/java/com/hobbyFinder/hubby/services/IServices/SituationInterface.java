@@ -7,5 +7,6 @@ import java.util.UUID;
 public interface SituationInterface {
 
     SituationDto getSituationByAuthUser(UUID idEvent);
+    SituationDto getSituationByUserId(UUID idUser, UUID idEvent);
 
 }

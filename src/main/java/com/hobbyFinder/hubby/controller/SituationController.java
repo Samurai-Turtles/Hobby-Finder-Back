@@ -22,4 +22,10 @@ public class SituationController {
                 situationService.getSituationByAuthUser(idEvent));
     }
 
+    @GetMapping(SituationRoutes.SITUATION_USER)
+    public ResponseEntity<SituationDto> getSituationByAuthUser(UUID idUser, UUID idEvent) {
+        return ResponseEntity.ok(
+                situationService.getSituationByUserId(idUser, idEvent));
+    }
+
 }
