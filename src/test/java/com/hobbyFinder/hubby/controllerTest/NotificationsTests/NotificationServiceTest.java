@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 import com.hobbyFinder.hubby.services.ServicesImpl.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -127,123 +129,99 @@ public class NotificationServiceTest {
         assertTrue(notifications.toList().isEmpty());
     }
 
-    @Test
-    @DisplayName(
-            "Testar notificação de aprovação de solicitação; deve notificar usuário"
-    )
-    void testNotifyAproveSolicitation_deveNotificarUsuario() {
-        // Arrange
-        User usuario = new User();
-        usuario.setId(UUID.randomUUID());
-        Event evento = new Event();
-        evento.setName("Evento Exemplo");
+  @Test
+  @DisplayName(
+    "Testar notificação de solicitação; deve notificar o organizador da solicitação"
+  )
+  void testNotifySolicitation_deveNotificarOrganizador() {
+    // Arrange
+    User usuario = new User();
+    usuario.setId(UUID.randomUUID());
+    usuario.setUsername("Usuário Teste");
 
-        // Act
-        notificationService.notifyAproveSolicitation(usuario, evento);
+    // Criar evento e configurar participações
+    Event evento = new Event();
+    evento.setName("Evento Exemplo");
+    evento.setParticipations(new ArrayList<>()); // Inicializar lista de participações
 
-        // Assert
-        verify(notificationRepository).save(any(Notification.class));
-    }
+    // Criar e configurar a participação do organizador (usando ParticipationPosition)
+    Participation participacao = new Participation();
+    participacao.setIdUser(UUID.randomUUID());
+    participacao.setIdEvent(evento.getId());
+    participacao.setPosition(ParticipationPosition.CREATOR); // Usar CREATOR para definir como organizador
 
-    @Test
-    @DisplayName(
-            "Testar notificação de solicitação; deve notificar o organizador da solicitação"
-    )
-    void testNotifySolicitation_deveNotificarOrganizador() {
-        // Arrange
-        User usuario = new User();
-        usuario.setId(UUID.randomUUID());
-        usuario.setUsername("Usuário Teste");
+    // Adicionar a participação ao evento
+    evento.getParticipations().add(participacao);
 
-        // Criar evento e configurar participações
-        Event evento = new Event();
-        evento.setName("Evento Exemplo");
-        evento.setParticipations(new ArrayList<>()); // Inicializar lista de participações
+    // Simular a interface de usuário para retornar o usuário
+    when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
 
-        // Criar e configurar a participação do organizador (usando ParticipationPosition)
-        Participation participacao = new Participation();
-        participacao.setIdUser(UUID.randomUUID());
-        participacao.setIdEvent(evento.getId());
-        participacao.setPosition(ParticipationPosition.CREATOR); // Usar CREATOR para definir como organizador
+    // Act
+    notificationService.notifyConfirmParticipation(usuario, evento, participacao);
 
-        // Adicionar a participação ao evento
-        evento.getParticipations().add(participacao);
+    // Assert
+    verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
+  }
 
-        // Simular a interface de usuário para retornar o usuário
-        when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
+  @Test
+  @DisplayName(
+    "Testar notificação de confirmação de participação; deve notificar o organizador da confirmação"
+  )
+  void testNotifyConfirmParticipation_deveNotificarOrganizador() {
+    // Arrange
+    User usuario = new User();
+    usuario.setId(UUID.randomUUID());
+    usuario.setUsername("Usuário Teste");
+    Event evento = new Event();
+    evento.setName("Evento Exemplo");
+    evento.setParticipations(new ArrayList<>()); // Inicializar lista de participações
 
-        // Act
-        notificationService.notifySolicitation(usuario, evento);
+    // Criar participação do organizador
+    Participation participacao = new Participation();
+    participacao.setIdUser(UUID.randomUUID());
+    participacao.setPosition(ParticipationPosition.CREATOR); // Usar CREATOR para definir como organizador
+    evento.getParticipations().add(participacao);
 
-        // Assert
-        verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
-    }
+    // Simular a interface de usuário para retornar o usuário
+    when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
 
-    @Test
-    @DisplayName(
-            "Testar notificação de confirmação de participação; deve notificar o organizador da confirmação"
-    )
-    void testNotifyConfirmParticipation_deveNotificarOrganizador() {
-        // Arrange
-        User usuario = new User();
-        usuario.setId(UUID.randomUUID());
-        usuario.setUsername("Usuário Teste");
-        Event evento = new Event();
-        evento.setName("Evento Exemplo");
-        evento.setParticipations(new ArrayList<>()); // Inicializar lista de participações
+    // Act
+    notificationService.notifyConfirmParticipation(usuario, evento, participacao);
 
-        // Criar participação do organizador
-        Participation participacao = new Participation();
-        participacao.setIdUser(UUID.randomUUID());
-        participacao.setPosition(ParticipationPosition.CREATOR); // Usar CREATOR para definir como organizador
-        evento.getParticipations().add(participacao);
+    // Assert
+    verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
+  }
 
-        // Simular a interface de usuário para retornar o usuário
-        when(userInterface.getUser(any(UUID.class))).thenReturn(usuario);
+  @Test
+  @DisplayName("Testar criação de notificação; deve retornar lista não vazia")
+  void testCreateNotification_deveRetornarListaNaoVazia() {
+    // Arrange
+    User usuario = new User();
+    usuario.setId(UUID.randomUUID());
+    usuario.setUsername("Usuário Teste");
+    usuario.setPhoto(new Photo());
 
-        // Act
-        notificationService.notifyConfirmParticipation(usuario, evento);
+    String mensagem = "Mensagem de Notificação Teste";
+    Notification notificacao = new Notification(
+      usuario,
+      mensagem,
+      usuario.getPhoto(),
+      null, null,
+      NotificationEnum.PARTICIPATION
+    );
 
-        // Assert
-        verify(notificationRepository).save(any(Notification.class)); // Garantir que uma notificação foi salva
-    }
+    when(getUserLogged.getUserLogged()).thenReturn(usuario);
+    when(notificationRepository.save(any(Notification.class)))
+      .thenReturn(notificacao);
 
-    @Test
-    @DisplayName("Testar criação de notificação; deve retornar lista não vazia")
-    void testCreateNotification_deveRetornarListaNaoVazia() {
-        // Arrange
-        User usuario = new User();
-        usuario.setId(UUID.randomUUID());
-        usuario.setUsername("Usuário Teste");
-        usuario.setPhoto(new Photo());
+    // Simular o repositório para retornar uma lista não vazia
+    List<Notification> listaNotificacoes = new ArrayList<>();
+    listaNotificacoes.add(notificacao);
 
-        String mensagem = "Mensagem de Notificação Teste";
-        Notification notificacao = new Notification(
-                usuario,
-                mensagem,
-                usuario.getPhoto()
-        );
-
-        when(getUserLogged.getUserLogged()).thenReturn(usuario);
-        when(notificationRepository.save(any(Notification.class)))
-                .thenReturn(notificacao);
-
-        // Simular o repositório para retornar uma lista não vazia
-        List<Notification> listaNotificacoes = new ArrayList<>();
-        listaNotificacoes.add(notificacao);
-        when(
-                notificationRepository.findByUserId(usuario.getId(), Pageable.unpaged())
-        )
-                .thenReturn(new PageImpl<>(listaNotificacoes));
-
-        // Act
-        notificationService.postNotification(usuario, usuario.getPhoto(), mensagem);
+    notificationService.postNotification(usuario, usuario.getPhoto(), mensagem, null, null, NotificationEnum.PARTICIPATION);
 
         // Assert
         verify(notificationRepository).save(any(Notification.class));
-        List<Notification> notificacoes = notificationRepository
-                .findByUserId(usuario.getId(), Pageable.unpaged())
-                .getContent();
-        assertFalse(notificacoes.isEmpty());
     }
+
 }

@@ -1,8 +1,11 @@
 package com.hobbyFinder.hubby.models.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.UUID;
 
+import com.hobbyFinder.hubby.models.enums.NotificationEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,13 +35,25 @@ public class Notification {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(nullable = false)
-  private LocalDate date = LocalDate.now();
+  @Column(nullable = true)
+  private UUID idEVento;
 
-  public Notification(User user, String message, Photo photo) {
+  @Column(nullable = true)
+  private UUID idAssociacao;
+
+  @Column(nullable = false)
+  private NotificationEnum type;
+
+  @Column(nullable = false)
+  private LocalDateTime date = LocalDateTime.now();
+
+  public Notification(User user, String message, Photo photo, UUID idEvento, UUID idAssociacao ,NotificationEnum type) {
     this.user = user;
     this.message = message;
     this.photo = photo;
+    this.type = type;
+    this.idAssociacao = idAssociacao;
+    this.idEVento = idEvento;
   }
 
 }

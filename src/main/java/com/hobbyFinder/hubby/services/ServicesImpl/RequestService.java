@@ -65,7 +65,7 @@ public class RequestService implements RequestInterface {
             requestRepository.save(newRequest);
             requestRepository.flush();
 
-            notificationService.notifySolicitation(userLogged, targetEvent);
+            notificationService.notifySolicitation(userLogged, targetEvent, newRequest);
 
         } else if (!userAlreadyParticipate) {
             checkEventCapacity(targetEventId);
@@ -261,7 +261,7 @@ public class RequestService implements RequestInterface {
      * Cria um objeto de resposta relativo a um usuário vinculado a uma solicitação
      * de participação.
      * 
-     * @param event - objeto usuário presente na entidade solicitação
+     * @param user - objeto usuário presente na entidade solicitação
      * @return um objeto resposta que representa os dados de um usuário
      */
     private UserRequestResponse mappingToUserResponse(User user) {

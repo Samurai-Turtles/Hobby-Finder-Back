@@ -76,7 +76,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         participationRepository.save(participation);
         User user = userInterface.getUser(participation.getIdUser());
         Event event = eventInterface.findEvent(idEvent);
-        notificationService.notifyConfirmParticipation(user, event);
+        notificationService.notifyConfirmParticipation(user, event, participation);
     }
 
     @Override
