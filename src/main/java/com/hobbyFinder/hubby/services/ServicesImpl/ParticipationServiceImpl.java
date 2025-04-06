@@ -129,7 +129,7 @@ public class ParticipationServiceImpl implements ParticipationInterface {
         if (!participationsPage.hasContent()) {
             throw new PageIsEmptyException("A página indicada esta vazia");
         }
-        return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdUser(), participation.getUserParticipation()));
+        return participationsPage.map(participation -> new GetResponseParticipationEvent(participation.getIdParticipation(),participation.getIdUser(), participation.getUserParticipation()));
     }
 
     @Override
